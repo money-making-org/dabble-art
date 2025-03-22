@@ -2,7 +2,7 @@
 
 import { treaty } from "@elysiajs/eden";
 import { Button } from "@workspace/ui/components/button";
-import { ElysiaApp } from "@workspace/api/index";
+import type { ElysiaApp } from "@workspace/api/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Input } from "@workspace/ui/components/input";

@@ -1,4 +1,4 @@
-import { connectToDatabase } from "@/util/db";
+import { connectToDatabase } from "@/api/util/db";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { logger } from "@tqman/nice-logger";
