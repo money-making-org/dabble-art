@@ -1,0 +1,21 @@
+{
+  "name": "api",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "elysia": "^1.2.25",
+    "@elysiajs/swagger": "^1.2.2",
+    "@tqman/nice-logger": "^1.1.1",
+    "@elysiajs/cors": "^1.2.0",
+    "db": "workspace:*"
+  }
+}
