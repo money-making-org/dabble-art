@@ -15,7 +15,6 @@ const app = new Elysia()
       path: "/",
     })
   )
-  .get("/hello", () => "Hello World")
   .use(countingController)
   .listen(3001);
 
