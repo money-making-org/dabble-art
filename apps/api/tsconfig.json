@@ -26,7 +26,7 @@
     "noPropertyAccessFromIndexSignature": false,
 
     "paths": {
-      "@/api/*": ["src/*"],
+      "@/api/*": ["./src/*"],
       "@workspace/controller/*": ["../../packages/controller/src/*"],
       "@workspace/db/*": ["../../packages/db/src/*"]
     }
