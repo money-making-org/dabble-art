@@ -35,7 +35,9 @@ export default function Page() {
     <div className="flex items-center justify-center min-h-svh">
       <div className="flex flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold">Dabble Count</h1>
-        <p>{count?.count}</p>
+        <p>
+          {count?.count} x {multipler}
+        </p>
         <Button size="sm" onClick={() => increment()}>
           Increment
         </Button>
