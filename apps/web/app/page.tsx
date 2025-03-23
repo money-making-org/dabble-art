@@ -6,8 +6,11 @@ import type { ElysiaApp } from "@workspace/api/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Input } from "@workspace/ui/components/input";
+import { ArtworkGrid } from "./components/artwork-grid";
+import { NavigationMenu } from "./components/navigation-menu";
+import { Sidebar } from "./components/sidebar";
 
-export default function Page() {
+export default function HomePage() {
   const queryClient = useQueryClient();
   const client = treaty<ElysiaApp>("localhost:3001");
   const [multipler, setMultipler] = useState(1);
@@ -32,20 +35,34 @@ export default function Page() {
   });
 
   return (
-    <div className="flex items-center justify-center min-h-svh">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold">Dabble Count</h1>
-        <p>
-          {count?.count} x {multipler}
-        </p>
-        <Button size="sm" onClick={() => increment()}>
-          Increment
-        </Button>
-        <Input
-          type="number"
-          value={multipler}
-          onChange={(e) => setMultipler(Number(e.target.value))}
-        />
+    <div className="min-h-screen bg-background">
+      <NavigationMenu />
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex gap-8">
+          <main className="flex-1">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent">
+                  Featured Artworks
+                </h1>
+                <p className="text-muted-foreground mt-2">
+                  Discover and get inspired by today's top digital artists
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <Button variant="outline">Most Recent</Button>
+                <Button variant="outline">Most Popular</Button>
+                <Button className="bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500">
+                  Share Artwork
+                </Button>
+              </div>
+            </div>
+            <ArtworkGrid />
+          </main>
+          <aside className="hidden lg:block">
+            <Sidebar />
+          </aside>
+        </div>
       </div>
     </div>
   );
