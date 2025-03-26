@@ -30,7 +30,7 @@ export default function RootLayout({
         <ReactQueryProvider>
           <Providers>
             <SidebarProvider>
-              <AppSidebar />
+              {/* <AppSidebar /> */}
               <SidebarInset>{children}</SidebarInset>
             </SidebarProvider>
           </Providers>

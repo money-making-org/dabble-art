@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/av
 import { Heart, MessageCircle, Bookmark } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { Badge } from "@workspace/ui/components/badge";
+import Link from "next/link";
 
 const artworks = [
   {
@@ -167,62 +168,71 @@ export function ArtworkGrid() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {artworks.map((artwork) => (
-        <Card key={artwork.id} className="group overflow-hidden">
-          <CardContent className="p-0">
-            <div className="relative">
-              <img
-                src={artwork.image}
-                alt={artwork.title}
-                className="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              
-              {/* Top actions */}
-              <div className="absolute top-4 right-4 flex gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm">
-                  <Bookmark className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Content overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <div className="mb-2 flex items-center gap-2">
-                  <Avatar className="h-6 w-6 border border-white/20">
-                    <AvatarImage src={artwork.artist.avatar} />
-                    <AvatarFallback>{artwork.artist.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm font-medium">{artwork.artist.name}</span>
-                </div>
-                <h3 className="text-lg font-semibold mb-2">{artwork.title}</h3>
+        <Link 
+          key={artwork.id} 
+          href={`/art/${artwork.id}`}
+          className="block transition-transform duration-300 hover:-translate-y-1"
+        >
+          <Card className="group overflow-hidden">
+            <CardContent className="p-0">
+              <div className="relative">
+                <img
+                  src={artwork.image}
+                  alt={artwork.title}
+                  className="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {artwork.tags.map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant="secondary"
-                      className="bg-white/10 hover:bg-white/20 transition-colors"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
+                <div className="absolute top-4 right-4 flex gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <Button 
+                    size="icon" 
+                    variant="secondary" 
+                    className="h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm"
+                    onClick={(e) => {
+                      e.preventDefault(); 
+                    }}
+                  >
+                    <Bookmark className="h-4 w-4" />
+                  </Button>
                 </div>
 
-                {/* Stats */}
-                <div className="flex gap-4">
-                  <div className="flex items-center gap-1">
-                    <Heart className="h-4 w-4" />
-                    <span className="text-sm">{artwork.likes}</span>
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <div className="mb-2 flex items-center gap-2">
+                    <Avatar className="h-6 w-6 border border-white/20">
+                      <AvatarImage src={artwork.artist.avatar} />
+                      <AvatarFallback>{artwork.artist.name[0]}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium">{artwork.artist.name}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <MessageCircle className="h-4 w-4" />
-                    <span className="text-sm">{artwork.comments}</span>
+                  <h3 className="text-lg font-semibold mb-2">{artwork.title}</h3>
+                  
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {artwork.tags.map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant="secondary"
+                        className="bg-white/10 hover:bg-white/20 transition-colors"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex items-center gap-1">
+                      <Heart className="h-4 w-4" />
+                      <span className="text-sm">{artwork.likes}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="h-4 w-4" />
+                      <span className="text-sm">{artwork.comments}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
       ))}
     </div>
   );
