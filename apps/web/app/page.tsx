@@ -11,32 +11,10 @@ import { NavigationMenu } from "./components/navigation-menu";
 import { Sidebar } from "./components/sidebar";
 
 export default function HomePage() {
-  const queryClient = useQueryClient();
-  const client = treaty<ElysiaApp>("localhost:3001");
-  const [multipler, setMultipler] = useState(1);
-
-  const { data: count } = useQuery({
-    queryKey: ["count"],
-    queryFn: async () =>
-      await client.counting.index.get().then((res) => res.data),
-  });
-
-  const { mutate: increment } = useMutation({
-    mutationFn: async () =>
-      await client.counting.index
-        .post({
-          multipler,
-        })
-        .then((res) => res.data),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["count"] });
-    },
-  });
-
   return (
     <div className="min-h-screen bg-background">
       <NavigationMenu />
+
       <div className="container mx-auto px-4 py-8">
         <div className="flex gap-8">
           <main className="flex-1">

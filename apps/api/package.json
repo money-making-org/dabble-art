@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@workspace/api",
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
@@ -14,9 +14,11 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "elysia": "^1.2.25",
+    "@elysiajs/cors": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
     "@tqman/nice-logger": "^1.1.1",
-    "@elysiajs/cors": "^1.2.0"
+    "better-auth": "^1.2.5",
+    "elysia": "^1.2.25",
+    "mongodb": "^6.15.0"
   }
 }

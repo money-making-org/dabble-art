@@ -30,5 +30,6 @@
       "@workspace/controller/*": ["../../packages/controller/src/*"],
       "@workspace/db/*": ["../../packages/db/src/*"]
     }
-  }
+  },
+  "include": ["src/**/*.ts", "global.d.ts"]
 }
