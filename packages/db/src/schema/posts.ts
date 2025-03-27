@@ -38,13 +38,12 @@ interface Post extends PostType, Document {
 
 const PostSchema = new Schema<Post>(
   {
-    _id: { type: String, required: true },
-    owner: { type: String, required: true, index: true },
+    owner: { type: Schema.Types.ObjectId, ref: "user", required: true, index: true },
 
     name: { type: String, required: true },
     description: { type: String, required: false },
 
-    files: [{ type: String, ref: "files", default: [] }],
+    files: [{ type: Schema.Types.ObjectId, ref: "files", default: [] }],
 
     categories: {
       type: [String],
@@ -62,7 +61,6 @@ const PostSchema = new Schema<Post>(
   },
   {
     versionKey: false,
-    _id: false,
   }
 );
 

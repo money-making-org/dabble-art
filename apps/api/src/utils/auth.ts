@@ -3,8 +3,8 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import type { Context } from "elysia";
 import { MongoClient } from "mongodb";
 
-const client = new MongoClient(Bun.env.DATABASE_URL);
-const db = client.db(Bun.env.DATABASE_NAME);
+const client = new MongoClient(Bun.env.DATABASE_URL!);
+const db = client.db(Bun.env.DATABASE_NAME!);
 
 export const auth = betterAuth({
   database: mongodbAdapter(db),

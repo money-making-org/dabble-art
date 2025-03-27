@@ -142,7 +142,7 @@ export default function UploadPage() {
       };
 
       // @ts-ignore - We need to forcefully send a string as it's a formdata object
-      const { data: response, error } = await api.post.index.post(uploadData);
+      const { data: response, error } = await api.upload.index.post(uploadData);
 
       if (error) {
         throw error;

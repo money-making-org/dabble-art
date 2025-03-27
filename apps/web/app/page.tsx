@@ -4,8 +4,24 @@ import { Button } from "@workspace/ui/components/button";
 import { ArtworkGrid } from "./components/artwork-grid";
 import { NavigationMenu } from "./components/navigation-menu";
 import { Sidebar } from "./components/sidebar";
+import { api } from "@workspace/eden";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 
 export default function HomePage() {
+  const {
+    data: posts,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["posts"],
+    queryFn: () => api.public.posts.get(),
+  });
+
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <NavigationMenu />
@@ -30,7 +46,21 @@ export default function HomePage() {
                 </Button>
               </div>
             </div>
-            <ArtworkGrid />
+            {/* <ArtworkGrid /> */}
+
+            {posts?.data?.map((post) => (
+              <div key={post._id}>
+                {post.files.map((file) => (
+                  <Image
+                    key={file._id}
+                    src={`http://localhost:3001/public/posts/${post._id}/files/${file._id}/preview`}
+                    width={file.width}
+                    height={file.height}
+                    alt={file.name}
+                  />
+                ))}
+              </div>
+            ))}
           </main>
           <aside className="hidden lg:block">
             <Sidebar />

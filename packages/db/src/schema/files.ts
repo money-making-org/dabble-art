@@ -11,7 +11,9 @@ export interface File extends Document {
   mimeType: string;
 
   bytes: number; // Size in bytes
-  s3Key: string;
+
+  width: number;
+  height: number;
 
   createdAt: Date;
   updatedAt: Date;
@@ -19,8 +21,6 @@ export interface File extends Document {
 
 const FileSchema = new Schema<File>(
   {
-    _id: { type: String, required: true },
-
     owner: { type: Schema.Types.ObjectId, ref: "user", required: true },
     post: { type: Schema.Types.ObjectId, ref: "posts", required: true },
 
@@ -28,14 +28,21 @@ const FileSchema = new Schema<File>(
     mimeType: { type: String, required: true },
 
     bytes: { type: Number, required: true },
-    s3Key: { type: String, required: true },
+
+    width: { type: Number, required: true },
+    height: { type: Number, required: true },
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },
   {
     versionKey: false,
-    _id: false,
+
+    methods: {
+      getS3Key() {
+        return `${this.owner}/${this.post}/${this._id}`;
+      },
+    },
   }
 );
 
@@ -51,7 +58,9 @@ export const ZodFile = z.object({
   mimeType: z.string(),
 
   bytes: z.number(),
-  s3Key: z.string(),
+
+  width: z.number(),
+  height: z.number(),
 
   createdAt: z.date(),
   updatedAt: z.date(),

@@ -72,14 +72,17 @@ export function NavigationMenu() {
             </Nav>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <div className="relative w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Search artworks..." className="pl-8" />
             </div>
-            <Button variant="ghost" size="icon">
-              <Upload className="h-5 w-5" />
-            </Button>
+            <Link
+              href="/upload"
+              className="flex items-center gap-2 hover:bg-muted p-2 rounded-md"
+            >
+              <Upload className="size-5" />
+            </Link>
             <Button variant="ghost" size="icon">
               <Bell className="h-5 w-5" />
             </Button>

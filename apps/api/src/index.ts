@@ -3,9 +3,10 @@ import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { logger } from "@tqman/nice-logger";
 import Elysia from "elysia";
-import { countingController } from "./controllers/counting-controller";
-import { imageController } from "./controllers/image-controller";
+import { uploadController } from "./controllers/upload-controller";
+import { publicController } from "./controllers/public-controller";
 import { betterAuth } from "@/middlewares/auth-middleware";
+import { auth } from "@/utils/auth";
 
 await connectToDatabase();
 
@@ -20,8 +21,9 @@ const app = new Elysia()
   .onError(({ error, code, path }) => {
     console.error(error);
   })
-  .use(betterAuth)
-  .use(imageController)
+  .mount(auth.handler)
+  .use(publicController)
+  .use(uploadController)
   .listen(3001);
 
 console.log(

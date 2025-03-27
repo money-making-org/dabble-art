@@ -18,12 +18,13 @@
     "@elysiajs/cors": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
     "@tqman/nice-logger": "^1.1.1",
-    "better-auth": "^1.2.5",
     "@workspace/db": "workspace:*",
+    "better-auth": "^1.2.5",
     "elysia": "^1.2.25",
     "mime": "^4.0.6",
     "mongodb": "^6.15.0",
     "mongoose": "^8.13.0",
-    "pretty-bytes": "^6.1.1"
+    "pretty-bytes": "^6.1.1",
+    "sharp": "^0.33.5"
   }
 }
