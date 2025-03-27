@@ -4,8 +4,8 @@ import { swagger } from "@elysiajs/swagger";
 import { logger } from "@tqman/nice-logger";
 import Elysia from "elysia";
 import { countingController } from "./controllers/counting-controller";
-import { betterAuthView } from "@/utils/auth";
 import { imageController } from "./controllers/image-controller";
+import { betterAuth } from "@/middlewares/auth-middleware";
 
 await connectToDatabase();
 
@@ -17,9 +17,11 @@ const app = new Elysia()
       path: "/",
     })
   )
-  .use(countingController)
+  .onError(({ error, code, path }) => {
+    console.error(error);
+  })
+  .use(betterAuth)
   .use(imageController)
-  .all("/api/auth/*", betterAuthView)
   .listen(3001);
 
 console.log(

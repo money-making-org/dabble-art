@@ -19,6 +19,8 @@ export interface File extends Document {
 
 const FileSchema = new Schema<File>(
   {
+    _id: { type: String, required: true },
+
     owner: { type: Schema.Types.ObjectId, ref: "user", required: true },
     post: { type: Schema.Types.ObjectId, ref: "posts", required: true },
 
@@ -33,6 +35,7 @@ const FileSchema = new Schema<File>(
   },
   {
     versionKey: false,
+    _id: false,
   }
 );
 

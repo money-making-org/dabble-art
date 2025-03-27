@@ -4,6 +4,9 @@ import { stat } from "fs/promises";
 import mime from "mime";
 import { PostModel } from "@workspace/db/src/schema/posts";
 import { s3, S3Client } from "bun";
+import type { User } from "better-auth";
+import { ObjectId } from "mongodb";
+import { FileModel } from "@workspace/db/src/schema/files";
 
 type ImagePostBody = {
   name: string;
@@ -45,70 +48,71 @@ const r2 = new S3Client({
 
 export const imageController = new Elysia({ prefix: "/post" }).post(
   "/",
-  async ({ body }: { body: ImagePostBody }) => {
+  async ({ body, user }: { body: ImagePostBody; user: User }) => {
     const parsedCategories = Array.isArray(body.categories)
       ? body.categories
       : [body.categories];
 
     const parsedTags = Array.isArray(body.tags) ? body.tags : [body.tags];
 
-    console.log("\n=== Image Upload Details ===\n");
-    console.log(body);
+    // S3 Key: userId/postId/fileId
+    const userId = user.id;
+    const postID = new ObjectId();
 
-    // Basic Information
-    console.log("📝 Basic Information:");
-    console.log(`  Name: ${body.name}`);
-    console.log(
-      `  Description: ${body.description || "No description provided"}`
-    );
+    let fileIds: string[] = [];
 
-    // Categories and Tags
-    console.log("\n🏷️ Categories:");
-    parsedCategories.forEach((cat) => console.log(`  • ${cat}`));
-
-    console.log("\n🔖 Tags:");
-    parsedTags.forEach((tag) => console.log(`  • ${tag}`));
-
-    // Flags
-    console.log("\n⚙️ Settings:");
-    console.log(`  • Public: ${body.isPublic ? "Yes" : "No"}`);
-    console.log(`  • NSFW: ${body.isNsfw ? "Yes" : "No"}`);
-    console.log(`  • AI Generated: ${body.isAiGenerated ? "Yes" : "No"}`);
-
-    // Files
-
-    console.log("\n📁 Files:");
     await Promise.all(
-      body.files.map(async (file, index) => {
-        console.log(`\n  File ${index + 1}:`);
-        console.log(`    Name: ${file.name}`);
-        console.log(
-          `    Size: ${prettyBytes(
-            await file.bytes().then((bytes) => bytes.length)
-          )}`
-        );
-        console.log(`    Type: ${mime.getType(file.name)}`);
+      body.files.map(async (file) => {
+        const fileId = new ObjectId();
+        const key = `${userId}/${postID}/${fileId}`;
+
+        fileIds.push(fileId.toString());
+
+        const upload = await r2.write(key, file);
+
+        const dbFile = FileModel.create({
+          _id: fileId,
+
+          owner: userId,
+          post: postID,
+
+          name: file.name,
+          mimeType: mime.getType(file.name),
+
+          bytes: upload,
+          s3Key: key,
+
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
       })
     );
 
-    console.log("\n==========================\n");
+    await PostModel.create({
+      _id: postID,
+      owner: userId,
 
-    // Create model and upload to s3, then update the model s3Key property
-    // const post = await PostModel.create({
+      name: body.name,
+      description: body.description,
 
-    // });
+      files: fileIds,
 
-    console.log("Uploading files to s3...");
-    for (const file of body.files) {
-      console.log(`Uploading ${file.name}...`);
-      await r2.write(file.name, file).catch((err) => {
-        console.error(`Error uploading ${file.name}:`, err);
-      });
-    }
+      categories: parsedCategories,
+      tags: parsedTags,
+
+      isPublic: body.isPublic,
+      isNsfw: body.isNsfw,
+      isAiGenerated: body.isAiGenerated,
+
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
     return { success: true };
   },
   {
     body: imagePostSchema,
+    // @ts-ignore
+    auth: true,
   }
 );
