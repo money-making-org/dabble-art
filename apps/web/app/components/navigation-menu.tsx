@@ -10,8 +10,13 @@ import {
   navigationMenuTriggerStyle,
 } from "@workspace/ui/components/navigation-menu";
 import { Search, Upload, Bell } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@workspace/ui/components/avatar";
 import { ModeToggle } from "./mode-toggle";
+import { UserButton } from "@daveyplate/better-auth-ui";
 
 export function NavigationMenu() {
   return (
@@ -30,27 +35,35 @@ export function NavigationMenu() {
                   priority
                 />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent">dabble.art</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent">
+                dabble.art
+              </span>
             </Link>
             <Nav>
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <Link href="/discover" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                    >
                       Discover
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <Link href="/challenges" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                    >
                       Challenges
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <Link href="/community" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                    >
                       Community
                     </NavigationMenuLink>
                   </Link>
@@ -71,13 +84,14 @@ export function NavigationMenu() {
               <Bell className="h-5 w-5" />
             </Button>
             <ModeToggle />
-            <Avatar>
+            {/* <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            </Avatar> */}
+            <UserButton />
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}
