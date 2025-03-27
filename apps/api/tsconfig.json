@@ -26,10 +26,8 @@
     "noPropertyAccessFromIndexSignature": false,
 
     "paths": {
-      "@/api/*": ["./src/*"],
-      "@workspace/controller/*": ["../../packages/controller/src/*"],
-      "@workspace/db/*": ["../../packages/db/src/*"]
-    }
+      "@/*": ["./src/*"]
+    },
   },
   "include": ["src/**/*.ts", "global.d.ts"]
 }

@@ -1,11 +1,6 @@
 "use client";
 
-import { treaty } from "@elysiajs/eden";
 import { Button } from "@workspace/ui/components/button";
-import type { ElysiaApp } from "@workspace/api/index";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { Input } from "@workspace/ui/components/input";
 import { ArtworkGrid } from "./components/artwork-grid";
 import { NavigationMenu } from "./components/navigation-menu";
 import { Sidebar } from "./components/sidebar";

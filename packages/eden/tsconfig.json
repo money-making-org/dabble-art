@@ -27,7 +27,6 @@
 
 		"paths": {
 			"@/*": ["./src/*"],
-      "@workspace/api/*": ["../../apps/api/src/*"]
 		}
 	}
 }

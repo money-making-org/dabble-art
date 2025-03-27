@@ -1,9 +1,9 @@
 {
-	"name": "eden",
+	"name": "@workspace/eden",
 	"module": "index.ts",
 	"type": "module",
 	"devDependencies": {
-		"@types/bun": "^1.2.5",
+		"@types/bun": "^1.2.6",
 		"elysia": "^1.2.25"
 	},
 	"peerDependencies": {
@@ -11,6 +11,6 @@
 	},
 	"dependencies": {
 		"@elysiajs/eden": "^1.2.0",
-		"api": "workspace:*"
+		"@workspace/api": "workspace:*"
 	}
 }

@@ -1,3 +1,3 @@
 export * from "@/database";
 
-export * from "@/schema/pictures";
+export * from "@/schema/files";

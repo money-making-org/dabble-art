@@ -1,0 +1,68 @@
+import { database } from "@/database";
+import type { FileType } from "@/schema/files";
+import mongoose, { Schema } from "mongoose";
+import { z } from "zod";
+
+export const ZodPost = z.object({
+  _id: z.string(),
+  owner: z.instanceof(mongoose.Schema.Types.ObjectId),
+
+  name: z.string(),
+  description: z.string().nullable(),
+
+  categories: z.array(z.enum(["fan-art", "3d", "anime", "realistic", "nude"])),
+  tags: z.array(z.string().min(2).max(20)).max(10),
+
+  files: z.array(z.instanceof(mongoose.Schema.Types.ObjectId)),
+
+  isPublic: z.boolean(),
+  isNsfw: z.boolean(),
+  isAiGenerated: z.boolean(),
+
+  updatedAt: z.date(),
+  createdAt: z.date(),
+});
+
+export type PostType = z.infer<typeof ZodPost>;
+
+export interface PopulatedPost extends Omit<PostType, "files">, Document {
+  files: FileType[];
+  updatedAt: Date;
+  createdAt: Date;
+}
+
+interface Post extends PostType, Document {
+  updatedAt: Date;
+  createdAt: Date;
+}
+
+const PostSchema = new Schema<Post>(
+  {
+    owner: { type: String, required: true, index: true },
+    name: { type: String, required: true },
+
+    files: [{ type: String, ref: "files", default: [] }],
+
+    description: { type: String, required: false },
+
+    categories: {
+      type: [String],
+      enum: ["fan-art", "3d", "anime", "realistic", "nude"],
+      default: [],
+    },
+    tags: { type: [String], default: [] },
+
+    isPublic: { type: Boolean, default: true },
+    isNsfw: { type: Boolean, default: false },
+    isAiGenerated: { type: Boolean, default: false },
+
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+  },
+  {
+    versionKey: false,
+    _id: false,
+  }
+);
+
+export const PostModel = database.model<Post>("posts", PostSchema);
