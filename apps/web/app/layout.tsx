@@ -6,6 +6,8 @@ import ReactQueryProvider from "@/components/react-query-provider";
 import { SidebarProvider } from "@workspace/ui/components/sidebar";
 import { SidebarInset } from "@workspace/ui/components/sidebar";
 import { AppSidebar } from "@workspace/ui/components/app-sidebar";
+import { Toaster } from "sonner";
+import { NavigationMenu } from "@/app/components/navigation-menu";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -31,9 +33,13 @@ export default function RootLayout({
           <Providers>
             <SidebarProvider>
               {/* <AppSidebar /> */}
-              <SidebarInset>{children}</SidebarInset>
+              <SidebarInset>
+                <NavigationMenu />
+                {children}
+              </SidebarInset>
             </SidebarProvider>
           </Providers>
+          <Toaster />
         </ReactQueryProvider>
       </body>
     </html>

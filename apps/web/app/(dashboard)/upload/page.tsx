@@ -142,11 +142,14 @@ export default function UploadPage() {
       };
 
       // @ts-ignore - We need to forcefully send a string as it's a formdata object
-      const { data: response, error } = await api.upload.index.post(uploadData);
-
-      if (error) {
-        throw error;
-      }
+      const { data: response, error } = await api.upload.index
+        .post(uploadData)
+        .catch((error: any) => {
+          console.error("Upload error:", error);
+          toast.error("Error", {
+            description: "Failed to upload your post. Please try again.",
+          });
+        });
 
       toast.success("Success!", {
         description: "Your post has been uploaded successfully",
