@@ -95,7 +95,7 @@ export function NavigationMenu() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    router.push(`/discover?query=${searchQuery}`);
+                    router.push(`/discover?q=${searchQuery}`);
                   }
                 }}
               />
