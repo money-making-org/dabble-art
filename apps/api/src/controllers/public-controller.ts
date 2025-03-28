@@ -7,7 +7,13 @@ export const publicController = new Elysia({ prefix: "/public" })
   .get(
     "/posts",
     async ({ query }) => {
-      const { limit = 25, page = 1, search, categories } = query;
+      const {
+        limit = 25,
+        page = 1,
+        search,
+        categories,
+        sort = "latest",
+      } = query;
 
       const queryConditions: any = { isPublic: true };
 
@@ -15,9 +21,11 @@ export const publicController = new Elysia({ prefix: "/public" })
       if (search && search.trim()) {
         const searchTerms = search.toLowerCase().split(" ").filter(Boolean);
         if (searchTerms.length > 0) {
+          // Add text search
+          queryConditions.$text = { $search: search };
+
+          // Add tag search as a separate $or condition
           queryConditions.$or = [
-            { name: { $regex: search, $options: "i" } },
-            { description: { $regex: search, $options: "i" } },
             {
               tags: {
                 $in: searchTerms.map((term: string) => new RegExp(term, "i")),
@@ -39,11 +47,35 @@ export const publicController = new Elysia({ prefix: "/public" })
         };
       }
 
-      const posts = await PostModel.find(queryConditions)
+      // Determine sort order and projection
+      let sortOrder: any = {};
+      let projection: any = {};
+
+      switch (sort) {
+        case "popular":
+          // For now, just sort by date since we don't have popularity metrics
+          sortOrder = { createdAt: 1 };
+          break;
+        case "latest":
+          sortOrder = { createdAt: -1 };
+          break;
+        // Relevance
+        default:
+          if (search) {
+            sortOrder = { score: { $meta: "textScore" } };
+            projection.score = { $meta: "textScore" };
+          } else {
+            sortOrder = { createdAt: -1 };
+          }
+          break;
+      }
+
+      const posts = await PostModel.find(queryConditions, projection)
         .limit(limit)
         .skip((page - 1) * limit)
-        .sort({ createdAt: -1 })
-        .populate("files");
+        .sort(sortOrder)
+        .populate("files")
+        .lean();
 
       return posts;
     },
@@ -51,14 +83,24 @@ export const publicController = new Elysia({ prefix: "/public" })
       query: t.Object({
         search: t.Optional(t.String()),
         categories: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        sort: t.Optional(
+          t.Union([
+            t.Literal("latest"),
+            t.Literal("popular"),
+            t.Literal("relevance"),
+          ])
+        ),
         limit: t.Optional(
           t.Number({
             default: 25,
+            maximum: 75,
+            minimum: 1,
           })
         ),
         page: t.Optional(
           t.Number({
             default: 1,
+            minimum: 1,
           })
         ),
       }),

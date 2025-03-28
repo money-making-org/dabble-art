@@ -31,7 +31,7 @@ export function NavigationMenu() {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/" prefetch className="flex items-center gap-2">
               <div className="relative w-8 h-8">
                 <Image
                   src="/favicon.ico"
@@ -68,7 +68,11 @@ export function NavigationMenu() {
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="https://discord.gg/jG6gYzePmr" legacyBehavior passHref>
+                  <Link
+                    href="https://discord.gg/jG6gYzePmr"
+                    legacyBehavior
+                    passHref
+                  >
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
                     >
@@ -106,11 +110,8 @@ export function NavigationMenu() {
               <Bell className="h-5 w-5" />
             </Button>
             <ThemeToggle />
-            {/* <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar> */}
-            <UserButton />
+
+            <UserButton className="cursor-pointer" />
           </div>
         </div>
       </div>
