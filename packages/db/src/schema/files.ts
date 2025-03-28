@@ -1,4 +1,6 @@
 import { database } from "@/database";
+import { ElysiaUser } from "@/schema/users";
+import { ElysiaPost } from "@/schema/posts";
 import { t } from "elysia";
 import mongoose, { type Document, Schema } from "mongoose";
 import { z } from "zod";
@@ -67,3 +69,16 @@ export const ZodFile = z.object({
 });
 
 export type FileType = z.infer<typeof ZodFile>;
+
+export const ElysiaFile = t.Object({
+  _id: t.Any(),
+  owner: ElysiaUser,
+  post: ElysiaPost,
+  name: t.String(),
+  mimeType: t.String(),
+  bytes: t.Number(),
+  width: t.Number(),
+  height: t.Number(),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
+});

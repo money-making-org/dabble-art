@@ -57,8 +57,10 @@ export function ArtworkGrid({ posts, className }: ArtworkGridProps) {
         alt: post.name,
         nextImageProps: {
           priority: true,
+          // @ts-ignore - It works
+          className: "border rounded-md",
         },
-        
+
         metadata: post,
       };
       return image;
@@ -93,14 +95,13 @@ export function ArtworkGrid({ posts, className }: ArtworkGridProps) {
         lastRowBehavior="match-previous"
         preferGrowing={1.2}
         shrinkLimit={0.7}
-        
         overlay={(index) => {
           const post = posts[index];
           if (!post) return null;
 
           return (
             <Link
-              href={`/artwork/${post._id}`}
+              href={`/posts/${post._id}`}
               className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"
             >
               <h3 className="font-semibold truncate text-white">{post.name}</h3>

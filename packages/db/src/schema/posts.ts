@@ -1,5 +1,7 @@
 import { database } from "@/database";
-import type { FileType } from "@/schema/files";
+import { ElysiaFile, type FileType } from "@/schema/files";
+import { ElysiaUser } from "@/schema/users";
+import { t } from "elysia";
 import mongoose, { Schema } from "mongoose";
 import { z } from "zod";
 
@@ -45,6 +47,26 @@ export interface PopulatedPost extends Omit<PostType, "files">, Document {
   updatedAt: Date;
   createdAt: Date;
 }
+
+export const ElysiaPost = t.Object({
+  _id: t.Any(),
+  owner: ElysiaUser,
+
+  name: t.String(),
+  description: t.Optional(t.String()),
+
+  categories: t.Array(t.String()),
+  tags: t.Array(t.String()),
+
+  files: t.Array(ElysiaFile),
+
+  isPublic: t.Boolean(),
+  isNsfw: t.Boolean(),
+  isAiGenerated: t.Boolean(),
+
+  updatedAt: t.Date(),
+  createdAt: t.Date(),
+});
 
 interface Post extends PostType, Document {
   updatedAt: Date;

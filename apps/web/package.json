@@ -23,6 +23,7 @@
     "@workspace/eden": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.2.5",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.484.0",
     "next": "^15.2.0",
     "next-gallery": "^2.1.1",

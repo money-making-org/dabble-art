@@ -42,9 +42,6 @@ export default async function HomePage() {
 
             <ArtworkGrid posts={posts} />
           </main>
-          <aside className="hidden lg:block w-64">
-            <Sidebar />
-          </aside>
         </div>
       </div>
     </div>

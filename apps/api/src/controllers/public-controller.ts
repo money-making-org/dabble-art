@@ -1,6 +1,6 @@
 import { r2 } from "@/controllers/upload-controller";
 import { FileModel } from "@workspace/db/src/schema/files";
-import { PostModel } from "@workspace/db/src/schema/posts";
+import { ElysiaPost, PostModel } from "@workspace/db/src/schema/posts";
 import Elysia, { t } from "elysia";
 
 export const publicController = new Elysia({ prefix: "/public" })
@@ -125,4 +125,30 @@ export const publicController = new Elysia({ prefix: "/public" })
     }
 
     return new Response(r2.file(file.getS3Key()));
-  });
+  })
+  .get(
+    "/posts/:id",
+    async ({ params }) => {
+      const { id } = params;
+
+      const post = await PostModel.findOne({
+        _id: id,
+        isPublic: true,
+      })
+        .populate("files")
+        .populate("owner");
+
+      return post;
+    },
+    {
+      params: t.Object({
+        id: t.String(),
+      }),
+
+      response: {
+        200: t.Object({
+          data: ElysiaPost,
+        }),
+      },
+    }
+  );
