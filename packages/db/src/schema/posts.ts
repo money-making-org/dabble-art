@@ -10,7 +10,22 @@ export const ZodPost = z.object({
   name: z.string(),
   description: z.string().nullable(),
 
-  categories: z.array(z.enum(["fan-art", "3d", "anime", "realistic", "nude"])),
+  categories: z.array(
+    z.enum([
+      "digital-art",
+      "photography",
+      "illustration",
+      "character-design",
+      "UI-UX",
+      "logo",
+      "fan-art",
+      "3d",
+      "anime",
+      "realistic",
+      "nude",
+      "other",
+    ])
+  ),
   tags: z.array(z.string().min(2).max(20)).max(10),
 
   files: z.array(z.instanceof(mongoose.Schema.Types.ObjectId)),
@@ -52,7 +67,20 @@ const PostSchema = new Schema<Post>(
 
     categories: {
       type: [String],
-      enum: ["fan-art", "3d", "anime", "realistic", "nude"],
+      enum: [
+        "digital-art",
+        "photography",
+        "illustration",
+        "character-design",
+        "UI-UX",
+        "logo",
+        "fan-art",
+        "3d",
+        "anime",
+        "realistic",
+        "nude",
+        "other",
+      ],
       default: [],
     },
     tags: { type: [String], default: [] },

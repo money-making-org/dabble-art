@@ -58,6 +58,7 @@ export function ArtworkGrid({ posts, className }: ArtworkGridProps) {
         nextImageProps: {
           priority: true,
         },
+        
         metadata: post,
       };
       return image;
@@ -92,6 +93,7 @@ export function ArtworkGrid({ posts, className }: ArtworkGridProps) {
         lastRowBehavior="match-previous"
         preferGrowing={1.2}
         shrinkLimit={0.7}
+        
         overlay={(index) => {
           const post = posts[index];
           if (!post) return null;

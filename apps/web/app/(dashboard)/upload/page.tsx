@@ -9,14 +9,28 @@ import { Textarea } from "@workspace/ui/components/textarea";
 import { toast } from "sonner";
 import { cn } from "@workspace/ui/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Upload, X } from "lucide-react";
+import { Router, Upload, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { api } from "@workspace/eden";
+import { useRouter } from "next/navigation";
 
-const categories = ["fan-art", "3d", "anime", "realistic", "nude"] as const;
+export const categories = [
+  "digital-art",
+  "photography",
+  "illustration",
+  "character-design",
+  "UI-UX",
+  "logo",
+  "fan-art",
+  "3d",
+  "anime",
+  "realistic",
+  "nude",
+  "other",
+] as const;
 
 const uploadSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -43,6 +57,7 @@ export default function UploadPage() {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [rawFiles, setRawFiles] = useState<File[]>([]);
   const [tagInput, setTagInput] = useState("");
+  const router = useRouter();
 
   const {
     register,
@@ -154,6 +169,8 @@ export default function UploadPage() {
       toast.success("Success!", {
         description: "Your post has been uploaded successfully",
       });
+
+      router.push(`/`);
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("Error", {
