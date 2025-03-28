@@ -87,7 +87,9 @@ export default function ArtPiecePage() {
   const { likePost, isPending: isLikePending } = useLikePost();
 
   function isLikedInDB() {
-    return post?.data?.analytics.likes.includes(session?.user?.id);
+
+
+    return (post?.data?.analytics?.likes || []).includes(session?.user?.id);
   }
 
   function isLiked() {
@@ -99,7 +101,11 @@ export default function ArtPiecePage() {
 
   // Don't even ask me about this function
   function getLikesCount() {
-    const baseCount = post?.data?.analytics.likesCount || 0;
+    if (post?.data?.analytics === undefined || post?.data?.analytics.likesCount === undefined) {
+      return 0;
+    }
+
+    const baseCount = post?.data?.analytics?.likesCount || 0;
 
     if (isLocallyLiked === null) {
       return baseCount;
@@ -321,7 +327,7 @@ export default function ArtPiecePage() {
                     <Eye className="h-5 w-5" />
                   </Button>
                   <span className="font-medium mt-1">
-                    {(postData.analytics.views || 0).toLocaleString()}
+                    {(postData.analytics?.views ?? 0).toLocaleString()}
                   </span>
                   <span className="text-xs text-muted-foreground">Views</span>
                 </div>
@@ -330,7 +336,7 @@ export default function ArtPiecePage() {
                     <Download className="h-5 w-5" />
                   </Button>
                   <span className="font-medium mt-1">
-                    {(postData.analytics.downloads || 0).toLocaleString()}
+                    {(postData.analytics?.downloads ?? 0).toLocaleString()}
                   </span>
                   <span className="text-xs text-muted-foreground">
                     Downloads
