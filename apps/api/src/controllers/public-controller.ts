@@ -139,19 +139,19 @@ export const publicController = new Elysia({ prefix: "/public" })
         .populate("files")
         .populate("owner")
         .lean();
-
       if (!post) {
         return new Response("Post not found", { status: 404 });
       }
 
       // increment views
-      await PostModel.findByIdAndUpdate(id, {
+      const updatedPost = await PostModel.findByIdAndUpdate(id, {
         $inc: { "analytics.views": 1 },
       });
 
-      // add likesCount
-      post.analytics.likesCount = post.analytics.likes.length;
-
+      if (post.analytics && post.analytics.likes) {
+        post.analytics.likesCount = post.analytics.likes.length;
+      }
+      
       return post;
     },
     {

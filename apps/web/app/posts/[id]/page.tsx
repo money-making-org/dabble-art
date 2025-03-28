@@ -81,11 +81,40 @@ export default function ArtPiecePage() {
     queryFn: () => api.public.posts({ id: params.id as string }).get(),
   });
 
-
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLocallyLiked, setIsLocallyLiked] = useState<boolean | null>(null);
   const [isSaved, setIsSaved] = useState(false);
 
   const { likePost, isPending: isLikePending } = useLikePost();
+
+  function isLikedInDB() {
+    return post?.data?.analytics.likes.includes(session?.user?.id);
+  }
+
+  function isLiked() {
+    if (isLocallyLiked === null) {
+      return isLikedInDB();
+    }
+    return isLocallyLiked;
+  }
+
+  // Don't even ask me about this function
+  function getLikesCount() {
+    const baseCount = post?.data?.analytics.likesCount || 0;
+
+    if (isLocallyLiked === null) {
+      return baseCount;
+    }
+
+    if (isLikedInDB() && !isLocallyLiked) {
+      return baseCount - 1;
+    }
+
+    if (!isLikedInDB() && isLocallyLiked) {
+      return baseCount + 1;
+    }
+
+    return baseCount;
+  }
 
   const { data: relatedPosts } = useQuery({
     queryKey: ["related-posts", post?.data?.data],
@@ -99,12 +128,6 @@ export default function ArtPiecePage() {
       }),
     enabled: !!post?.data?.id,
   });
-
-  useEffect(() => {
-    setIsLiked(post?.data?.analytics.likes.includes(session?.user?.id));
-  }, [post?.data?.analytics.likes, session?.user?.id]);
-
-  const isActivelyLiked = isLiked;
 
   if (isPending) {
     return (
@@ -172,18 +195,14 @@ export default function ArtPiecePage() {
                         onClick={() => {
                           if (isLikePending) return;
 
-                          if (isLiked) {
-                            setIsLiked(false);
-                          } else {
-                            setIsLiked(true);
-                          }
+                          setIsLocallyLiked(!isLiked());
 
                           likePost(postData._id);
                         }}
                         disabled={isLikePending}
                       >
                         <Heart
-                          className={`h-5 w-5 ${isActivelyLiked ? "fill-current text-red-500" : ""}`}
+                          className={`h-5 w-5 ${isLiked() ? "fill-current text-red-500" : ""}`}
                         />
                       </Button>
 
@@ -274,15 +293,15 @@ export default function ArtPiecePage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className={isActivelyLiked ? "text-red-500 fill-current" : ""}
-                    onClick={() => setIsLiked(!isLiked)}
+                    className={isLiked() ? "text-red-500 fill-current" : ""}
+                    onClick={() => setIsLocallyLiked(!isLiked())}
                   >
                     <Heart
-                      className={`h-5 w-5 ${isActivelyLiked ? "fill-current" : ""}`}
+                      className={`h-5 w-5 ${isLiked() ? "fill-current" : ""}`}
                     />
                   </Button>
                   <span className="font-medium mt-1">
-                    {(postData.analytics.likesCount || 0).toLocaleString()}
+                    {getLikesCount().toLocaleString()}
                   </span>
                   <span className="text-xs text-muted-foreground">Likes</span>
                 </div>
@@ -375,7 +394,7 @@ export default function ArtPiecePage() {
             </div>
           </div>
 
-          {relatedPosts?.data && relatedPosts.data.length > 0 && (
+          {/* {relatedPosts?.data && relatedPosts.data.length > 0 && (
             <div className="mt-12">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold">
@@ -423,7 +442,7 @@ export default function ArtPiecePage() {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </Suspense>

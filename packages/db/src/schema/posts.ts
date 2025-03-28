@@ -124,9 +124,16 @@ const PostSchema = new Schema<Post>(
     isAiGenerated: { type: Boolean, default: false },
 
     analytics: {
-      views: { type: Number, default: 0 },
-      likes: { type: [String], default: [] },
-      downloads: { type: Number, default: 0 },
+      type: {
+        views: Number,
+        likes: [String],
+        downloads: Number,
+      },
+      default: {
+        views: 0,
+        likes: [],
+        downloads: 0,
+      },
     },
 
     createdAt: { type: Date, default: Date.now },
