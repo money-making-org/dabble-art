@@ -7,7 +7,12 @@ import { Sidebar } from "./components/sidebar";
 import { api } from "@workspace/eden";
 
 export default async function HomePage() {
-  const { data: posts } = await api.public.posts.get();
+  const { data: posts } = await api.public.posts.get({
+    query: {
+      limit: 25,
+      page: 1,
+    },
+  });
 
   return (
     <div className="min-h-screen bg-background">

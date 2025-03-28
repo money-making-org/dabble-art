@@ -38,7 +38,12 @@ interface Post extends PostType, Document {
 
 const PostSchema = new Schema<Post>(
   {
-    owner: { type: Schema.Types.ObjectId, ref: "user", required: true, index: true },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+      index: true,
+    },
 
     name: { type: String, required: true },
     description: { type: String, required: false },
@@ -63,5 +68,11 @@ const PostSchema = new Schema<Post>(
     versionKey: false,
   }
 );
+
+// Add text index for name and description only
+PostSchema.index({
+  name: "text",
+  description: "text",
+});
 
 export const PostModel = database.model<Post>("posts", PostSchema);
