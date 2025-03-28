@@ -5,6 +5,32 @@ import { t } from "elysia";
 import mongoose, { Schema } from "mongoose";
 import { z } from "zod";
 
+export const ElysiaPost = t.Object({
+  _id: t.Any(),
+  owner: ElysiaUser,
+
+  name: t.String(),
+  description: t.Optional(t.String()),
+
+  categories: t.Array(t.String()),
+  tags: t.Array(t.String()),
+
+  files: t.Array(ElysiaFile),
+
+  isPublic: t.Boolean(),
+  isNsfw: t.Boolean(),
+  isAiGenerated: t.Boolean(),
+
+  analytics: t.Object({
+    views: t.Number(),
+    likes: t.Array(t.String()),
+    downloads: t.Number(),
+  }),
+
+  updatedAt: t.Date(),
+  createdAt: t.Date(),
+});
+
 export const ZodPost = z.object({
   _id: z.string(),
   owner: z.instanceof(mongoose.Schema.Types.ObjectId),
@@ -36,6 +62,12 @@ export const ZodPost = z.object({
   isNsfw: z.boolean(),
   isAiGenerated: z.boolean(),
 
+  analytics: z.object({
+    views: z.number().default(0),
+    likes: z.array(z.string()).default([]),
+    downloads: z.number().default(0),
+  }),
+
   updatedAt: z.date(),
   createdAt: z.date(),
 });
@@ -47,26 +79,6 @@ export interface PopulatedPost extends Omit<PostType, "files">, Document {
   updatedAt: Date;
   createdAt: Date;
 }
-
-export const ElysiaPost = t.Object({
-  _id: t.Any(),
-  owner: ElysiaUser,
-
-  name: t.String(),
-  description: t.Optional(t.String()),
-
-  categories: t.Array(t.String()),
-  tags: t.Array(t.String()),
-
-  files: t.Array(ElysiaFile),
-
-  isPublic: t.Boolean(),
-  isNsfw: t.Boolean(),
-  isAiGenerated: t.Boolean(),
-
-  updatedAt: t.Date(),
-  createdAt: t.Date(),
-});
 
 interface Post extends PostType, Document {
   updatedAt: Date;
@@ -110,6 +122,12 @@ const PostSchema = new Schema<Post>(
     isPublic: { type: Boolean, default: true },
     isNsfw: { type: Boolean, default: false },
     isAiGenerated: { type: Boolean, default: false },
+
+    analytics: {
+      views: { type: Number, default: 0 },
+      likes: { type: [String], default: [] },
+      downloads: { type: Number, default: 0 },
+    },
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

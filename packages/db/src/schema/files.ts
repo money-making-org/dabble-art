@@ -72,8 +72,8 @@ export type FileType = z.infer<typeof ZodFile>;
 
 export const ElysiaFile = t.Object({
   _id: t.Any(),
-  owner: ElysiaUser,
-  post: ElysiaPost,
+  owner: t.Any(),
+  post: t.Any(),
   name: t.String(),
   mimeType: t.String(),
   bytes: t.Number(),

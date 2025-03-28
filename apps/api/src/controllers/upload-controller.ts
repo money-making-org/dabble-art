@@ -7,7 +7,7 @@ import { s3, S3Client } from "bun";
 import type { User } from "better-auth";
 import { ObjectId } from "mongodb";
 import { FileModel } from "@workspace/db/src/schema/files";
-import { betterAuth } from "@/middlewares/auth-middleware";
+import { authProtected, betterAuth } from "@/middlewares/auth-middleware";
 import sharp from "sharp";
 
 type ImagePostBody = {
@@ -49,7 +49,7 @@ export const r2 = new S3Client({
 });
 
 export const uploadController = new Elysia({ prefix: "/upload" })
-  .use(betterAuth)
+  .use(authProtected)
   .post(
     "/",
     async ({ body, user }: { body: ImagePostBody; user: User }) => {

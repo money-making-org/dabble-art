@@ -1,9 +1,11 @@
 import { r2 } from "@/controllers/upload-controller";
 import { FileModel } from "@workspace/db/src/schema/files";
 import { ElysiaPost, PostModel } from "@workspace/db/src/schema/posts";
+import { betterAuth } from "@/middlewares/auth-middleware";
 import Elysia, { t } from "elysia";
 
 export const publicController = new Elysia({ prefix: "/public" })
+  .use(betterAuth)
   .get(
     "/posts",
     async ({ query }) => {
@@ -80,7 +82,6 @@ export const publicController = new Elysia({ prefix: "/public" })
         .sort(sortOrder)
         .populate("files")
         .lean();
-
       return posts;
     },
     {
@@ -136,7 +137,20 @@ export const publicController = new Elysia({ prefix: "/public" })
         isPublic: true,
       })
         .populate("files")
-        .populate("owner");
+        .populate("owner")
+        .lean();
+
+      if (!post) {
+        return new Response("Post not found", { status: 404 });
+      }
+
+      // increment views
+      await PostModel.findByIdAndUpdate(id, {
+        $inc: { "analytics.views": 1 },
+      });
+
+      // add likesCount
+      post.analytics.likesCount = post.analytics.likes.length;
 
       return post;
     },
@@ -144,11 +158,34 @@ export const publicController = new Elysia({ prefix: "/public" })
       params: t.Object({
         id: t.String(),
       }),
+    }
+  )
+  .post(
+    "/posts/:id/like",
+    async ({ params, user }) => {
+      const { id } = params;
 
-      response: {
-        200: t.Object({
-          data: ElysiaPost,
-        }),
-      },
+      const post = await PostModel.findById(id);
+
+      if (!post) {
+        return new Response("Post not found", { status: 404 });
+      }
+
+      let newPost = post;
+
+      if (post.analytics.likes.includes(user.id)) {
+        newPost = await PostModel.findByIdAndUpdate(id, {
+          $pull: { "analytics.likes": user.id },
+        });
+      } else {
+        newPost = await PostModel.findByIdAndUpdate(id, {
+          $push: { "analytics.likes": user.id },
+        });
+      }
+
+      return newPost.toObject();
+    },
+    {
+      auth: true,
     }
   );

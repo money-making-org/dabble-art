@@ -25,7 +25,7 @@ export const ElysiaUser = t.Object({
   emailVerified: t.Boolean(),
   createdAt: t.Date(),
   updatedAt: t.Date(),
-})
+});
 
 interface User extends Document {
   name: string;
@@ -41,7 +41,7 @@ const UserSchema = new Schema<User>(
     email: { type: String, required: true, unique: true },
     emailVerified: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "user" }
 );
 
 export const UserModel = model<User>("user", UserSchema);
