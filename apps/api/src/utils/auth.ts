@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { nextCookies } from "better-auth/next-js";
 import type { Context } from "elysia";
 import { MongoClient } from "mongodb";
 
@@ -12,6 +13,8 @@ export const auth = betterAuth({
     enabled: true,
   },
   trustedOrigins: ["http://localhost:3000"],
+
+  plugins: [nextCookies()],
 });
 
 export const betterAuthView = (context: Context) => {
