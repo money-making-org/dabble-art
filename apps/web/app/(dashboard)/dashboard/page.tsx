@@ -1,20 +1,48 @@
-"use server";
+"use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
-import { Plus, Eye, Download, Heart, RefreshCw, Search, Filter } from "lucide-react";
+import { Plus, Eye, Download, Heart, Search } from "lucide-react";
 import Link from "next/link";
 import { api } from "@workspace/eden";
 import { ArtworkGrid } from "../../_components/artwork-grid";
+import { useQueryState } from "nuqs";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 
-export default async function DashboardPage() {
-  const { data: posts } = await api.public.posts.get({
-    query: {
-      limit: 25,
-      page: 1,
-    },
+function ArtworkGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 9 }).map((_, i) => (
+        <Skeleton key={i} className="w-full aspect-square rounded-lg" />
+      ))}
+    </div>
+  );
+}
+
+export default function DashboardPage() {
+  const [searchQuery, setSearchQuery] = useQueryState("q", {
+    defaultValue: "",
+    clearOnDefault: true,
+    throttleMs: 150,
+  });
+  const [sortBy, setSortBy] = useQueryState("sort", {
+    defaultValue: "relevance",
+  });
+
+  const { data: posts, isPending } = useQuery({
+    queryKey: ["posts", searchQuery, sortBy],
+    queryFn: () =>
+      api.public.posts.get({
+        query: {
+          search: searchQuery,
+          sort: sortBy,
+          limit: 25,
+          page: 1,
+        },
+      }),
   });
 
   // edit later
@@ -46,7 +74,6 @@ export default async function DashboardPage() {
         <div className="flex gap-8">
           {/* Main Content */}
           <div className="flex-1 min-w-0">
-
             {/* Your Artworks */}
             <Card>
               <CardHeader>
@@ -55,24 +82,35 @@ export default async function DashboardPage() {
                   <div className="flex items-center gap-4">
                     <div className="relative">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input placeholder="Search artworks..." className="pl-8 w-[200px]" />
+                      <Input
+                        placeholder="Search artworks..."
+                        className="pl-8 w-[200px]"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
                     </div>
-                    <Select defaultValue="recent">
-                      <SelectTrigger className="w-[152px]">
-                        <Filter className="h-4 w-4 mr-2" />
-                        <SelectValue placeholder="Filter" />
+                    <Select 
+                      value={sortBy} 
+                      onValueChange={(value: "relevance" | "latest" | "popular") => setSortBy(value)}
+                    >
+                      <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder="Sort by" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="recent">Most Recent</SelectItem>
+                        <SelectItem value="relevance">Relevance</SelectItem>
+                        <SelectItem value="latest">Latest</SelectItem>
                         <SelectItem value="popular">Most Popular</SelectItem>
-                        <SelectItem value="liked">Most Liked</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <ArtworkGrid posts={posts} />
+                {isPending ? (
+                  <ArtworkGridSkeleton />
+                ) : (
+                  <ArtworkGrid posts={posts?.data} />
+                )}
               </CardContent>
             </Card>
           </div>
