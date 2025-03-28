@@ -21,14 +21,24 @@ export const publicController = new Elysia({ prefix: "/public" })
       if (search && search.trim()) {
         const searchTerms = search.toLowerCase().split(" ").filter(Boolean);
         if (searchTerms.length > 0) {
-          // Add text search
-          queryConditions.$text = { $search: search };
-
-          // Add tag search as a separate $or condition
+          // Use regex search for partial matches
           queryConditions.$or = [
+            // Regex search for partial matches in name
+            {
+              name: {
+                $regex: searchTerms.map((term) => `(?i)${term}`).join("|"),
+              },
+            },
+            // Regex search for partial matches in description
+            {
+              description: {
+                $regex: searchTerms.map((term) => `(?i)${term}`).join("|"),
+              },
+            },
+            // Regex search for partial matches in tags
             {
               tags: {
-                $in: searchTerms.map((term: string) => new RegExp(term, "i")),
+                $in: searchTerms.map((term) => new RegExp(term, "i")),
               },
             },
           ];
@@ -47,9 +57,8 @@ export const publicController = new Elysia({ prefix: "/public" })
         };
       }
 
-      // Determine sort order and projection
-      let sortOrder: any = {};
-      let projection: any = {};
+      // Determine sort order
+      let sortOrder: any = { createdAt: -1 };
 
       switch (sort) {
         case "popular":
@@ -59,18 +68,13 @@ export const publicController = new Elysia({ prefix: "/public" })
         case "latest":
           sortOrder = { createdAt: -1 };
           break;
-        // Relevance
+        // For relevance, we'll keep the default createdAt sort since we can't
+        // combine text score with regex search
         default:
-          if (search) {
-            sortOrder = { score: { $meta: "textScore" } };
-            projection.score = { $meta: "textScore" };
-          } else {
-            sortOrder = { createdAt: -1 };
-          }
           break;
       }
 
-      const posts = await PostModel.find(queryConditions, projection)
+      const posts = await PostModel.find(queryConditions)
         .limit(limit)
         .skip((page - 1) * limit)
         .sort(sortOrder)
