@@ -198,7 +198,7 @@ export default function UploadPage() {
                 {files.map((file) => (
                   <div
                     key={file.name}
-                    className="group relative aspect-square rounded-lg overflow-hidden"
+                    className="group relative rounded-lg overflow-hidden p-2 bg-muted"
                   >
                     <img
                       src={file.preview}
