@@ -17,10 +17,15 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@workspace/ui/components/avatar";
-import { ModeToggle } from "./mode-toggle";
+import { ThemeToggle } from "./theme-toggle";
 import { UserButton } from "@daveyplate/better-auth-ui";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function NavigationMenu() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
     <div className="border-b">
       <div className="container mx-auto px-4 py-3">
@@ -56,13 +61,14 @@ export function NavigationMenu() {
                   <Link href="/challenges" legacyBehavior passHref>
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
+                      href="/challenges"
                     >
                       Challenges
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="/community" legacyBehavior passHref>
+                  <Link href="https://discord.gg/jG6gYzePmr" legacyBehavior passHref>
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
                     >
@@ -77,7 +83,18 @@ export function NavigationMenu() {
           <div className="flex items-center gap-3">
             <div className="relative w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search artworks..." className="pl-8" />
+              <Input
+                placeholder="Search artworks..."
+                className="pl-8"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    router.push(`/discover?query=${searchQuery}`);
+                  }
+                }}
+              />
             </div>
             <Link
               href="/upload"
@@ -88,7 +105,7 @@ export function NavigationMenu() {
             <Button variant="ghost" size="icon">
               <Bell className="h-5 w-5" />
             </Button>
-            <ModeToggle />
+            <ThemeToggle />
             {/* <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>

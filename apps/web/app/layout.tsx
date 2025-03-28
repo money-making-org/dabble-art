@@ -32,7 +32,6 @@ export default function RootLayout({
         <ReactQueryProvider>
           <Providers>
             <SidebarProvider>
-              {/* <AppSidebar /> */}
               <SidebarInset>
                 <NavigationMenu />
                 {children}
