@@ -1,16 +1,41 @@
 import { r2 } from "@/controllers/upload-controller";
 import { FileModel } from "@workspace/db/src/schema/files";
 import { PostModel } from "@workspace/db/src/schema/posts";
-import Elysia from "elysia";
+import Elysia, { t } from "elysia";
 
 export const publicController = new Elysia({ prefix: "/public" })
-  .get("/posts", async ({}) => {
-    const posts = await PostModel.find({ isPublic: true })
-      .limit(10)
-      .populate("files");
+  .get(
+    "/posts",
+    async ({ query }) => {
+      const { limit = 25, page = 1, search } = query;
 
-    return posts;
-  })
+      const posts = await PostModel.find({ isPublic: true })
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .populate("files");
+
+      console.log("Posts", posts);
+
+      return posts;
+    },
+    {
+      query: t.Object({
+        search: t.Optional(t.String()),
+
+        limit: t.Optional(
+          t.Number({
+            default: 25,
+          })
+        ),
+
+        page: t.Optional(
+          t.Number({
+            default: 1,
+          })
+        ),
+      }),
+    }
+  )
   .get("/posts/:id/files/:fileId/preview", async ({ params }) => {
     const { id, fileId } = params;
 
