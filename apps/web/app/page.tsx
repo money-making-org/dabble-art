@@ -150,44 +150,46 @@ export default function DiscoverPage() {
       {/* Hero Section */}
       <div className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-background">
         <div className="container relative z-20 px-4 text-center">
-          
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent mb-4">
-              Discover Amazing Art
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              Explore and connect with talented artists from around the world
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
-              <div className="relative flex-1 w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  placeholder="Search artworks, artists, or tags..."
-                  className="pl-10 h-12 text-lg w-full bg-background/50 backdrop-blur-sm border-border/50 hover:border-border focus:border-ring transition-colors"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Link href="/upload" className="sm:flex-shrink-0 w-full sm:w-auto">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 w-full sm:w-auto h-12 text-lg hover:opacity-90 transition-opacity"
-                >
-                  Share Your Art <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent mb-4">
+            Discover Amazing Art
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+            Explore and connect with talented artists from around the world
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground z-10" />
+              <Input
+                placeholder="Search artworks, artists, or tags..."
+                className="pl-10 h-12 text-lg w-full bg-background/50 backdrop-blur-sm border-border/50 hover:border-border focus:border-ring transition-colors"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
+            <Link href="/upload" className="sm:flex-shrink-0 w-full sm:w-auto">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 w-full sm:w-auto h-12 text-lg hover:opacity-90 transition-opacity"
+              >
+                Share Your Art <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
       {/* Categories and Filters Bar */}
       <div className="bg-background/80 backdrop-blur-md border-b border-border/50 py-2">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-4 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-4 justify-between">
+            
             <div className="flex items-center gap-2 py-2">
               {categories.map((category) => (
                 <Button
                   key={category.value}
-                  variant={selectedCategory === category.value ? "default" : "ghost"}
+                  variant={
+                    selectedCategory === category.value ? "default" : "ghost"
+                  }
                   size="sm"
                   onClick={() => setSelectedCategory(category.value)}
                   className={`whitespace-nowrap flex-shrink-0 rounded-full ${
@@ -200,56 +202,22 @@ export default function DiscoverPage() {
                 </Button>
               ))}
             </div>
-            <div className="flex items-center gap-2 ml-auto">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" size="sm" className="rounded-full">
-                    <SlidersHorizontal className="h-4 w-4 mr-2" />
-                    Filters
-                  </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Filter Artworks</SheetTitle>
-                  </SheetHeader>
-                  <ScrollArea className="h-[calc(100vh-8rem)] mt-4">
-                    {Object.entries(filters).map(([key, values]) => (
-                      <div key={key} className="mb-6">
-                        <h3 className="text-sm font-medium mb-3 capitalize">
-                          {key}
-                        </h3>
-                        <div className="flex flex-wrap gap-2">
-                          {values.map((value) => (
-                            <Badge
-                              key={value}
-                              variant={selectedFilters[key]?.includes(value) ? "default" : "secondary"}
-                              className="cursor-pointer hover:bg-primary hover:text-primary-foreground rounded-full px-4"
-                              onClick={() => toggleFilter(key, value)}
-                            >
-                              {value}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </ScrollArea>
-                </SheetContent>
-              </Sheet>
 
-              <Select
-                defaultValue="relevance"
-                onValueChange={(value: "latest" | "popular" | "relevance") => setSortBy(value)}
-              >
-                <SelectTrigger className="w-[130px] h-9 rounded-full text-sm">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="relevance">Relevance</SelectItem>
-                  <SelectItem value="latest">Latest</SelectItem>
-                  <SelectItem value="popular">Most Popular</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select
+              defaultValue="relevance"
+              onValueChange={(value: "latest" | "popular" | "relevance") =>
+                setSortBy(value)
+              }
+            >
+              <SelectTrigger className="w-[130px] h-9 rounded-full text-sm">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="relevance">Relevance</SelectItem>
+                <SelectItem value="latest">Latest</SelectItem>
+                <SelectItem value="popular">Most Popular</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
@@ -286,7 +254,7 @@ export default function DiscoverPage() {
                 </Button>
               </Link>
             )}
-            </div>
+          </div>
         ) : isPending ? (
           <ArtworkGridSkeleton />
         ) : (
