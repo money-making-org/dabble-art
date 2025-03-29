@@ -1,6 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { PostActions } from "@/app/posts/[id]/_components/PostActions";
+import { PostStats } from "@/app/posts/[id]/_components/PostStats";
+import { PostType } from "@workspace/db/src/schema/posts";
 import {
   Avatar,
   AvatarFallback,
@@ -8,38 +10,11 @@ import {
 } from "@workspace/ui/components/avatar";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
-import { Separator } from "@workspace/ui/components/separator";
-// Use absolute imports for local components
-import { PostActions } from "@/app/posts/[id]/_components/PostActions";
-import { PostStats } from "@/app/posts/[id]/_components/PostStats";
-import { CommentsSection } from "@/app/posts/[id]/_components/CommentsSection";
-
-// Define a more specific type for the Post data subset needed
-type PostDetails = {
-  _id: string;
-  title: string;
-  description?: string;
-  owner: {
-    id: string;
-    name: string;
-    avatarUrl?: string;
-    // Add isFollowing based on backend change
-    isFollowing?: boolean;
-  };
-  tags?: string[];
-  categories?: string[];
-  analytics: {
-    views?: number;
-    likes?: string[];
-    likesCount?: number;
-  };
-  commentsCount?: number;
-  createdAt: string;
-};
+import Link from "next/link";
 
 // Define the props interface
 interface PostDetailsSectionProps {
-  post: PostDetails;
+  post: PostType;
   isLiked: boolean;
   likeCount: number;
   onLike: () => void;
@@ -62,7 +37,7 @@ export function PostDetailsSection({
   onFollowToggle,
   currentUserId,
 }: PostDetailsSectionProps) {
-  const isOwnPost = currentUserId === post.owner.id;
+  const isOwnPost = currentUserId === post.owner._id;
 
   return (
     <div className="flex flex-col gap-6">
@@ -74,7 +49,7 @@ export function PostDetailsSection({
       {/* Author Info */}
       <div className="flex items-center gap-3">
         <Link
-          href={`/artists/${post.owner.id}`}
+          href={`/artists/${post.owner._id}`}
           aria-label={`View profile of ${post.owner.name}`}
         >
           <Avatar className="h-10 w-10 border">
@@ -87,14 +62,13 @@ export function PostDetailsSection({
         </Link>
         <div className="flex flex-col flex-grow">
           <Link
-            href={`/artists/${post.owner.id}`}
+            href={`/artists/${post.owner._id}`}
             className="font-semibold hover:underline"
           >
             {post.owner.name}
           </Link>
           <span className="text-sm text-muted-foreground">
             {/* Placeholder for follower count */}
-            123 Followers
           </span>
         </div>
 
@@ -145,7 +119,6 @@ export function PostDetailsSection({
         comments={post.commentsCount}
         createdAt={post.createdAt}
       />
-
 
       {/* Action Buttons */}
       <PostActions

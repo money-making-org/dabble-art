@@ -1,62 +1,20 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { Suspense, useState, useEffect } from "react";
-import {
-  Heart,
-  Share2,
-  Download,
-  MoreHorizontal,
-  MessageCircle,
-  Bookmark,
-  Eye,
-  ThumbsUp,
-  Clock,
-  Tag,
-  Info,
-  Grid,
-  List,
-  Filter,
-} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@workspace/eden";
-import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
-import { ImageSwiper } from "@workspace/ui/components/image-swiper";
+import { useParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
-import { Button } from "@workspace/ui/components/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@workspace/ui/components/avatar";
-import { Badge } from "@workspace/ui/components/badge";
-import { Card, CardContent } from "@workspace/ui/components/card";
-import { Skeleton } from "@workspace/ui/components/skeleton";
-import { getPreviewURL } from "@/hooks/use-preview";
-import useLikePost from "@/app/posts/[id]/_hooks/use-like-post";
+import { RelatedPostCard } from "@/app/posts/[id]/_components/RelatedPostCard";
 import useFollowToggle from "@/app/posts/[id]/_hooks/use-follow-toggle";
+import useLikePost from "@/app/posts/[id]/_hooks/use-like-post";
+import { getPreviewURL } from "@/hooks/use-preview";
 import { authClient } from "@/lib/auth-client";
-import { Separator } from "@workspace/ui/components/separator";
-import { PostImageSection } from "./_components/PostImageSection";
+import { Button } from "@workspace/ui/components/button";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import { PostDetailsSection } from "./_components/PostDetailsSection";
-import { RelatedPostCard } from "./_components/RelatedPostCard";
-import type { ElysiaApp } from "../../../../api/src/index"; // Adjust path as needed
-
-// Re-add the type inference logic
-type PostGetResponse = Awaited<
-  ReturnType<(typeof api)["public"]["posts"]["get"]>
->;
-type PostFromAPI = PostGetResponse extends { data: infer D } ? D : never;
-type SinglePostFromAPI = PostFromAPI extends (infer T)[] | null | undefined
-  ? T
-  : PostFromAPI;
+import { PostImageSection } from "./_components/PostImageSection";
 
 function PostSkeleton() {
   return (
@@ -128,14 +86,8 @@ export default function ArtPiecePage() {
     }
   }, [postData, isLocallyFollowing]);
 
-  useEffect(() => {
-    if (postData) {
-      console.log("Current post categories:", postData.categories);
-    }
-  }, [postData]);
-
   function isLikedInDB() {
-    return (postData?.analytics?.likes || []).includes(session?.user?.id);
+    return postData.isLiked;
   }
 
   function isLiked() {
@@ -262,10 +214,7 @@ export default function ArtPiecePage() {
     getPreviewURL(postData._id, file._id)
   );
 
-  const relatedPosts = relatedPostsResult?.data?.filter(
-    (p: SinglePostFromAPI | null | undefined): p is SinglePostFromAPI =>
-      !!p?._id
-  );
+  const relatedPosts = relatedPostsResult?.data;
 
   console.log("Filtered related posts for rendering:", relatedPosts);
 
@@ -298,7 +247,7 @@ export default function ArtPiecePage() {
             <div className="mt-16">
               <h2 className="text-2xl font-semibold mb-6">Related Posts</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {relatedPosts.map((post: SinglePostFromAPI) => (
+                {relatedPosts.map((post: any) => (
                   <RelatedPostCard key={post._id} post={post as any} />
                 ))}
               </div>

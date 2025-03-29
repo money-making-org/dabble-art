@@ -1,9 +1,15 @@
 import { r2 } from "@/controllers/upload-controller";
+import { betterAuth } from "@/middlewares/auth-middleware";
 import { FileModel } from "@workspace/db/src/schema/files";
 import { FollowingModel } from "@workspace/db/src/schema/followings";
+import { LikeModel } from "@workspace/db/src/schema/likes";
 import { PostModel } from "@workspace/db/src/schema/posts";
-import { betterAuth } from "@/middlewares/auth-middleware";
-import Elysia, { t } from "elysia";
+import Elysia, { t, type Context } from "elysia";
+import mongoose from "mongoose";
+
+interface UserContext {
+  user: { id: string } | null;
+}
 
 export const publicController = new Elysia({ prefix: "/public" })
   .use(betterAuth)
@@ -142,6 +148,10 @@ export const publicController = new Elysia({ prefix: "/public" })
       const { id } = params;
       const loggedInUserId = user?.id;
 
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return error(400, "Invalid post ID format.");
+      }
+
       const post = await PostModel.findOne({
         _id: id,
         isPublic: true,
@@ -154,40 +164,58 @@ export const publicController = new Elysia({ prefix: "/public" })
         return error(404, "Post not found");
       }
 
-      const postObject = { ...post };
-
-      postObject.analytics = postObject.analytics || {};
-      postObject.analytics.likesCount = postObject.analytics.likes?.length ?? 0;
-
+      let isLiked = false;
       let isFollowing = false;
-      if (loggedInUserId && postObject.owner) {
-        const followingOwnerId =
-          typeof postObject.owner === "object"
-            ? postObject.owner._id
-            : postObject.owner;
-        if (followingOwnerId) {
-          const followCheck = await FollowingModel.findOne({
-            follower: loggedInUserId,
-            following: followingOwnerId,
-          }).lean();
+      let likeCount = 0;
+
+      if (loggedInUserId) {
+        try {
+          const [likeCheck, followCheck] = await Promise.all([
+            LikeModel.exists({ user: loggedInUserId, post: id }).lean(),
+            post.owner &&
+            typeof post.owner === "object" &&
+            post.owner._id &&
+            mongoose.Types.ObjectId.isValid(post.owner._id)
+              ? FollowingModel.exists({
+                  follower: loggedInUserId,
+                  following: post.owner._id,
+                }).lean()
+              : Promise.resolve(null),
+          ]);
+          isLiked = !!likeCheck;
           isFollowing = !!followCheck;
+        } catch (dbError) {
+          console.error("Database error checking like/follow status:", dbError);
         }
       }
 
-      if (postObject.owner) {
-        const ownerData =
-          typeof postObject.owner === "object"
-            ? postObject.owner
-            : { _id: postObject.owner };
-        postObject.owner = {
-          ...ownerData,
-          isFollowing,
-        };
+      try {
+        likeCount = await LikeModel.countDocuments({ post: id });
+      } catch (dbError) {
+        console.error("Database error getting like count:", dbError);
+        likeCount = 0;
       }
 
       PostModel.findByIdAndUpdate(id, {
         $inc: { "analytics.views": 1 },
-      }).exec();
+      }).catch((err: Error) =>
+        console.error("Failed to increment post views:", err)
+      );
+
+      const postObject = {
+        ...post,
+        owner:
+          post.owner && typeof post.owner === "object"
+            ? { ...post.owner, isFollowing }
+            : post.owner,
+        isLiked,
+        likeCount,
+        commentsCount: post.commentsCount ?? 0,
+        analytics: {
+          views: post.analytics?.views ?? 0,
+          likesCount: likeCount,
+        },
+      };
 
       return postObject;
     },
@@ -206,29 +234,59 @@ export const publicController = new Elysia({ prefix: "/public" })
     "/posts/:id/like",
     async ({ params, user, error }) => {
       if (!user?.id) {
-        return error(401, "Authentication required to like posts.");
+        return (error as any)(401, "Authentication required to like posts.");
       }
       const userId = user.id;
+      const postId = params.id;
 
-      const { id } = params;
-      const post = await PostModel.findById(id);
-      if (!post) return error(404, "Post not found");
-
-      let updatedPost;
-      if (post.analytics?.likes?.includes(userId)) {
-        updatedPost = await PostModel.findByIdAndUpdate(
-          id,
-          { $pull: { "analytics.likes": userId } },
-          { new: true }
-        );
-      } else {
-        updatedPost = await PostModel.findByIdAndUpdate(
-          id,
-          { $addToSet: { "analytics.likes": userId } },
-          { new: true }
-        );
+      if (!mongoose.Types.ObjectId.isValid(postId)) {
+        return error(400, "Invalid post ID format.");
       }
-      return updatedPost?.toObject() ?? post.toObject();
+
+      const postExists = await PostModel.exists({ _id: postId });
+      if (!postExists) {
+        return error(404, "Post not found.");
+      }
+
+      let isLiked: boolean;
+      let likeCount: number;
+
+      try {
+        const existingLike = await LikeModel.findOne({
+          user: userId,
+          post: postId,
+        });
+
+        if (existingLike) {
+          await LikeModel.deleteOne({ _id: existingLike._id });
+          isLiked = false;
+        } else {
+          try {
+            await LikeModel.create({ user: userId, post: postId });
+            isLiked = true;
+          } catch (createError: any) {
+            if (createError.code === 11000) {
+              console.warn(
+                `Race condition detected: Like already exists for user ${userId} post ${postId}. Treating as liked.`
+              );
+              const raceCheck = await LikeModel.exists({
+                user: userId,
+                post: postId,
+              });
+              isLiked = !!raceCheck;
+            } else {
+              throw createError;
+            }
+          }
+        }
+
+        likeCount = await LikeModel.countDocuments({ post: postId });
+      } catch (dbError) {
+        console.error("Database error during like/unlike operation:", dbError);
+        return error(500, "An error occurred while processing your request.");
+      }
+
+      return { success: true, isLiked, likeCount };
     },
     {
       params: t.Object({ id: t.String() }),
