@@ -1,13 +1,13 @@
-import { connectToDatabase } from "@/utils/db";
+import { connectToDatabase } from "@workspace/api/src/utils/db";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { logger } from "@tqman/nice-logger";
 import Elysia from "elysia";
-import { uploadController } from "./controllers/upload-controller";
-import { publicController } from "./controllers/public-controller";
-import { betterAuth } from "@/middlewares/auth-middleware";
-import { auth } from "@/utils/auth";
-import { userController } from "./controllers/user-controller";
+import { uploadController } from "@workspace/api/src/controllers/upload-controller";
+import { publicController } from "@workspace/api/src/controllers/public-controller";
+import { betterAuth } from "@workspace/api/src/middlewares/auth-middleware";
+import { auth } from "@workspace/api/src/utils/auth";
+import { userController } from "@workspace/api/src/controllers/user-controller";
 
 await connectToDatabase();
 

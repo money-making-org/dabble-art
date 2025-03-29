@@ -1,4 +1,4 @@
-import { authProtected } from "@/middlewares/auth-middleware";
+import { authProtected } from "@workspace/api/src/middlewares/auth-middleware";
 import { FollowingModel } from "@workspace/db/src/schema/followings";
 import Elysia, { t } from "elysia";
 import mongoose from "mongoose";

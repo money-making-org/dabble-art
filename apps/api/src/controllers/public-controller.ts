@@ -1,15 +1,11 @@
-import { r2 } from "@/controllers/upload-controller";
-import { betterAuth } from "@/middlewares/auth-middleware";
+import { r2 } from "@workspace/api/src/controllers/upload-controller";
+import { betterAuth } from "@workspace/api/src/middlewares/auth-middleware";
 import { FileModel } from "@workspace/db/src/schema/files";
 import { FollowingModel } from "@workspace/db/src/schema/followings";
 import { LikeModel } from "@workspace/db/src/schema/likes";
 import { PostModel } from "@workspace/db/src/schema/posts";
-import Elysia, { t, type Context } from "elysia";
+import Elysia, { t } from "elysia";
 import mongoose from "mongoose";
-
-interface UserContext {
-  user: { id: string } | null;
-}
 
 export const publicController = new Elysia({ prefix: "/public" })
   .use(betterAuth)
@@ -130,7 +126,7 @@ export const publicController = new Elysia({ prefix: "/public" })
   .get(
     "/posts/:id/files/:fileId/preview",
     async ({ params, error }) => {
-      const { fileId } = params;  
+      const { fileId } = params;
       const file = await FileModel.findById(fileId);
       if (!file) return error(404, "File not found");
       if (!file.mimeType.startsWith("image/"))

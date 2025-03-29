@@ -26,6 +26,7 @@ import { ScrollArea, ScrollBar } from "@workspace/ui/components/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
+import { unstable_noStore } from "next/cache";
 
 const categories = [
   {
@@ -102,6 +103,8 @@ function ArtworkGridSkeleton() {
 }
 
 export default function DiscoverPage() {
+  unstable_noStore();
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue: "",

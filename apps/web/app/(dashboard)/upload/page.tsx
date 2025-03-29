@@ -9,15 +9,14 @@ import { Textarea } from "@workspace/ui/components/textarea";
 import { toast } from "sonner";
 import { cn } from "@workspace/ui/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Router, Upload, X } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { api } from "@workspace/eden";
 import { useRouter } from "next/navigation";
 
-export const categories = [
+const categories = [
   "digital-art",
   "photography",
   "illustration",

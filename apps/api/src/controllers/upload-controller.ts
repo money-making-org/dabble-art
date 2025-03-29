@@ -7,7 +7,7 @@ import { s3, S3Client } from "bun";
 import type { User } from "better-auth";
 import { ObjectId } from "mongodb";
 import { FileModel } from "@workspace/db/src/schema/files";
-import { authProtected, betterAuth } from "@/middlewares/auth-middleware";
+import { authProtected } from "@workspace/api/src/middlewares/auth-middleware";
 import sharp from "sharp";
 
 type ImagePostBody = {

@@ -1,4 +1,4 @@
-import { auth } from "@/utils/auth";
+import { auth } from "@workspace/api/src/utils/auth";
 import type { Session, User } from "better-auth/types";
 import type { Context } from "elysia";
 import Elysia from "elysia";
