@@ -130,7 +130,7 @@ export const publicController = new Elysia({ prefix: "/public" })
   .get(
     "/posts/:id/files/:fileId/preview",
     async ({ params, error }) => {
-      const { fileId } = params;
+      const { fileId } = params;  
       const file = await FileModel.findById(fileId);
       if (!file) return error(404, "File not found");
       if (!file.mimeType.startsWith("image/"))
