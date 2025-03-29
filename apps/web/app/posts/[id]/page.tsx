@@ -201,7 +201,7 @@ export default function ArtPiecePage() {
             <p className="text-muted-foreground mt-2">
               The post you're looking for doesn't exist or has been removed.
             </p>
-            <Link href="/discover">
+            <Link href="/">
               <Button className="mt-4">Discover More Art</Button>
             </Link>
           </div>

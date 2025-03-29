@@ -49,7 +49,7 @@ export function NavigationMenu() {
             <Nav>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <Link href="/discover" legacyBehavior passHref>
+                  <Link href="/" legacyBehavior passHref>
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
                     >
@@ -95,7 +95,7 @@ export function NavigationMenu() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    router.push(`/discover?q=${searchQuery}`);
+                    router.push(`/?q=${searchQuery}`);
                   }
                 }}
               />

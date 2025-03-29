@@ -12,7 +12,7 @@ export function NavigationMenu() {
             Dabble
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/discover">
+            <Link href="/">
               <Button variant="ghost">Discover</Button>
             </Link>
             <Link href="/following">
