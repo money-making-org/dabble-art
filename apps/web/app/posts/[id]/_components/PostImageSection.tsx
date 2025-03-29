@@ -54,7 +54,7 @@ export function PostImageSection({
             src={activeImageUrl} // Use the checked URL
             alt={`Post image ${activeImageIndex + 1}`}
             fill
-            className="absolute top-0 left-0 w-full h-full object-cover"
+            className="absolute top-0 left-0 w-full h-full object-contain"
             priority={activeImageIndex === 0}
             sizes="(max-width: 1024px) 100vw, 66vw"
           />

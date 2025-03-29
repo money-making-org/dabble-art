@@ -88,7 +88,9 @@ export const publicController = new Elysia({ prefix: "/public" })
         .skip((page - 1) * limit)
         .sort(sortOrder)
         .populate("files")
+        .populate("owner")
         .lean();
+
       return posts;
     },
     {
@@ -123,11 +125,11 @@ export const publicController = new Elysia({ prefix: "/public" })
     "/posts/:id/files/:fileId/preview",
     async ({ params, error }) => {
       const { fileId } = params;
-      const file = await FileModel.findById(fileId).lean();
+      const file = await FileModel.findById(fileId);
       if (!file) return error(404, "File not found");
       if (!file.mimeType.startsWith("image/"))
         return error(400, "File is not an image");
-      // Assuming r2.file returns a stream or compatible response body
+
       return new Response(r2.file(file.getS3Key()));
     },
     {
@@ -147,6 +149,7 @@ export const publicController = new Elysia({ prefix: "/public" })
         .populate("files")
         .populate("owner")
         .lean();
+
       if (!post) {
         return error(404, "Post not found");
       }

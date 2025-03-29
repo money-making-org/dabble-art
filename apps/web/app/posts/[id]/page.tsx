@@ -46,6 +46,17 @@ import { authClient } from "@/lib/auth-client";
 import { Separator } from "@workspace/ui/components/separator";
 import { PostImageSection } from "./_components/PostImageSection";
 import { PostDetailsSection } from "./_components/PostDetailsSection";
+import { RelatedPostCard } from "./_components/RelatedPostCard";
+import type { ElysiaApp } from "../../../../api/src/index"; // Adjust path as needed
+
+// Re-add the type inference logic
+type PostGetResponse = Awaited<
+  ReturnType<(typeof api)["public"]["posts"]["get"]>
+>;
+type PostFromAPI = PostGetResponse extends { data: infer D } ? D : never;
+type SinglePostFromAPI = PostFromAPI extends (infer T)[] | null | undefined
+  ? T
+  : PostFromAPI;
 
 function PostSkeleton() {
   return (
@@ -117,6 +128,12 @@ export default function ArtPiecePage() {
     }
   }, [postData, isLocallyFollowing]);
 
+  useEffect(() => {
+    if (postData) {
+      console.log("Current post categories:", postData.categories);
+    }
+  }, [postData]);
+
   function isLikedInDB() {
     return (postData?.analytics?.likes || []).includes(session?.user?.id);
   }
@@ -185,7 +202,11 @@ export default function ArtPiecePage() {
     );
   };
 
-  const { data: relatedPostsResult, isPending: isRelatedPending } = useQuery({
+  const {
+    data: relatedPostsResult,
+    isPending: isRelatedPending,
+    status: relatedPostsStatus,
+  } = useQuery({
     queryKey: ["related-posts", postId, postData?.categories],
     queryFn: () =>
       api.public.posts.get({
@@ -201,6 +222,13 @@ export default function ArtPiecePage() {
       !!postData?.categories &&
       postData.categories.length > 0,
   });
+
+  useEffect(() => {
+    console.log("Related posts query status:", relatedPostsStatus);
+    if (relatedPostsResult) {
+      console.log("Raw related posts query result:", relatedPostsResult);
+    }
+  }, [relatedPostsResult, relatedPostsStatus]);
 
   if (isPostPending) {
     return (
@@ -234,6 +262,13 @@ export default function ArtPiecePage() {
     getPreviewURL(postData._id, file._id)
   );
 
+  const relatedPosts = relatedPostsResult?.data?.filter(
+    (p: SinglePostFromAPI | null | undefined): p is SinglePostFromAPI =>
+      !!p?._id
+  );
+
+  console.log("Filtered related posts for rendering:", relatedPosts);
+
   return (
     <Suspense>
       <div className="bg-background text-foreground">
@@ -258,6 +293,17 @@ export default function ArtPiecePage() {
               currentUserId={currentUserId}
             />
           </div>
+
+          {relatedPosts && relatedPosts.length > 0 && (
+            <div className="mt-16">
+              <h2 className="text-2xl font-semibold mb-6">Related Posts</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {relatedPosts.map((post: SinglePostFromAPI) => (
+                  <RelatedPostCard key={post._id} post={post as any} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Suspense>
