@@ -344,7 +344,14 @@ export default function UploadPage() {
                   Make this post visible to everyone
                 </p>
               </div>
-              <Switch {...register("isPublic")} id="public" />
+              <Switch
+                {...register("isPublic")}
+                id="public"
+                checked={watch("isPublic")}
+                onCheckedChange={(checked) => {
+                  setValue("isPublic", checked);
+                }}
+              />
             </div>
 
             <div className="flex items-center justify-between">

@@ -10,7 +10,25 @@ import {
 } from "@workspace/ui/components/avatar";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
+import {
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "@workspace/ui/components/dropdown-menu";
+import { DropdownMenu } from "@workspace/ui/components/dropdown-menu";
 import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@workspace/ui/components/alert-dialog";
+import React from "react";
 
 // Define the props interface
 interface PostDetailsSectionProps {
@@ -23,6 +41,8 @@ interface PostDetailsSectionProps {
   isFollowPending: boolean;
   onFollowToggle: () => void;
   currentUserId?: string; // Add current user ID prop
+  onDelete: () => Promise<void>;
+  isDeletePending?: boolean;
 }
 
 // Export the component function
@@ -36,8 +56,21 @@ export function PostDetailsSection({
   isFollowPending,
   onFollowToggle,
   currentUserId,
+  onDelete,
+  isDeletePending = false,
 }: PostDetailsSectionProps) {
   const isOwnPost = currentUserId === post.owner._id;
+  const [isAlertOpen, setIsAlertOpen] = React.useState(false);
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await onDelete();
+    } catch (err) {
+      console.error("Failed to delete post:", err);
+    } finally {
+      setIsAlertOpen(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -73,7 +106,7 @@ export function PostDetailsSection({
         </div>
 
         {/* Conditionally render Follow Button */}
-        {!isOwnPost && (
+        {!isOwnPost ? (
           <Button
             variant={isFollowing ? "secondary" : "outline"}
             size="sm"
@@ -82,6 +115,49 @@ export function PostDetailsSection({
           >
             {isFollowPending ? "..." : isFollowing ? "Following" : "Follow"}
           </Button>
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="sm">
+                Edit
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your post and remove its data from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel disabled={isDeletePending}>
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteConfirm}
+                      disabled={isDeletePending}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      {isDeletePending ? "Deleting..." : "Delete"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
 

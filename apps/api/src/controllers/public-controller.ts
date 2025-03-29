@@ -207,7 +207,6 @@ export const publicController = new Elysia({ prefix: "/public" })
         console.error("Failed to increment post views:", err)
       );
 
-
       post.owner.isFollowing = isFollowing;
       post.isLiked = isLiked;
       post.likeCount = likeCount;
@@ -306,6 +305,89 @@ export const publicController = new Elysia({ prefix: "/public" })
       detail: {
         summary: "Like or unlike a post",
         tags: ["Posts", "Social"],
+      },
+      auth: true,
+    }
+  )
+  .delete(
+    "/posts/:id",
+    async ({ params, user, error }) => {
+      if (!user?.id) {
+        return error(401, "Authentication required to delete posts.");
+      }
+      const userId = user.id;
+      const postId = params.id;
+
+      if (!mongoose.Types.ObjectId.isValid(postId)) {
+        return error(400, "Invalid post ID format.");
+      }
+
+      // 2. Authorization & Fetch Post with Files Populated
+      // We need the file details, so populate 'files' here
+      const post = await PostModel.findOne({ _id: postId }).populate("files");
+
+      if (!post) {
+        return error(404, "Post not found.");
+      }
+
+      if (post.owner.toString() !== userId) {
+        return error(403, "You do not have permission to delete this post.");
+      }
+
+      // 3. Deletion Logic
+      try {
+        // --- Delete associated files from R2 ---
+        if (post.files && post.files.length > 0) {
+          const fileDeletionPromises = post.files.map(async (file: any) => {
+            // Assuming FileModel instances have getS3Key() or similar
+            // And assuming the r2 client has a delete method
+            const fileKey = file.getS3Key(); // Adapt if key retrieval is different
+            if (fileKey) {
+              console.log(`Attempting to delete file from R2: ${fileKey}`);
+              return r2.delete(fileKey);
+            } else {
+              console.warn(`Could not get S3 key for file ID: ${file._id}`);
+              return Promise.resolve({ status: "skipped", reason: "No key" }); // Indicate skipped file
+            }
+          });
+        }
+        // --- End R2 Deletion ---
+
+        // Delete associated likes
+        await LikeModel.deleteMany({ post: postId });
+
+        // Delete associated comments (if applicable)
+        // await CommentModel.deleteMany({ post: postId });
+
+        // Delete the File documents associated with the post from DB
+        await FileModel.deleteMany({
+          _id: { $in: post.files.map((f: any) => f._id) },
+        });
+
+        // Delete the post itself from DB
+        await PostModel.deleteOne({ _id: postId });
+
+        return {
+          success: true,
+          message: "Post and associated data deleted successfully.",
+        };
+      } catch (err: any) {
+        // Catch any error (DB or potentially R2 if not caught earlier)
+        console.error(
+          `Error during post deletion process for ID ${postId}:`,
+          err
+        );
+        return error(
+          500,
+          err.message || "An error occurred while deleting the post."
+        );
+      }
+    },
+    {
+      params: t.Object({ id: t.String() }),
+      detail: {
+        summary: "Delete a post by ID",
+        tags: ["Posts"],
       },
       auth: true,
     }

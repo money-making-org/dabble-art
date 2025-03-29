@@ -1,10 +1,11 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@workspace/eden";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { RelatedPostCard } from "@/app/posts/[id]/_components/RelatedPostCard";
 import useFollowToggle from "@/app/posts/[id]/_hooks/use-follow-toggle";
@@ -52,6 +53,8 @@ function PostSkeleton() {
 
 export default function ArtPiecePage() {
   const params = useParams();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
   const currentUserId = session?.user?.id;
 
@@ -65,7 +68,6 @@ export default function ArtPiecePage() {
   const [isLocallyLiked, setIsLocallyLiked] = useState<boolean | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [activeThumbnailIndex, setActiveThumbnailIndex] = useState(0);
-
   const [isLocallyFollowing, setIsLocallyFollowing] = useState<boolean | null>(
     null
   );
@@ -75,19 +77,33 @@ export default function ArtPiecePage() {
 
   const postData = postResult?.data;
 
+  const { mutate: deletePost, isPending: isDeletePending } = useMutation({
+    mutationFn: async () => {
+      const response = await api.public.posts({ id: postId }).delete();
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Post deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      router.push("/");
+    },
+    onError: (error: Error) => {
+      console.error("Delete error:", error);
+      toast.error(error.message || "Failed to delete post. Please try again.");
+    },
+  });
+
   useEffect(() => {
     if (
       postData?.owner?.isFollowing !== undefined &&
       isLocallyFollowing === null
     ) {
       setIsLocallyFollowing(postData.owner.isFollowing);
-    } else if (isLocallyFollowing === null) {
-      console.warn("Initial follow state not set from backend data yet.");
     }
   }, [postData, isLocallyFollowing]);
 
   function isLikedInDB() {
-    return postData?.isLiked;
+    return postData?.isLiked ?? false;
   }
 
   function isLiked() {
@@ -98,29 +114,30 @@ export default function ArtPiecePage() {
   }
 
   function getLikesCount() {
-    if (
-      postData?.analytics === undefined ||
-      postData?.analytics.likesCount === undefined
-    ) {
-      return 0;
-    }
-    const baseCount = postData?.analytics?.likesCount || 0;
-    if (isLocallyLiked === null) {
-      return baseCount;
-    }
-    if (isLikedInDB() && !isLocallyLiked) {
-      return baseCount - 1;
-    }
-    if (!isLikedInDB() && isLocallyLiked) {
-      return baseCount + 1;
-    }
-    return baseCount;
+    return postData?.likeCount ?? 0;
   }
 
   const handleLike = () => {
     if (isLikePending || !postData?._id) return;
-    setIsLocallyLiked(!isLiked());
-    likePost(postData._id);
+
+    const currentlyLiked = isLiked();
+    setIsLocallyLiked(!currentlyLiked);
+
+    likePost(postData._id, {
+      onError: () => {
+        setIsLocallyLiked(currentlyLiked);
+        toast.error("Failed to update like status.");
+      },
+      onSuccess: (result) => {
+        const successData = result?.data;
+        if (successData && typeof successData.isLiked === "boolean") {
+          setIsLocallyLiked(successData.isLiked);
+        } else {
+          console.warn("Like API response format unexpected:", result);
+          setIsLocallyLiked(currentlyLiked);
+        }
+      },
+    });
   };
 
   function isFollowing() {
@@ -133,32 +150,30 @@ export default function ArtPiecePage() {
 
   const handleFollowToggle = () => {
     if (!session?.user) {
-      console.log("User must be logged in to follow.");
+      toast.error("Please log in to follow users.");
       return;
     }
-
-    console.log(isFollowPending, postData?.owner?._id);
     if (isFollowPending || !postData?.owner?._id) return;
 
     const currentlyFollowing = isFollowing();
     setIsLocallyFollowing(!currentlyFollowing);
 
-    console.log("Currently following:", currentlyFollowing);
     toggleFollow(
       { userId: postData.owner._id, isCurrentlyFollowing: currentlyFollowing },
       {
         onError: () => {
           setIsLocallyFollowing(currentlyFollowing);
+          toast.error("Failed to update follow status.");
         },
       }
     );
   };
 
-  const {
-    data: relatedPostsResult,
-    isPending: isRelatedPending,
-    status: relatedPostsStatus,
-  } = useQuery({
+  const handleDelete = async () => {
+    deletePost();
+  };
+
+  const { data: relatedPostsResult, isPending: isRelatedPending } = useQuery({
     queryKey: ["related-posts", postId, postData?.categories],
     queryFn: () =>
       api.public.posts.get({
@@ -174,13 +189,6 @@ export default function ArtPiecePage() {
       !!postData?.categories &&
       postData.categories.length > 0,
   });
-
-  useEffect(() => {
-    console.log("Related posts query status:", relatedPostsStatus);
-    if (relatedPostsResult) {
-      console.log("Raw related posts query result:", relatedPostsResult);
-    }
-  }, [relatedPostsResult, relatedPostsStatus]);
 
   if (isPostPending) {
     return (
@@ -202,7 +210,7 @@ export default function ArtPiecePage() {
               The post you're looking for doesn't exist or has been removed.
             </p>
             <Link href="/">
-              <Button className="mt-4">Discover More Art</Button>
+              <Button className="mt-4">Go Home</Button>
             </Link>
           </div>
         </div>
@@ -215,8 +223,6 @@ export default function ArtPiecePage() {
   );
 
   const relatedPosts = relatedPostsResult?.data;
-
-  console.log("Filtered related posts for rendering:", relatedPosts);
 
   return (
     <Suspense>
@@ -231,7 +237,7 @@ export default function ArtPiecePage() {
             />
 
             <PostDetailsSection
-              post={postData}
+              post={postData as any}
               isLiked={isLiked()}
               likeCount={getLikesCount()}
               onLike={handleLike}
@@ -240,6 +246,8 @@ export default function ArtPiecePage() {
               isFollowPending={isFollowPending}
               onFollowToggle={handleFollowToggle}
               currentUserId={currentUserId}
+              onDelete={handleDelete}
+              isDeletePending={isDeletePending}
             />
           </div>
 
