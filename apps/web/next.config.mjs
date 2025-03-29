@@ -16,6 +16,9 @@ const nextConfig = {
       {
         hostname: "localhost",
       },
+      {
+        hostname: "dabble.art",
+      },
     ],
   },
 };
