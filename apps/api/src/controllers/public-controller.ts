@@ -19,6 +19,7 @@ export const publicController = new Elysia({ prefix: "/public" })
         categories,
         sort = "latest",
         excludeIds,
+        owner,
       } = query;
 
       const queryConditions: any = { isPublic: true };
@@ -66,6 +67,10 @@ export const publicController = new Elysia({ prefix: "/public" })
         queryConditions.categories = {
           $in: Array.isArray(categories) ? categories : [categories],
         };
+      }
+
+      if (owner) {
+        queryConditions.owner = owner;
       }
 
       // Determine sort order
@@ -120,6 +125,7 @@ export const publicController = new Elysia({ prefix: "/public" })
           })
         ),
         excludeIds: t.Optional(t.Array(t.String())),
+        owner: t.Optional(t.String()),
       }),
     }
   )

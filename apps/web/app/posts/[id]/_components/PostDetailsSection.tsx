@@ -49,7 +49,7 @@ export function PostDetailsSection({
       {/* Author Info */}
       <div className="flex items-center gap-3">
         <Link
-          href={`/artists/${post.owner._id}`}
+          href={`/profile/${post.owner.username}`}
           aria-label={`View profile of ${post.owner.name}`}
         >
           <Avatar className="h-10 w-10 border">
@@ -62,7 +62,7 @@ export function PostDetailsSection({
         </Link>
         <div className="flex flex-col flex-grow">
           <Link
-            href={`/artists/${post.owner._id}`}
+            href={`/profile/${post.owner.username}`}
             className="font-semibold hover:underline"
           >
             {post.owner.name}

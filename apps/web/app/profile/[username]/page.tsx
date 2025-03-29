@@ -15,6 +15,7 @@ import { Input } from "@workspace/ui/components/input";
 import { useQueryState } from "nuqs";
 
 const mockUser = {
+  id: "67e6bedb0a68cc2792e76c10",
   username: "dawson",
   name: "Dawson",
   avatar: "https://sdmntprwestus.oaiusercontent.com/files/00000000-83dc-5230-9093-27760a869c85/raw?se=2025-03-29T18%3A07%3A41Z&sp=r&sv=2024-08-04&sr=b&scid=549e0daa-5cea-55ca-9e71-6d4f2c7e2025&skoid=72d71449-cf2f-4f10-a498-f160460104ee&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-03-29T15%3A54%3A45Z&ske=2025-03-30T15%3A54%3A45Z&sks=b&skv=2024-08-04&sig=3AQ4PDEUlH%2BQtgK3PC8XmfEY9L4jnhlThEM81ObLkIA%3D",

@@ -56,6 +56,7 @@ export default function DashboardPage() {
           sort: sortBy,
           limit: 25,
           page: 1,
+          owner: user?.id,
         },
       }),
   });
