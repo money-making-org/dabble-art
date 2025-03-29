@@ -49,7 +49,7 @@ export function PostDetailsSection({
       {/* Author Info */}
       <div className="flex items-center gap-3">
         <Link
-          href={`/profile/${post.owner.username}`}
+          href={`/profile/${post.owner.name}`}
           aria-label={`View profile of ${post.owner.name}`}
         >
           <Avatar className="h-10 w-10 border">

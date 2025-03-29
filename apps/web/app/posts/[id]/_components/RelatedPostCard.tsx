@@ -35,7 +35,7 @@ export function RelatedPostCard({ post }: RelatedPostCardProps) {
             {previewUrl ? (
               <Image
                 src={previewUrl}
-                alt={post.title}
+                alt={post.name}
                 fill
                 className="absolute top-0 left-0 w-full h-full object-contain transition-transform group-hover:scale-105 p-4"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -48,7 +48,7 @@ export function RelatedPostCard({ post }: RelatedPostCardProps) {
           </div>
           <div className="p-3 mt-auto">
             <h3 className="font-medium text-sm truncate group-hover:text-primary">
-              {post.title}
+              {post.name}
             </h3>
             <p className="text-xs text-muted-foreground truncate">
               by {post.owner?.name ?? "Unknown Artist"}

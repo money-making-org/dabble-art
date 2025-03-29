@@ -23,8 +23,7 @@ export const ElysiaPost = t.Object({
 
   analytics: t.Object({
     views: t.Number(),
-    likes: t.Number(),
-    downloads: t.Number(),
+    downloads: t.Optional(t.Number()),
   }),
 
   updatedAt: t.Date(),
