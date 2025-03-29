@@ -3,7 +3,7 @@ import { betterAuth } from "@workspace/api/src/middlewares/auth-middleware";
 import { FileModel } from "@workspace/db/src/schema/files";
 import { FollowingModel } from "@workspace/db/src/schema/followings";
 import { LikeModel } from "@workspace/db/src/schema/likes";
-import { PostModel } from "@workspace/db/src/schema/posts";
+import { ElysiaPost, PostModel } from "@workspace/db/src/schema/posts";
 import Elysia, { t } from "elysia";
 import mongoose from "mongoose";
 
@@ -98,6 +98,8 @@ export const publicController = new Elysia({ prefix: "/public" })
         .populate("owner")
         .lean();
 
+      console.log("Posts", posts);
+
       return posts;
     },
     {
@@ -134,7 +136,9 @@ export const publicController = new Elysia({ prefix: "/public" })
     async ({ params, error }) => {
       const { fileId } = params;
       const file = await FileModel.findById(fileId);
+
       if (!file) return error(404, "File not found");
+
       if (!file.mimeType.startsWith("image/"))
         return error(400, "File is not an image");
 
@@ -161,7 +165,6 @@ export const publicController = new Elysia({ prefix: "/public" })
         .populate("files")
         .populate("owner")
         .lean();
-
       if (!post) {
         return error(404, "Post not found");
       }
@@ -198,11 +201,18 @@ export const publicController = new Elysia({ prefix: "/public" })
         likeCount = 0;
       }
 
-      PostModel.findByIdAndUpdate(id, {
+      await PostModel.findByIdAndUpdate(id, {
         $inc: { "analytics.views": 1 },
       }).catch((err: Error) =>
         console.error("Failed to increment post views:", err)
       );
+
+
+      post.owner.isFollowing = isFollowing;
+      post.isLiked = isLiked;
+      post.likeCount = likeCount;
+      post.commentsCount = post.commentsCount ?? 0;
+      post.analytics = post.analytics ?? { views: 0, likesCount: 0 };
 
       const postObject = {
         ...post,
@@ -219,7 +229,7 @@ export const publicController = new Elysia({ prefix: "/public" })
         },
       };
 
-      return postObject;
+      return post;
     },
     {
       params: t.Object({
@@ -230,6 +240,7 @@ export const publicController = new Elysia({ prefix: "/public" })
         tags: ["Posts"],
       },
       auth: true,
+      // response: ElysiaPost
     }
   )
   .post(

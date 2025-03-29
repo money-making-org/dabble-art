@@ -87,7 +87,7 @@ export default function ArtPiecePage() {
   }, [postData, isLocallyFollowing]);
 
   function isLikedInDB() {
-    return postData.isLiked;
+    return postData?.isLiked;
   }
 
   function isLiked() {

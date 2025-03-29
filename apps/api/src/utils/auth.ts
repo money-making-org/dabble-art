@@ -16,6 +16,11 @@ export const auth = betterAuth({
   
 
   plugins: [nextCookies()],
+  user: {
+    additionalFields: {
+      
+    }
+  }
 });
 
 export const betterAuthView = (context: Context) => {

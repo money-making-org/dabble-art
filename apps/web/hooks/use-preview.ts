@@ -10,5 +10,5 @@ export function usePreview(postId: string, fileId: string) {
 }
 
 export function getPreviewURL(postId: string, fileId: string) {
-  return `${process.env.NEXT_PUBLIC_API_URL}/public/posts/${postId}/files/${fileId}/preview`;
+  return `${process.env.NEXT_PUBLIC_API_URL}/public/posts/${postId.toString()}/files/${fileId.toString()}/preview`;
 }
