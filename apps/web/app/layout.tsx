@@ -28,13 +28,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <Head>
+      <head>
         <Script
           defer
           src="https://umami.dabble.art/script.js"
           data-website-id="bf23d432-fe96-45aa-8fdd-09bcd25930e7"
         ></Script>
-      </Head>
+      </head>
 
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
