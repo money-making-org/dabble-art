@@ -1,7 +1,7 @@
 import { database } from "@/database";
 import { ElysiaFile, type FileType } from "@/schema/files";
 import { ElysiaUser } from "@/schema/users";
-import { t } from "elysia";
+import { t, type Static } from "elysia";
 import mongoose, { Schema } from "mongoose";
 import { z } from "zod";
 
@@ -23,7 +23,7 @@ export const ElysiaPost = t.Object({
 
   analytics: t.Object({
     views: t.Number(),
-    likes: t.Array(t.String()),
+    likes: t.Number(),
     downloads: t.Number(),
   }),
 
@@ -31,56 +31,25 @@ export const ElysiaPost = t.Object({
   createdAt: t.Date(),
 });
 
-export const ZodPost = z.object({
-  _id: z.string(),
-  owner: z.instanceof(mongoose.Schema.Types.ObjectId),
+export type PostType = Static<typeof ElysiaPost>;
 
-  name: z.string(),
-  description: z.string().nullable(),
-
-  categories: z.array(
-    z.enum([
-      "digital-art",
-      "photography",
-      "illustration",
-      "character-design",
-      "UI-UX",
-      "logo",
-      "fan-art",
-      "3d",
-      "anime",
-      "realistic",
-      "nude",
-      "other",
-    ])
-  ),
-  tags: z.array(z.string().min(2).max(20)).max(10),
-
-  files: z.array(z.instanceof(mongoose.Schema.Types.ObjectId)),
-
-  isPublic: z.boolean(),
-  isNsfw: z.boolean(),
-  isAiGenerated: z.boolean(),
-
-  analytics: z.object({
-    views: z.number().default(0),
-    likes: z.array(z.string()).default([]),
-    downloads: z.number().default(0),
-  }),
-
-  updatedAt: z.date(),
-  createdAt: z.date(),
-});
-
-export type PostType = z.infer<typeof ZodPost>;
-
-export interface PopulatedPost extends Omit<PostType, "files">, Document {
+export interface PopulatedPost
+  extends Omit<PostType, "files" | "analytics">,
+    Document {
   files: FileType[];
+  analytics: {
+    views?: number;
+    downloads?: number;
+  };
   updatedAt: Date;
   createdAt: Date;
 }
 
-interface Post extends PostType, Document {
+interface Post extends Omit<PostType, "analytics">, Document {
+  analytics: {
+    views?: number;
+    downloads?: number;
+  };
   updatedAt: Date;
   createdAt: Date;
 }
@@ -126,12 +95,10 @@ const PostSchema = new Schema<Post>(
     analytics: {
       type: {
         views: Number,
-        likes: [String],
         downloads: Number,
       },
       default: {
         views: 0,
-        likes: [],
         downloads: 0,
       },
     },
