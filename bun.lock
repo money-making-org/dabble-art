@@ -76,6 +76,7 @@
     "packages/db": {
       "name": "@workspace/db",
       "dependencies": {
+        "@sinclair/typebox": "^0.34.31",
         "@types/mongoose": "^5.11.97",
         "elysia": "^1.2.25",
         "mongoose": "^8.12.1",

@@ -7,6 +7,7 @@ import { uploadController } from "./controllers/upload-controller";
 import { publicController } from "./controllers/public-controller";
 import { betterAuth } from "@/middlewares/auth-middleware";
 import { auth } from "@/utils/auth";
+import { userController } from "./controllers/user-controller";
 
 await connectToDatabase();
 
@@ -23,6 +24,7 @@ const app = new Elysia()
   })
   .mount(auth.handler)
   .use(publicController)
+  .use(userController)
   .use(uploadController)
   .listen(3001);
 
