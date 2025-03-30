@@ -3,12 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@workspace/ui/globals.css";
 import { Providers } from "@/components/providers";
 import ReactQueryProvider from "@/components/react-query-provider";
-import { SidebarProvider } from "@workspace/ui/components/sidebar";
-import { SidebarInset } from "@workspace/ui/components/sidebar";
-import { AppSidebar } from "@workspace/ui/components/app-sidebar";
 import { Toaster } from "sonner";
 import { NavigationMenu } from "@/app/components/navigation-menu";
-import Head from "next/head";
+import { Footer } from "@/app/components/footer";
 import Script from "next/script";
 
 const fontSans = Geist({
@@ -37,16 +34,17 @@ export default function RootLayout({
       </head>
 
       <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
+        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-screen flex flex-col`}
       >
         <ReactQueryProvider>
           <Providers>
-            <SidebarProvider>
-              <SidebarInset>
-                <NavigationMenu />
+            <div className="flex flex-col min-h-screen">
+              <NavigationMenu />
+              <main className="flex-1">
                 {children}
-              </SidebarInset>
-            </SidebarProvider>
+              </main>
+              <Footer />
+            </div>
           </Providers>
           <Toaster />
         </ReactQueryProvider>
