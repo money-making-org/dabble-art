@@ -1,10 +1,21 @@
 import { authProtected } from "@workspace/api/src/middlewares/auth-middleware";
 import { FollowingModel } from "@workspace/db/src/schema/followings";
+import { UserModel } from "@workspace/db/src/schema/users";
 import Elysia, { t } from "elysia";
 import mongoose from "mongoose";
 
 export const userController = new Elysia({ prefix: "/users" })
   .use(authProtected)
+  .get("/:username", async ({ params, error }) => {
+    const username = params.username;
+
+    const user = await UserModel.findOne({ username });
+    if (!user) {
+      return error(404, "User not found.");
+    }
+
+    return user;
+  })
   .post(
     "/:userId/follow",
     async ({ params, user, error }) => {

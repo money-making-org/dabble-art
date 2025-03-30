@@ -8,6 +8,7 @@ import { publicController } from "@workspace/api/src/controllers/public-controll
 import { betterAuth } from "@workspace/api/src/middlewares/auth-middleware";
 import { auth } from "@workspace/api/src/utils/auth";
 import { userController } from "@workspace/api/src/controllers/user-controller";
+import { authController } from "@/src/controllers/auth-controller";
 
 await connectToDatabase();
 
@@ -23,6 +24,7 @@ const app = new Elysia()
     console.error(error);
   })
   .mount(auth.handler)
+  .use(authController)
   .use(publicController)
   .use(userController)
   .use(uploadController)

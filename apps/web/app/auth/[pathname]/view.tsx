@@ -15,9 +15,9 @@ export function AuthView({ pathname }: { pathname: string }) {
     <main className="flex flex-col grow p-4 items-center justify-center">
       <AuthCard
         pathname={pathname}
+        
         localization={{
-          name: "Username",
-          namePlaceholder: "Username",
+
         }}
       />
     </main>

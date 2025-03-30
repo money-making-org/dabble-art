@@ -21,6 +21,7 @@ import { model, Schema } from "mongoose";
 export const ElysiaUser = t.Object({
   _id: t.Any(),
   name: t.String(),
+  username: t.String(),
   email: t.String(),
   emailVerified: t.Boolean(),
   createdAt: t.Date(),
@@ -29,6 +30,7 @@ export const ElysiaUser = t.Object({
 
 interface User extends Document {
   name: string;
+  username: string;
   email: string;
   emailVerified: boolean;
   updatedAt: Date;
@@ -38,6 +40,7 @@ interface User extends Document {
 const UserSchema = new Schema<User>(
   {
     name: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     emailVerified: { type: Boolean, default: false },
   },

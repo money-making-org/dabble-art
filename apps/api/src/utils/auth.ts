@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { nextCookies } from "better-auth/next-js";
+import { openAPI, username } from "better-auth/plugins";
 import type { Context } from "elysia";
 import { MongoClient } from "mongodb";
 
@@ -13,14 +14,16 @@ export const auth = betterAuth({
     enabled: true,
   },
   trustedOrigins: ["http://localhost:3000", "https://dabble.art"],
-  
 
-  plugins: [nextCookies()],
+  plugins: [nextCookies(), username(), openAPI()],
   user: {
     additionalFields: {
-      
-    }
-  }
+      bio: {
+        type: "string",
+        required: false,
+      },
+    },
+  },
 });
 
 export const betterAuthView = (context: Context) => {

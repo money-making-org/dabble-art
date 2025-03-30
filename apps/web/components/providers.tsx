@@ -7,6 +7,7 @@ import Link from "next/link";
 import { AuthUIProvider } from "@daveyplate/better-auth-ui";
 import { useRouter } from "next/navigation";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { api } from "@workspace/eden";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -23,10 +24,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
         authClient={authClient}
         navigate={router.push}
         replace={router.replace}
-        onSessionChange={() => {
-          router.refresh();
-        }}
+        onSessionChange={() => router.refresh()}
         LinkComponent={Link}
+        avatar
+        uploadAvatar={async (file: File) => {
+          const res = await api.auth.avatar.post({
+            body: {
+              image: file,
+            },
+          });
+
+          return res.data?.url;
+        }}
       >
         <NuqsAdapter>{children}</NuqsAdapter>
       </AuthUIProvider>
