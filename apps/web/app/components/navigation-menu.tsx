@@ -28,23 +28,23 @@ export function NavigationMenu() {
 
   return (
     <div className="border-b">
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-4 py-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" prefetch className="flex items-center gap-2">
-              <div className="relative w-8 h-8">
-                <Image
-                  src="/favicon.ico"
+          <Link href="/" prefetch className="flex items-center gap-0">
+        <Image
+                  src="/logotest2.png"
                   alt="dabble.art logo"
-                  width={32}
-                  height={32}
+                  width={64}
+                  height={64}
                   className="object-contain"
                   priority
                 />
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent">
-                dabble.art
-              </span>
+          <span
+            className="font-bold text-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent -ml-2"
+          >
+            dabble
+          </span>
             </Link>
             <Nav>
               <NavigationMenuList>
