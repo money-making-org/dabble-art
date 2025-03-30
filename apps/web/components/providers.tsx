@@ -27,6 +27,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         onSessionChange={() => router.refresh()}
         LinkComponent={Link}
         avatar
+        username
         uploadAvatar={async (file: File) => {
           const res = await api.auth.avatar.post({
             file,
