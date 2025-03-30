@@ -2,7 +2,7 @@ export default function Terms() {
   return (
     <pre>
 # dabble.art – Alpha Terms of Service
-**Effective Date: [Insert Date]**
+**Effective Date: 30th March 2025**
 
 Welcome to the alpha version of **dabble.art**. By accessing or using this early version of the platform, you agree to the following terms:
 

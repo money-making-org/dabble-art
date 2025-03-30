@@ -2,7 +2,7 @@ export default function Privacy() {
   return (
     <pre>
         # dabble.art – Alpha Privacy Policy
-**Effective Date: [Insert Date]**
+**Effective Date: 30th March 2025**
 
 At dabble.art, we take your privacy seriously — even in alpha. This policy outlines how we handle your data.
 
