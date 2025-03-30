@@ -1,30 +1,56 @@
 export default function Terms() {
   return (
-    <pre>
-# dabble.art – Alpha Terms of Service
-**Effective Date: 30th March 2025**
+    <div className="container mx-auto py-12 px-4 prose dark:prose-invert max-w-3xl">
+      <h1>dabble.art – Alpha Terms of Service</h1>
+      <p>
+        <strong>Effective Date: 30th March 2025</strong>
+      </p>
 
-Welcome to the alpha version of **dabble.art**. By accessing or using this early version of the platform, you agree to the following terms:
+      <p>
+        Welcome to the alpha version of <strong>dabble.art</strong>. By
+        accessing or using this early version of the platform, you agree to the
+        following terms:
+      </p>
 
-## 1. Alpha Use Disclaimer  
-This is a **work in progress**. Features may be incomplete, change without notice, or not function as expected. By participating in the alpha, you understand that:
-- You may encounter bugs or downtime.
-- Content may be changed or removed during development.
-- Access may be revoked at any time.
+      <h2>1. Alpha Use Disclaimer</h2>
+      <p>
+        This is a <strong>work in progress</strong>. Features may be incomplete,
+        change without notice, or not function as expected. By participating in
+        the alpha, you understand that:
+      </p>
+      <ul>
+        <li>You may encounter bugs or downtime.</li>
+        <li>Content may be changed or removed during development.</li>
+        <li>Access may be revoked at any time.</li>
+      </ul>
 
-## 2. Ownership and Content  
-All platform code, design, and features are owned by the creators of dabble.art.  
-You retain ownership of any content you create or upload, but you grant us a license to use it internally to improve the platform.
+      <h2>2. Ownership and Content</h2>
+      <p>
+        All platform code, design, and features are owned by the creators of
+        dabble.art.
+        <br />
+        You retain ownership of any content you create or upload, but you grant
+        us a license to use it internally to improve the platform.
+      </p>
 
-## 3. Feedback  
-We love your feedback! If you provide suggestions or bug reports, you agree we can use them freely to improve dabble.art without compensation or obligation.
+      <h2>3. Feedback</h2>
+      <p>
+        We love your feedback! If you provide suggestions or bug reports, you
+        agree we can use them freely to improve dabble.art without compensation
+        or obligation.
+      </p>
 
-## 4. Use at Your Own Risk  
-dabble.art is provided “as is” during the alpha phase. We’re not liable for any loss, damage, or issues arising from your use of the platform.
+      <h2>4. Use at Your Own Risk</h2>
+      <p>
+        dabble.art is provided "as is" during the alpha phase. We're not liable
+        for any loss, damage, or issues arising from your use of the platform.
+      </p>
 
-## 5. Changes  
-These terms may be updated at any time. We’ll do our best to notify you, but it’s your responsibility to stay informed.
-
-    </pre>
-  )
+      <h2>5. Changes</h2>
+      <p>
+        These terms may be updated at any time. We'll do our best to notify you,
+        but it's your responsibility to stay informed.
+      </p>
+    </div>
+  );
 }
