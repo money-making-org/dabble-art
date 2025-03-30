@@ -16,7 +16,7 @@ export const authController = new Elysia({ prefix: "/auth" })
     async ({ body, user }) => {
       const key = `avatars/${user.id}`;
 
-      await r2.write(key, body.image);
+      await r2.write(key, body.file);
 
       await UserModel.findByIdAndUpdate(user.id, {
         image: `https://api.dabble.art/auth/avatar/${user.id}`,
@@ -29,7 +29,7 @@ export const authController = new Elysia({ prefix: "/auth" })
     },
     {
       body: t.Object({
-        image: t.File({
+        file: t.File({
           maxSize: 1024 * 1024 * 10, // 10MB
         }),
       }),

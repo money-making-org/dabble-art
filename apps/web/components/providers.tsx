@@ -29,9 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         avatar
         uploadAvatar={async (file: File) => {
           const res = await api.auth.avatar.post({
-            body: {
-              image: file,
-            },
+            file,
           });
 
           return res.data?.url;

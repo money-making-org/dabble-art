@@ -24,6 +24,7 @@ export const ElysiaUser = t.Object({
   username: t.String(),
   email: t.String(),
   emailVerified: t.Boolean(),
+  image: t.String(),
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });
@@ -33,6 +34,7 @@ interface User extends Document {
   username: string;
   email: string;
   emailVerified: boolean;
+  image: string;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -43,6 +45,7 @@ const UserSchema = new Schema<User>(
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     emailVerified: { type: Boolean, default: false },
+    image: { type: String, default: "" },
   },
   { timestamps: true, collection: "user" }
 );
