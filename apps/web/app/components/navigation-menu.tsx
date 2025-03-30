@@ -58,7 +58,7 @@ export function NavigationMenu() {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/challenges" legacyBehavior passHref>
+                <Link href="/" legacyBehavior passHref>
                   <NavigationMenuLink
                     className={navigationMenuTriggerStyle()}
                     href="/"
@@ -94,7 +94,7 @@ export function NavigationMenu() {
           </Nav>
 
           <div className="flex items-center gap-3">
-            {/* <div className="relative w-64">
+            <div className="relative w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search artworks..."
@@ -108,16 +108,13 @@ export function NavigationMenu() {
                   }
                 }}
               />
-            </div> */}
+            </div>
             <Link
               href="/upload"
               className="flex items-center gap-2 hover:bg-muted p-2 rounded-md"
             >
               <Upload className="size-5" />
             </Link>
-            <Button variant="ghost" size="icon">
-              <Bell className="h-5 w-5" />
-            </Button>
             <ThemeToggle />
             <UserButton className="cursor-pointer" />
           </div>

@@ -26,18 +26,18 @@ export function Footer() {
               <h4 className="font-semibold">Platform</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/challenges" className="text-muted-foreground hover:text-foreground">
+                  <Link href="/" className="text-muted-foreground hover:text-foreground">
+                    Explore
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/" className="text-muted-foreground hover:text-foreground">
                     Challenges
                   </Link>
                 </li>
                 <li>
-                  <Link href="/discover" className="text-muted-foreground hover:text-foreground">
-                    Discover
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/upload" className="text-muted-foreground hover:text-foreground">
-                    Upload
+                  <Link href="/" className="text-muted-foreground hover:text-foreground">
+                    Marketplace
                   </Link>
                 </li>
               </ul>
@@ -56,7 +56,7 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="text-muted-foreground hover:text-foreground">
+                  <Link href="https://discord.gg/jG6gYzePmr" className="text-muted-foreground hover:text-foreground">
                     Contact Us
                   </Link>
                 </li>
