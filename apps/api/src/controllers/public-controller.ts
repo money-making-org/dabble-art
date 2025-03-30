@@ -98,8 +98,6 @@ export const publicController = new Elysia({ prefix: "/public" })
         .populate("owner")
         .lean();
 
-      console.log("Posts", posts);
-
       return posts;
     },
     {
@@ -212,21 +210,6 @@ export const publicController = new Elysia({ prefix: "/public" })
       post.likeCount = likeCount;
       post.commentsCount = post.commentsCount ?? 0;
       post.analytics = post.analytics ?? { views: 0, likesCount: 0 };
-
-      const postObject = {
-        ...post,
-        owner:
-          post.owner && typeof post.owner === "object"
-            ? { ...post.owner, isFollowing }
-            : post.owner,
-        isLiked,
-        likeCount,
-        commentsCount: post.commentsCount ?? 0,
-        analytics: {
-          views: post.analytics?.views ?? 0,
-          likesCount: likeCount,
-        },
-      };
 
       return post;
     },
