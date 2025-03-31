@@ -11,7 +11,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@workspace/ui/components/navigation-menu";
-import { Search, Upload, Bell } from "lucide-react";
+import { Search, Upload, Bell, LayoutDashboard } from "lucide-react";
 import {
   Avatar,
   AvatarFallback,
@@ -116,7 +116,16 @@ export function NavigationMenu() {
               <Upload className="size-5" />
             </Link>
             <ThemeToggle />
-            <UserButton className="cursor-pointer" />
+            <UserButton className="cursor-pointer"
+            additionalLinks={[
+              {
+                href: "/dashboard",
+                label: "Dashboard",
+                signedIn: true,
+                icon: <LayoutDashboard />,
+              },
+            ]}
+            />
           </div>
         </div>
       </div>
