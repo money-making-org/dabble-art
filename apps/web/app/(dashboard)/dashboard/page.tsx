@@ -74,20 +74,9 @@ export default function DashboardPage() {
         },
       });
 
-      // Fetch like counts for each post
-      const postsWithLikes = await Promise.all(
-        userPosts.data.map(async (post: Post) => {
-          const postDetails = await api.public.posts({ id: post._id }).get();
-          return {
-            ...post,
-            likeCount: postDetails.data.likeCount || 0,
-          };
-        })
-      );
-
-      const totalViews = postsWithLikes.reduce((acc: number, post: Post) => acc + (post.analytics?.views || 0), 0);
-      const totalLikes = postsWithLikes.reduce((acc: number, post: Post) => acc + (post.likeCount || 0), 0);
-      const totalDownloads = postsWithLikes.reduce((acc: number, post: Post) => acc + (post.analytics?.downloads || 0), 0);
+      const totalViews = userPosts.data.reduce((acc: number, post: Post) => acc + (post.analytics?.views || 0), 0);
+      const totalDownloads = userPosts.data.reduce((acc: number, post: Post) => acc + (post.analytics?.downloads || 0), 0);
+      const totalLikes = userPosts.data.reduce((acc: number, post: Post) => acc + (post.likeCount || 0), 0);
 
       return {
         views: totalViews,
