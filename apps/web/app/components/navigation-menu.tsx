@@ -21,6 +21,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { UserButton } from "@daveyplate/better-auth-ui";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function NavigationMenu() {
   const router = useRouter();
@@ -59,23 +60,22 @@ export function NavigationMenu() {
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="/" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={navigationMenuTriggerStyle()}
-                      href="/"
-                    >
-                      Challenges
-                    </NavigationMenuLink>
-                  </Link>
+                  <Button
+                    variant="ghost"
+                    className={navigationMenuTriggerStyle()}
+                    onClick={() => toast.info("Challenges feature is coming soon!")}
+                  >
+                    Challenges
+                  </Button>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="/" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={navigationMenuTriggerStyle()}
-                    >
-                      Marketplace
-                    </NavigationMenuLink>
-                  </Link>
+                  <Button
+                    variant="ghost"
+                    className={navigationMenuTriggerStyle()}
+                    onClick={() => toast.info("Marketplace feature is coming soon!")}
+                  >
+                    Marketplace
+                  </Button>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <Link
