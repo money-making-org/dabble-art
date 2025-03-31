@@ -15,6 +15,7 @@ import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { api } from "@workspace/eden";
 
 const categories = [
   "digital-art",

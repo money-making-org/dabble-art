@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-import { Plus, Eye, Download, Heart, Search } from "lucide-react";
+import { Plus, Eye, Download, Heart, Search, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { api } from "@workspace/eden";
 import { ArtworkGrid } from "../../_components/artwork-grid";
@@ -24,6 +24,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
 import { unstable_noStore } from "next/cache";
+import { authClient } from "@/lib/auth-client";
+import type { Post } from "../../_components/artwork-grid";
 
 function ArtworkGridSkeleton() {
   return (
@@ -37,6 +39,7 @@ function ArtworkGridSkeleton() {
 
 export default function DashboardPage() {
   unstable_noStore();
+  const { data: session } = authClient.useSession();
 
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue: "",
@@ -48,7 +51,7 @@ export default function DashboardPage() {
   });
 
   const { data: posts, isPending } = useQuery({
-    queryKey: ["posts", searchQuery, sortBy],
+    queryKey: ["posts", "dashboard", searchQuery, sortBy, session?.user?.id],
     queryFn: () =>
       api.public.posts.get({
         query: {
@@ -56,17 +59,99 @@ export default function DashboardPage() {
           sort: sortBy,
           limit: 25,
           page: 1,
-          owner: user?.id,
+          owner: session?.user?.id,
         },
       }),
+    enabled: !!session?.user?.id,
   });
 
-  // edit later
-  const stats = {
-    views: 69420,
-    downloads: 420,
-    likes: 69,
-  };
+  const { data: stats } = useQuery({
+    queryKey: ["stats", "dashboard", session?.user?.id],
+    queryFn: async () => {
+      const userPosts = await api.public.posts.get({
+        query: {
+          owner: session?.user?.id,
+        },
+      });
+
+      // Fetch like counts for each post
+      const postsWithLikes = await Promise.all(
+        userPosts.data.map(async (post: Post) => {
+          const postDetails = await api.public.posts({ id: post._id }).get();
+          return {
+            ...post,
+            likeCount: postDetails.data.likeCount || 0,
+          };
+        })
+      );
+
+      const totalViews = postsWithLikes.reduce((acc: number, post: Post) => acc + (post.analytics?.views || 0), 0);
+      const totalLikes = postsWithLikes.reduce((acc: number, post: Post) => acc + (post.likeCount || 0), 0);
+      const totalDownloads = postsWithLikes.reduce((acc: number, post: Post) => acc + (post.analytics?.downloads || 0), 0);
+
+      return {
+        views: totalViews,
+        likes: totalLikes,
+        downloads: totalDownloads,
+      };
+    },
+    enabled: !!session?.user?.id,
+  });
+
+  if (!session?.user?.id) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent">
+                Dashboard
+              </h1>
+            </div>
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-10 w-[160px]" />
+            </div>
+          </div>
+
+          <div className="flex gap-8">
+            {/* Main Content */}
+            <div className="flex-1 min-w-0">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-6 w-32" />
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-10 w-[200px]" />
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ArtworkGridSkeleton />
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Stats Sidebar */}
+            <div className="w-80 space-y-6">
+              {[1, 2, 3].map((i) => (
+                <Card key={i}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-8 w-16" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -108,9 +193,9 @@ export default function DashboardPage() {
                       </div>
                       <Select
                         value={sortBy}
-                        onValueChange={(
-                          value: "relevance" | "latest" | "popular"
-                        ) => setSortBy(value)}
+                        onValueChange={(value: "relevance" | "latest" | "popular") =>
+                          setSortBy(value)
+                        }
                       >
                         <SelectTrigger className="w-[140px]">
                           <SelectValue placeholder="Sort by" />
@@ -143,10 +228,8 @@ export default function DashboardPage() {
                       <Eye className="h-6 w-6 text-blue-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">
-                        Total Views
-                      </p>
-                      <p className="text-2xl font-bold">{stats.views}</p>
+                      <p className="text-sm text-muted-foreground">Total Views</p>
+                      <p className="text-2xl font-bold">{stats?.views || "Not available"}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -160,7 +243,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Downloads</p>
-                      <p className="text-2xl font-bold">{stats.downloads}</p>
+                      <p className="text-2xl font-bold">{stats?.downloads || "Not available"}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -173,10 +256,8 @@ export default function DashboardPage() {
                       <Heart className="h-6 w-6 text-red-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">
-                        Total Likes
-                      </p>
-                      <p className="text-2xl font-bold">{stats.likes}</p>
+                      <p className="text-sm text-muted-foreground">Total Likes</p>
+                      <p className="text-2xl font-bold">{stats?.likes || "Not available"}</p>
                     </div>
                   </div>
                 </CardContent>
