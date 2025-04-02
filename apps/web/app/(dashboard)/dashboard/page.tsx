@@ -20,12 +20,13 @@ import Link from "next/link";
 import { api } from "@workspace/eden";
 import { ArtworkGrid } from "../../_components/artwork-grid";
 import { useQueryState } from "nuqs";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
 import { unstable_noStore } from "next/cache";
 import { authClient } from "@/lib/auth-client";
 import type { Post } from "../../_components/artwork-grid";
+import { useState, useCallback } from "react";
 
 function ArtworkGridSkeleton() {
   return (
@@ -40,6 +41,8 @@ function ArtworkGridSkeleton() {
 export default function DashboardPage() {
   unstable_noStore();
   const { data: session } = authClient.useSession();
+  const queryClient = useQueryClient();
+  const [isDeletePending, setIsDeletePending] = useState(false);
 
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue: "",
@@ -86,6 +89,22 @@ export default function DashboardPage() {
     },
     enabled: !!session?.user?.id,
   });
+
+  const handleDelete = useCallback(async (postId: string) => {
+    try {
+      setIsDeletePending(true);
+      await api.public.posts[postId].delete();
+      // Invalidate the posts query to refresh the data
+      await queryClient.invalidateQueries({ queryKey: ["posts", "dashboard"] });
+      // Also invalidate stats since they depend on posts
+      await queryClient.invalidateQueries({ queryKey: ["stats", "dashboard"] });
+    } catch (err) {
+      console.error("Failed to delete post:", err);
+      throw err;
+    } finally {
+      setIsDeletePending(false);
+    }
+  }, [queryClient]);
 
   if (!session?.user?.id) {
     return (
@@ -202,7 +221,12 @@ export default function DashboardPage() {
                   {isPending ? (
                     <ArtworkGridSkeleton />
                   ) : (
-                    <ArtworkGrid posts={posts?.data} />
+                    <ArtworkGrid 
+                      posts={posts?.data} 
+                      currentUserId={session?.user?.id}
+                      onDelete={handleDelete}
+                      isDeletePending={isDeletePending}
+                    />
                   )}
                 </CardContent>
               </Card>

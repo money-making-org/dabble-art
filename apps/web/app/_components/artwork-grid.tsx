@@ -1,10 +1,35 @@
 import { Gallery } from "next-gallery";
 import Link from "next/link";
 import { cn } from "@workspace/ui/lib/utils";
+import { Button } from "@workspace/ui/components/button";
+import { Pencil } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@workspace/ui/components/alert-dialog";
+import { useState, useCallback } from "react";
 
-interface Post {
+export interface Post {
   _id: string;
-  owner: string;
+  owner: {
+    _id: string;
+    name: string;
+    username: string;
+    avatarUrl?: string;
+  };
   name: string;
   description?: string;
   files: Array<{
@@ -26,11 +51,19 @@ interface Post {
   isAiGenerated: boolean;
   createdAt: string;
   updatedAt: string;
+  analytics?: {
+    views: number;
+    downloads: number;
+  };
+  likeCount?: number;
 }
 
 interface ArtworkGridProps {
   posts: Post[];
   className?: string;
+  currentUserId?: string;
+  onDelete: (postId: string) => Promise<void>;
+  isDeletePending?: boolean;
 }
 
 interface GalleryImage {
@@ -43,7 +76,28 @@ interface GalleryImage {
   metadata: Post;
 }
 
-export function ArtworkGrid({ posts, className }: ArtworkGridProps) {
+export function ArtworkGrid({ posts, className, currentUserId, onDelete, isDeletePending = false }: ArtworkGridProps) {
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+
+  const handleDeleteClick = useCallback((postId: string) => {
+    setSelectedPostId(postId);
+    setIsAlertOpen(true);
+  }, []);
+
+  const handleDeleteConfirm = useCallback(async () => {
+    if (!selectedPostId) return;
+    
+    try {
+      await onDelete(selectedPostId);
+    } catch (err) {
+      console.error("Failed to delete post:", err);
+    } finally {
+      setIsAlertOpen(false);
+      setSelectedPostId(null);
+    }
+  }, [selectedPostId, onDelete]);
+
   if (!posts?.length) return null;
 
   const images = posts
@@ -60,7 +114,6 @@ export function ArtworkGrid({ posts, className }: ArtworkGridProps) {
           // @ts-ignore - It works
           className: "border rounded-md",
         },
-
         metadata: post,
       };
       return image;
@@ -97,13 +150,76 @@ export function ArtworkGrid({ posts, className }: ArtworkGridProps) {
         shrinkLimit={0.7}
         overlay={(index) => {
           const post = posts[index];
-          if (!post) return null;
+          if (!post || !post.owner) return null;
+
+          const isOwnArtwork = currentUserId === post.owner._id;
 
           return (
             <Link
               href={`/posts/${post._id}`}
               className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"
             >
+              {isOwnArtwork && (
+                <div className="absolute top-2 right-2 z-10">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}>
+                      <Button variant="secondary" size="icon" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+                        <AlertDialogTrigger asChild onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteClick(post._id);
+                        }}>
+                          <DropdownMenuItem
+                            onSelect={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete your post and remove its data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleDeleteConfirm();
+                              }}
+                              disabled={isDeletePending}
+                            >
+                              {isDeletePending ? "Deleting..." : "Delete"}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              )}
               <h3 className="font-semibold truncate text-white">{post.name}</h3>
               {post.description && (
                 <p className="text-sm text-white/90 line-clamp-2 mt-1">
