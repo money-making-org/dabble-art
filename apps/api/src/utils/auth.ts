@@ -24,6 +24,19 @@ export const auth = betterAuth({
       },
     },
   },
+
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: true,
+      domain: ".dabble.art"
+    },
+    defaultCookieAttributes: {
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",  // Allows CORS-based cookie sharing across subdomains
+      partitioned: true, // New browser standards will mandate this for foreign cookies
+  },
+  }
 });
 
 export const betterAuthView = (context: Context) => {
