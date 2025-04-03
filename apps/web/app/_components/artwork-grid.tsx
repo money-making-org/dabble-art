@@ -1,4 +1,4 @@
-import { Gallery } from "next-gallery";
+
 import Link from "next/link";
 import { cn } from "@workspace/ui/lib/utils";
 import { Button } from "@workspace/ui/components/button";
@@ -21,6 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog";
 import { useState, useCallback } from "react";
+import { NextGallery } from "@/components/next-gallery/NextGallery";
 
 export interface Post {
   _id: string;
@@ -146,16 +147,16 @@ export function ArtworkGrid({
 
   return (
     <div className={cn("w-full", className)}>
-      <Gallery
+      <NextGallery
         images={images}
-        widths={[400, 800, 1200, 1600]}
+        breakpoints={[400, 800, 1200, 1600]}
         ratios={ratios}
         gap="4px"
         lastRowBehavior="match-previous"
         preferGrowing={1.2}
         shrinkLimit={0.7}
-        overlay={(index) => {
-          const post = posts[index];
+        overlay={(img) => {
+          const post = img.metadata;
           if (!post) {
             console.log("No post");
             return null;
@@ -168,7 +169,6 @@ export function ArtworkGrid({
             <Link
               href={`/posts/${post._id}`}
               className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"
-              data-umami-event={`view-post-${post._id}`}
             >
               {isOwnArtwork && (
                 <div className="absolute top-2 right-2 z-10">
