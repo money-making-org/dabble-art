@@ -1,3 +1,4 @@
+import { cookies, headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
@@ -16,9 +17,14 @@ export const config = {
   matcher: ["/upload"], // Specify the routes the middleware applies to
 };
 
-
 // Stole this from a discord
-export async function getSessionCookie(request: NextRequest, config?: { cookieName: string, cookiePrefix: string, path: string }) {
-  const cookieStore = await import("next/headers").then(mod => mod.cookies());
-  return cookieStore.get(`${config?.cookiePrefix || "better-auth"}.${config?.cookieName || "session_token"}`);
+export async function getSessionCookie(
+  request: NextRequest,
+  config?: { cookieName: string; cookiePrefix: string; path: string }
+) {
+  // const cookieStore = await import("next/headers").then(mod => mod.cookies());
+  const cookieStore = await cookies();
+  return cookieStore.get(
+    `${config?.cookiePrefix || "better-auth"}.${config?.cookieName || "session_token"}`
+  );
 }
