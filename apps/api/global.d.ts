@@ -13,6 +13,8 @@ declare module "bun" {
       S3_ENDPOINT: string;
       S3_BUCKET: string;
       S3_SESSION_TOKEN: string;
+
+      WEBHOOK_URL: string | undefined;
     };
   }
 }

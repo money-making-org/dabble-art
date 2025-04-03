@@ -52,7 +52,7 @@ export function ArtworkGrid({ posts, className }: ArtworkGridProps) {
       if (!file) return null;
 
       const image: GalleryImage = {
-        src: `${process.env.NEXT_PUBLIC_API_URL}/public/posts/${post._id.toString()}/files/${file._id.toString()}/preview`,
+        src: `${process.env.NEXT_PUBLIC_API_URL}/public/posts/${post._id.toString()}/files/${file._id.toString()}/download`,
         aspect_ratio: file.width / file.height,
         alt: post.name,
         nextImageProps: {

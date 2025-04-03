@@ -74,9 +74,18 @@ export default function DashboardPage() {
         },
       });
 
-      const totalViews = userPosts.data.reduce((acc: number, post: Post) => acc + (post.analytics?.views || 0), 0);
-      const totalDownloads = userPosts.data.reduce((acc: number, post: Post) => acc + (post.analytics?.downloads || 0), 0);
-      const totalLikes = userPosts.data.reduce((acc: number, post: Post) => acc + (post.likeCount || 0), 0);
+      const totalViews = userPosts.data.reduce(
+        (acc: number, post: Post) => acc + (post.analytics?.views || 0),
+        0
+      );
+      const totalDownloads = userPosts.data.reduce(
+        (acc: number, post: Post) => acc + (post.analytics?.downloads || 0),
+        0
+      );
+      const totalLikes = userPosts.data.reduce(
+        (acc: number, post: Post) => acc + (post.likeCount || 0),
+        0
+      );
 
       return {
         views: totalViews,
@@ -182,9 +191,9 @@ export default function DashboardPage() {
                       </div>
                       <Select
                         value={sortBy}
-                        onValueChange={(value: "relevance" | "latest" | "popular") =>
-                          setSortBy(value)
-                        }
+                        onValueChange={(
+                          value: "relevance" | "latest" | "popular"
+                        ) => setSortBy(value)}
                       >
                         <SelectTrigger className="w-[140px]">
                           <SelectValue placeholder="Sort by" />
@@ -217,8 +226,12 @@ export default function DashboardPage() {
                       <Eye className="h-6 w-6 text-blue-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Total Views</p>
-                      <p className="text-2xl font-bold">{stats?.views || "Not available"}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Total Views
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {stats?.views || "Not available"}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -232,7 +245,9 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Downloads</p>
-                      <p className="text-2xl font-bold">{stats?.downloads || "Not available"}</p>
+                      <p className="text-2xl font-bold">
+                        {stats?.downloads || "Not available"}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -245,8 +260,12 @@ export default function DashboardPage() {
                       <Heart className="h-6 w-6 text-red-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Total Likes</p>
-                      <p className="text-2xl font-bold">{stats?.likes || "Not available"}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Total Likes
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {stats?.likes || "Not available"}
+                      </p>
                     </div>
                   </div>
                 </CardContent>

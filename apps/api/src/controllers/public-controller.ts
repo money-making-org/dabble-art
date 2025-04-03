@@ -140,10 +140,40 @@ export const publicController = new Elysia({ prefix: "/public" })
       if (!file.mimeType.startsWith("image/"))
         return error(400, "File is not an image");
 
+      const stream = await r2.file(file.getS3Key()).arrayBuffer();
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": file.mimeType,
+          "Cache-Control": "public, max-age=31536000",
+        },
+      });
+    },
+    {
+      params: t.Object({
+        id: t.String(),
+        fileId: t.String(),
+      }),
+    }
+  )
+  .get(
+    "/posts/:id/files/:fileId/download",
+    async ({ params, error }) => {
+      const { fileId } = params;
+      const file = await FileModel.findById(fileId);
+
+      if (!file) return error(404, "File not found");
+
+      if (!file.mimeType.startsWith("image/"))
+        return error(400, "File is not an image");
+
       return new Response(r2.file(file.getS3Key()));
     },
     {
-      params: t.Object({ id: t.String(), fileId: t.String() }),
+      params: t.Object({
+        id: t.String(),
+        fileId: t.String(),
+      }),
     }
   )
   .get(

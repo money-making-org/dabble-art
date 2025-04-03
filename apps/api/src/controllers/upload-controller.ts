@@ -9,6 +9,11 @@ import { ObjectId } from "mongodb";
 import { FileModel } from "@workspace/db/src/schema/files";
 import { authProtected } from "@workspace/api/src/middlewares/auth-middleware";
 import sharp from "sharp";
+import mongoose from "mongoose";
+import { sendNewArtAlert } from "@/src/utils/alerts";
+
+export const GB = 1000 * 1000 * 1000;
+export const ACCOUNT_STORAGE_LIMIT = 2 * GB;
 
 type ImagePostBody = {
   name: string;
@@ -57,68 +62,131 @@ export const uploadController = new Elysia({ prefix: "/upload" })
         ? body.categories
         : [body.categories];
 
+      console.log("User", user);
+
       const parsedTags = Array.isArray(body.tags) ? body.tags : [body.tags];
 
-      // S3 Key: userId/postId/fileId
-      const userId = user.id;
-      const postID = new ObjectId();
+      // Calculate the total file size of the current upload request
+      const newUploadSize = await Promise.all(
+        body.files.map(async (file) => (await file.arrayBuffer()).byteLength)
+      ).then((sizes) => sizes.reduce((total, size) => total + size, 0));
 
-      let fileIds: string[] = [];
+      try {
+        // Calculate current storage used by querying the database
+        const storageResults = await FileModel.aggregate([
+          {
+            $match: {
+              owner: new mongoose.Types.ObjectId(user.id),
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalSize: { $sum: "$bytes" },
+            },
+          },
+        ]);
 
-      await Promise.all(
-        body.files.map(async (file) => {
-          const fileId = new ObjectId();
-          const key = `${userId}/${postID}/${fileId}`;
+        // If no files exist yet, storageResults will be an empty array
+        const totalStorageUsed =
+          storageResults.length > 0 ? storageResults[0].totalSize : 0;
 
-          fileIds.push(fileId.toString());
+        // Calculate total storage including the new upload
+        const projectedStorage = totalStorageUsed + newUploadSize;
 
-          // Find width and height
-          const image = sharp(await file.arrayBuffer());
-          const metadata = await image.metadata();
+        console.log(`Current storage: ${prettyBytes(totalStorageUsed)}`);
+        console.log(`New upload size: ${prettyBytes(newUploadSize)}`);
+        console.log(
+          `Projected storage: ${prettyBytes(projectedStorage)} / ${prettyBytes(ACCOUNT_STORAGE_LIMIT)}`
+        );
 
-          const upload = await r2.write(key, file);
+        // Check if the new upload would exceed the storage limit
+        if (projectedStorage > ACCOUNT_STORAGE_LIMIT) {
+          return {
+            error: "Account storage limit reached",
+            currentUsage: prettyBytes(totalStorageUsed),
+            limit: prettyBytes(ACCOUNT_STORAGE_LIMIT),
+            remaining: prettyBytes(
+              Math.max(0, ACCOUNT_STORAGE_LIMIT - totalStorageUsed)
+            ),
+          };
+        }
 
-          const dbFile = FileModel.create({
-            _id: fileId,
+        // S3 Key: userId/postId/fileId
+        const userId = user.id;
+        const postID = new ObjectId();
 
-            owner: userId,
-            post: postID,
+        let fileIds: string[] = [];
 
-            name: file.name,
-            mimeType: mime.getType(file.name),
+        await Promise.all(
+          body.files.map(async (file) => {
+            const fileId = new ObjectId();
+            const key = `${userId}/${postID}/${fileId}`;
 
-            bytes: upload,
+            fileIds.push(fileId.toString());
 
-            width: metadata.width,
-            height: metadata.height,
+            // Find width and height
+            const image = sharp(await file.arrayBuffer());
+            const metadata = await image.metadata();
 
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            const upload = await r2.write(key, file);
+
+            const dbFile = FileModel.create({
+              _id: fileId,
+
+              owner: userId,
+              post: postID,
+
+              name: file.name,
+              mimeType: mime.getType(file.name),
+
+              bytes: upload,
+
+              width: metadata.width,
+              height: metadata.height,
+
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+          })
+        );
+
+        await PostModel.create({
+          _id: postID,
+          owner: userId,
+
+          name: body.name,
+          description: body.description,
+
+          files: fileIds,
+
+          categories: parsedCategories,
+          tags: parsedTags,
+
+          isPublic: body.isPublic,
+          isNsfw: body.isNsfw,
+          isAiGenerated: body.isAiGenerated,
+
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+
+        setTimeout(() => {
+          sendNewArtAlert({
+            authorId: user.id,
+            authorName: user.name ? `${user.name} (${user.email})` : user.email,
+            name: body.name,
+            postId: postID.toString(),
+            primaryFileId: fileIds[0] ?? "",
+            totalStorageUsed: projectedStorage,
           });
-        })
-      );
+        }, 0);
 
-      await PostModel.create({
-        _id: postID,
-        owner: userId,
-
-        name: body.name,
-        description: body.description,
-
-        files: fileIds,
-
-        categories: parsedCategories,
-        tags: parsedTags,
-
-        isPublic: body.isPublic,
-        isNsfw: body.isNsfw,
-        isAiGenerated: body.isAiGenerated,
-
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-
-      return { success: true };
+        return { success: true };
+      } catch (err) {
+        console.error("Error processing upload:", err);
+        return { error: "Failed to process upload", details: err.message };
+      }
     },
     {
       body: imagePostSchema,
