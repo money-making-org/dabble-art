@@ -76,7 +76,13 @@ interface GalleryImage {
   metadata: Post;
 }
 
-export function ArtworkGrid({ posts, className, currentUserId, onDelete, isDeletePending = false }: ArtworkGridProps) {
+export function ArtworkGrid({
+  posts,
+  className,
+  currentUserId,
+  onDelete,
+  isDeletePending = false,
+}: ArtworkGridProps) {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
@@ -87,7 +93,7 @@ export function ArtworkGrid({ posts, className, currentUserId, onDelete, isDelet
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!selectedPostId) return;
-    
+
     try {
       await onDelete(selectedPostId);
     } catch (err) {
@@ -150,33 +156,51 @@ export function ArtworkGrid({ posts, className, currentUserId, onDelete, isDelet
         shrinkLimit={0.7}
         overlay={(index) => {
           const post = posts[index];
-          if (!post || !post.owner) return null;
+          if (!post) {
+            console.log("No post");
+            return null;
+          }
 
-          const isOwnArtwork = currentUserId === post.owner._id;
+          // const isOwnArtwork = currentUserId === post.owner._id;
+          const isOwnArtwork = false;
 
           return (
             <Link
               href={`/posts/${post._id}`}
               className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"
+              data-umami-event={`view-post-${post._id}`}
             >
               {isOwnArtwork && (
                 <div className="absolute top-2 right-2 z-10">
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}>
-                      <Button variant="secondary" size="icon" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm">
+                    <DropdownMenuTrigger
+                      asChild
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    >
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+                      >
                         <Pencil className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-                        <AlertDialogTrigger asChild onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDeleteClick(post._id);
-                        }}>
+                      <AlertDialog
+                        open={isAlertOpen}
+                        onOpenChange={setIsAlertOpen}
+                      >
+                        <AlertDialogTrigger
+                          asChild
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteClick(post._id);
+                          }}
+                        >
                           <DropdownMenuItem
                             onSelect={(e) => {
                               e.preventDefault();
@@ -187,21 +211,31 @@ export function ArtworkGrid({ posts, className, currentUserId, onDelete, isDelet
                             Delete
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
-                        <AlertDialogContent onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                        }}>
+                        <AlertDialogContent
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                        >
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                              This action cannot be undone. This will permanently delete your post and remove its data from our servers.
+                              This action cannot be undone. This will
+                              permanently delete your post and remove its data
+                              from our servers.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}>Cancel</AlertDialogCancel>
+                            <AlertDialogCancel
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                            >
+                              Cancel
+                            </AlertDialogCancel>
                             <AlertDialogAction
                               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                               onClick={(e) => {
