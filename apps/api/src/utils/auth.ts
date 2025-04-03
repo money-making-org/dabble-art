@@ -15,7 +15,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: ["http://localhost:3000", "https://dabble.art"],
 
-  plugins: [nextCookies(), username(), openAPI()],
+  plugins: [username(), openAPI(), nextCookies()],
   user: {
     additionalFields: {
       bio: {

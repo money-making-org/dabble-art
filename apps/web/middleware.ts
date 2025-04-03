@@ -24,6 +24,7 @@ export async function getSessionCookie(
 ) {
   // const cookieStore = await import("next/headers").then(mod => mod.cookies());
   const cookieStore = await cookies();
+  
   console.log(
     "COOKIE: ",
     cookieStore.get(
