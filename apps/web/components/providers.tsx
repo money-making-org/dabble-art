@@ -26,6 +26,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         replace={router.replace}
         onSessionChange={() => router.refresh()}
         LinkComponent={Link}
+        settingsUrl="/settings"
+        settingsFields={["bio"]}
         avatar
         username
         uploadAvatar={async (file: File) => {
@@ -34,6 +36,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
           });
 
           return res.data?.url;
+        }}
+        additionalFields={{
+          bio: {
+            label: "Bio",
+            placeholder: "Your bio",
+            description: "Enter your bio",
+            required: false,
+            type: "string",
+          },
         }}
       >
         <NuqsAdapter>{children}</NuqsAdapter>
