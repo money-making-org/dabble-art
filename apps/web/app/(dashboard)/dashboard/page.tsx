@@ -18,14 +18,14 @@ import {
 import { Plus, Eye, Download, Heart, Search, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { api } from "@workspace/eden";
-import { ArtworkGrid } from "../../_components/artwork-grid";
+import { ArtworkGrid } from "../../components/artwork-grid";
 import { useQueryState } from "nuqs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
 import { unstable_noStore } from "next/cache";
 import { authClient } from "@/lib/auth-client";
-import type { Post } from "../../_components/artwork-grid";
+import type { Post } from "../../components/artwork-grid";
 import { useState, useCallback } from "react";
 
 function ArtworkGridSkeleton() {
@@ -99,21 +99,28 @@ export default function DashboardPage() {
     enabled: !!session?.user?.id,
   });
 
-  const handleDelete = useCallback(async (postId: string) => {
-    try {
-      setIsDeletePending(true);
-      await api.public.posts[postId].delete();
-      // Invalidate the posts query to refresh the data
-      await queryClient.invalidateQueries({ queryKey: ["posts", "dashboard"] });
-      // Also invalidate stats since they depend on posts
-      await queryClient.invalidateQueries({ queryKey: ["stats", "dashboard"] });
-    } catch (err) {
-      console.error("Failed to delete post:", err);
-      throw err;
-    } finally {
-      setIsDeletePending(false);
-    }
-  }, [queryClient]);
+  const handleDelete = useCallback(
+    async (postId: string) => {
+      try {
+        setIsDeletePending(true);
+        await api.public.posts[postId].delete();
+        // Invalidate the posts query to refresh the data
+        await queryClient.invalidateQueries({
+          queryKey: ["posts", "dashboard"],
+        });
+        // Also invalidate stats since they depend on posts
+        await queryClient.invalidateQueries({
+          queryKey: ["stats", "dashboard"],
+        });
+      } catch (err) {
+        console.error("Failed to delete post:", err);
+        throw err;
+      } finally {
+        setIsDeletePending(false);
+      }
+    },
+    [queryClient]
+  );
 
   if (!session?.user?.id) {
     return (
@@ -230,8 +237,8 @@ export default function DashboardPage() {
                   {isPending ? (
                     <ArtworkGridSkeleton />
                   ) : (
-                    <ArtworkGrid 
-                      posts={posts?.data} 
+                    <ArtworkGrid
+                      posts={posts?.data}
                       currentUserId={session?.user?.id}
                       onDelete={handleDelete}
                       isDeletePending={isDeletePending}

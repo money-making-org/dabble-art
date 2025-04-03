@@ -6,7 +6,7 @@ import { useQueryState } from "nuqs";
 import { api } from "@workspace/eden";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import { ArtworkGrid } from "./_components/artwork-grid";
+import { ArtworkGrid } from "./components/artwork-grid";
 import {
   Select,
   SelectContent,
@@ -182,7 +182,6 @@ export default function DiscoverPage() {
       <div className="bg-background/80 backdrop-blur-md border-b border-border/50 py-2">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-4 justify-between">
-            
             <div className="flex items-center gap-2 py-2">
               {categories.map((category) => (
                 <Button

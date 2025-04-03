@@ -2,15 +2,28 @@
 
 import { useState } from "react";
 import { Button } from "@workspace/ui/components/button";
-import { ArtworkGrid } from "../../_components/artwork-grid";
+import { ArtworkGrid } from "../../components/artwork-grid";
 import { Badge } from "@workspace/ui/components/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@workspace/ui/components/tabs";
 import { Card } from "@workspace/ui/components/card";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@workspace/eden";
-import { Instagram, Twitter, Globe, Heart, Eye, Palette, Search } from "lucide-react";
+import {
+  Instagram,
+  Twitter,
+  Globe,
+  Heart,
+  Eye,
+  Palette,
+  Search,
+} from "lucide-react";
 import { Input } from "@workspace/ui/components/input";
 import { useQueryState } from "nuqs";
 
@@ -18,7 +31,8 @@ const mockUser = {
   id: "67e6bedb0a68cc2792e76c10",
   username: "dawson",
   name: "Dawson",
-  avatar: "https://sdmntprwestus.oaiusercontent.com/files/00000000-83dc-5230-9093-27760a869c85/raw?se=2025-03-29T18%3A07%3A41Z&sp=r&sv=2024-08-04&sr=b&scid=549e0daa-5cea-55ca-9e71-6d4f2c7e2025&skoid=72d71449-cf2f-4f10-a498-f160460104ee&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-03-29T15%3A54%3A45Z&ske=2025-03-30T15%3A54%3A45Z&sks=b&skv=2024-08-04&sig=3AQ4PDEUlH%2BQtgK3PC8XmfEY9L4jnhlThEM81ObLkIA%3D",
+  avatar:
+    "https://sdmntprwestus.oaiusercontent.com/files/00000000-83dc-5230-9093-27760a869c85/raw?se=2025-03-29T18%3A07%3A41Z&sp=r&sv=2024-08-04&sr=b&scid=549e0daa-5cea-55ca-9e71-6d4f2c7e2025&skoid=72d71449-cf2f-4f10-a498-f160460104ee&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-03-29T15%3A54%3A45Z&ske=2025-03-30T15%3A54%3A45Z&sks=b&skv=2024-08-04&sig=3AQ4PDEUlH%2BQtgK3PC8XmfEY9L4jnhlThEM81ObLkIA%3D",
   bio: "Skid who thinks he's a good coder but is actually a skid.",
   location: "Skidville, USA",
   joinedDate: "Mar 29, 2025",
@@ -59,14 +73,20 @@ function ProfileSkeleton() {
   );
 }
 
-export default function ProfilePage({ params }: { params: { username: string } }) {
+export default function ProfilePage({
+  params,
+}: {
+  params: { username: string };
+}) {
   const [activeTab, setActiveTab] = useState("gallery");
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue: "",
     clearOnDefault: true,
     throttleMs: 150,
   });
-  const [sortBy, setSortBy] = useState<"latest" | "popular" | "relevance">("latest");
+  const [sortBy, setSortBy] = useState<"latest" | "popular" | "relevance">(
+    "latest"
+  );
 
   const { data: posts, isPending } = useQuery({
     queryKey: ["user-posts", params.username, searchQuery, sortBy],
@@ -117,31 +137,41 @@ export default function ProfilePage({ params }: { params: { username: string } }
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <Card className="p-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{mockUser.stats.artworks}</div>
+                  <div className="text-2xl font-bold">
+                    {mockUser.stats.artworks}
+                  </div>
                   <div className="text-sm text-muted-foreground">Artworks</div>
                 </div>
               </Card>
               <Card className="p-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{mockUser.stats.followers}</div>
+                  <div className="text-2xl font-bold">
+                    {mockUser.stats.followers}
+                  </div>
                   <div className="text-sm text-muted-foreground">Followers</div>
                 </div>
               </Card>
               <Card className="p-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{mockUser.stats.following}</div>
+                  <div className="text-2xl font-bold">
+                    {mockUser.stats.following}
+                  </div>
                   <div className="text-sm text-muted-foreground">Following</div>
                 </div>
               </Card>
               <Card className="p-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{mockUser.stats.likes}</div>
+                  <div className="text-2xl font-bold">
+                    {mockUser.stats.likes}
+                  </div>
                   <div className="text-sm text-muted-foreground">Likes</div>
                 </div>
               </Card>
               <Card className="p-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{mockUser.stats.views}</div>
+                  <div className="text-2xl font-bold">
+                    {mockUser.stats.views}
+                  </div>
                   <div className="text-sm text-muted-foreground">Views</div>
                 </div>
               </Card>
@@ -167,7 +197,6 @@ export default function ProfilePage({ params }: { params: { username: string } }
               <TabsContent value="gallery" className="space-y-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-2xl font-semibold">Gallery</h2>
-
                 </div>
                 <ArtworkGrid posts={posts?.data} />
               </TabsContent>
@@ -181,14 +210,22 @@ export default function ProfilePage({ params }: { params: { username: string } }
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold mb-2">Location</h3>
-                      <p className="text-muted-foreground">{mockUser.location}</p>
+                      <p className="text-muted-foreground">
+                        {mockUser.location}
+                      </p>
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold mb-2">Member Since</h3>
-                      <p className="text-muted-foreground">{mockUser.joinedDate}</p>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Member Since
+                      </h3>
+                      <p className="text-muted-foreground">
+                        {mockUser.joinedDate}
+                      </p>
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold mb-2">Social Links</h3>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Social Links
+                      </h3>
                       <div className="flex gap-4">
                         <a
                           href={`https://instagram.com/${mockUser.social.instagram}`}
@@ -241,4 +278,4 @@ export default function ProfilePage({ params }: { params: { username: string } }
       </div>
     </div>
   );
-} 
+}
