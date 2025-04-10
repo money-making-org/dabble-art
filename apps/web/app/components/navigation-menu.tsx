@@ -11,7 +11,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@workspace/ui/components/navigation-menu";
-import { Search, Upload, Bell, LayoutDashboard, Menu } from "lucide-react";
+import { Search, Upload, Bell, LayoutDashboard, Menu, User } from "lucide-react";
 import {
   Avatar,
   AvatarFallback,
@@ -29,11 +29,13 @@ import {
 } from "@workspace/ui/components/sheet";
 import HamburgerMenu from "@/app/components/hamburger";
 import Logo from "@/components/logo";
+import { authClient } from "@/lib/auth-client";
 
 export function NavigationMenu() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = authClient.useSession();
 
   return (
     <div className="border-b">
@@ -82,6 +84,12 @@ export function NavigationMenu() {
                   label: "Dashboard",
                   signedIn: true,
                   icon: <LayoutDashboard />,
+                },
+                {
+                  href: `/profile/${session?.user?.username}`,
+                  label: "Profile",
+                  signedIn: true,
+                  icon: <User />,
                 },
               ]}
             />
