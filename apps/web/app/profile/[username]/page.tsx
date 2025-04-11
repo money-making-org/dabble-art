@@ -149,11 +149,22 @@ export default function ProfilePage({
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="gallery" className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold">Gallery</h2>
+            <TabsContent value="posts" className="space-y-6">
+              <Card>
+                <CardContent>
+                  <div className="space-y-4">
+                    <Input
+                      placeholder="What's on your mind?"
+                      className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <Button className="float-right bg-primary text-primary-foreground rounded-lg">Post</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-              </div>
+            <TabsContent value="gallery" className="space-y-6">
+
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
