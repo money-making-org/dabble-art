@@ -10,22 +10,46 @@ import {
   TabsList,
   TabsTrigger,
 } from "@workspace/ui/components/tabs";
-import { Card, CardContent, CardTitle, CardHeader } from "@workspace/ui/components/card";
-import { Instagram, Twitter, Globe, Heart, Eye, Palette, Search, MessageCircle, User, Folder } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardTitle,
+  CardHeader,
+} from "@workspace/ui/components/card";
+import {
+  Instagram,
+  Twitter,
+  Globe,
+  Heart,
+  Eye,
+  Palette,
+  Search,
+  MessageCircle,
+  User,
+  Folder,
+} from "lucide-react";
 import { Input } from "@workspace/ui/components/input";
 import { useQueryState } from "nuqs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@workspace/eden";
 import { authClient } from "@/lib/auth-client";
 import { unstable_noStore } from "next/cache";
+import { useParams } from "next/navigation";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
 
-export default function ProfilePage({
-  params,
-}: {
-  params: { username: string };
-}) {
+export default function ProfilePage() {
   unstable_noStore();
+
+  const params = useParams();
+
   const [activeTab, setActiveTab] = useState("posts");
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue: "",
@@ -95,11 +119,13 @@ export default function ProfilePage({
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-shrink-0">
               <div className="relative">
-                <img
-                  src={"https://pingcraft.io/favicon.png"}
-                  alt={params.username}
-                  className="w-32 h-32 rounded-full object-cover border-4 border-background shadow-lg"
-                />
+                <Avatar className="size-32 border">
+                  <AvatarImage
+                    src={userData?.data?.image ?? ""}
+                    alt={userData?.data?.displayUsername}
+                  />
+                  <AvatarFallback>{params.username?.[0] || "?"}</AvatarFallback>
+                </Avatar>
                 <div className="absolute bottom-0 right-0 p-2 bg-primary rounded-full text-primary-foreground">
                   <Palette className="w-4 h-4" />
                 </div>
@@ -108,8 +134,12 @@ export default function ProfilePage({
             <div className="flex-1 space-y-4">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold">{params.username}</h1>
-                  <p className="text-muted-foreground">@{params.username}</p>
+                  <h1 className="text-3xl font-bold">
+                    {userData?.data?.displayUsername}
+                  </h1>
+                  <p className="text-muted-foreground">
+                    @{userData?.data?.username}
+                  </p>
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm">
@@ -123,7 +153,12 @@ export default function ProfilePage({
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="hover:bg-secondary/80 transition-colors">tags</Badge>
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-secondary/80 transition-colors"
+                >
+                  tags
+                </Badge>
               </div>
             </div>
           </div>
@@ -143,7 +178,10 @@ export default function ProfilePage({
                 <User className="w-4 h-4" />
                 About
               </TabsTrigger>
-              <TabsTrigger value="collections" className="flex items-center gap-2">
+              <TabsTrigger
+                value="collections"
+                className="flex items-center gap-2"
+              >
                 <Folder className="w-4 h-4" />
                 Collections
               </TabsTrigger>
@@ -157,14 +195,15 @@ export default function ProfilePage({
                       placeholder="What's on your mind?"
                       className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                    <Button className="float-right bg-primary text-primary-foreground rounded-lg">Post</Button>
+                    <Button className="float-right bg-primary text-primary-foreground rounded-lg">
+                      Post
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
             <TabsContent value="gallery" className="space-y-6">
-
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -198,12 +237,12 @@ export default function ProfilePage({
                   </div>
                 </CardHeader>
                 <CardContent>
-                    <ArtworkGrid
-                      posts={posts?.data}
-                      currentUserId={session?.user?.id}
-                      onDelete={handleDelete}
-                      isDeletePending={isDeletePending}
-                    />
+                  <ArtworkGrid
+                    posts={posts?.data}
+                    currentUserId={session?.user?.id}
+                    onDelete={handleDelete}
+                    isDeletePending={isDeletePending}
+                  />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -213,7 +252,9 @@ export default function ProfilePage({
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-xl font-semibold mb-2">About Me</h3>
-                    <p className="text-muted-foreground leading-relaxed">User bio.</p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      User bio.
+                    </p>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Location</h3>
@@ -224,9 +265,7 @@ export default function ProfilePage({
                     <p className="text-muted-foreground">Mar 29, 2025</p>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      Social Links
-                    </h3>
+                    <h3 className="text-xl font-semibold mb-2">Social Links</h3>
                     <div className="flex gap-4">
                       <a
                         href={`https://instagram.com`}
@@ -245,7 +284,7 @@ export default function ProfilePage({
                         <Twitter className="w-5 h-5" />
                       </a>
                       <a
-                        href={'https://pingcraft.io'}
+                        href={"https://pingcraft.io"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-primary transition-colors"
@@ -261,13 +300,17 @@ export default function ProfilePage({
             <TabsContent value="collections">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <Card key={i} className="overflow-hidden group hover:shadow-lg transition-all">
+                  <Card
+                    key={i}
+                    className="overflow-hidden group hover:shadow-lg transition-all"
+                  >
                     <div className="aspect-video bg-muted relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform">
                         <h3 className="font-semibold">Collection {i + 1}</h3>
                         <p className="text-sm text-white/80">
-                          Youtube playlist type feature to organize your artworks.
+                          Youtube playlist type feature to organize your
+                          artworks.
                         </p>
                       </div>
                     </div>

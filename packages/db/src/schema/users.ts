@@ -32,9 +32,11 @@ export const ElysiaUser = t.Object({
 interface User extends Document {
   name: string;
   username: string;
+  displayUsername: string;
   email: string;
   emailVerified: boolean;
   image: string;
+  bio: string;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -43,9 +45,11 @@ const UserSchema = new Schema<User>(
   {
     name: { type: String, required: true },
     username: { type: String, required: true, unique: true },
+    displayUsername: { type: String },
     email: { type: String, required: true, unique: true },
     emailVerified: { type: Boolean, default: false },
     image: { type: String, default: "" },
+    bio: { type: String, default: "" },
   },
   { timestamps: true, collection: "user" }
 );

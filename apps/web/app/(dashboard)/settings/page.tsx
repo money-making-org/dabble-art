@@ -41,7 +41,7 @@ export default function CustomSettingsPage() {
         type="string"
       />
 
-<DeleteAccountCard />
+      <DeleteAccountCard />
     </div>
   );
 }

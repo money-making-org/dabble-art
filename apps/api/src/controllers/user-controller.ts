@@ -7,14 +7,23 @@ import mongoose from "mongoose";
 export const userController = new Elysia({ prefix: "/users" })
   .use(authProtected)
   .get("/:username", async ({ params, error }) => {
-    const username = params.username;
+    const { username } = params;
 
-    const user = await UserModel.findOne({ username });
+    const user = await UserModel.findOne({
+      username: { $regex: new RegExp(`^${username}$`, "i") },
+    });
     if (!user) {
       return error(404, "User not found.");
     }
 
-    return user;
+    return {
+      name: user.name,
+      username: user.username,
+      displayUsername: user.displayUsername,
+
+      image: user.image,
+      bio: user.bio,
+    };
   })
   .post(
     "/:userId/follow",
