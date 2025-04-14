@@ -11,9 +11,15 @@ export const userController = new Elysia({ prefix: "/users" })
     async ({ params, error }) => {
       const { userId } = params;
 
-      const user = await UserModel.findOne({
-        $or: [{ _id: userId }, { username: userId }],
-      });
+      let query: any = {};
+
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        query = { username: userId };
+      } else {
+        query = { _id: userId };
+      }
+
+      const user = await UserModel.findOne(query);
       if (!user) {
         return error(404, "User not found.");
       }

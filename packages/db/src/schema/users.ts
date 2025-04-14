@@ -15,19 +15,23 @@
 }
 */
 
-import { t } from "elysia";
+import { t, type Static } from "elysia";
 import { model, Schema } from "mongoose";
 
 export const ElysiaUser = t.Object({
   _id: t.Any(),
   name: t.String(),
   username: t.String(),
+  displayUsername: t.String(),
   email: t.String(),
   emailVerified: t.Boolean(),
   image: t.String(),
+  bio: t.String(),
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });
+
+export type UserType = Static<typeof ElysiaUser>;
 
 interface User extends Document {
   name: string;
