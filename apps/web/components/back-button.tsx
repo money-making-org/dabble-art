@@ -10,7 +10,6 @@ export const BackButton = () => {
   return (
     <Button
       variant="secondary"
-      asChild
       className="group"
       onClick={() => router.back()}
     >

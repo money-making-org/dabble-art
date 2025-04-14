@@ -27,9 +27,7 @@ export default function ProfileHeader({ user }: { user: UserType }) {
       <div className="flex-1 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold">
-              {user?.displayUsername}
-            </h1>
+            <h1 className="text-3xl font-bold">{user?.displayUsername}</h1>
             <p className="text-muted-foreground">@{user?.username}</p>
           </div>
           <div className="flex gap-2">
