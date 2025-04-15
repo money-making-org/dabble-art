@@ -15,6 +15,8 @@ declare module "bun" {
       S3_SESSION_TOKEN: string;
 
       WEBHOOK_URL: string | undefined;
+
+      NODE_ENV: "development" | "production" | undefined
     };
   }
 }

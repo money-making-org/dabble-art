@@ -35,10 +35,6 @@ export default function ProfileHeader({ user }: { user: UserType }) {
               <Heart className="w-4 h-4 mr-2" />
               Follow
             </Button>
-            <Button variant="outline" size="sm">
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Message
-            </Button>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
