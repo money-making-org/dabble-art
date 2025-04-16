@@ -31,5 +31,10 @@
       "@/*": ["./*" ]
     },
   },
-  "include": ["src/**/*.ts", "global.d.ts"]
+  "include": ["src/**/*.ts", "global.d.ts"],
+  "references": [
+    {
+      "path": "../../packages/db"
+    }
+  ]
 }

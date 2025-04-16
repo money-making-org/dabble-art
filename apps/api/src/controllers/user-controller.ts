@@ -1,14 +1,17 @@
-import { authProtected } from "@workspace/api/src/middlewares/auth-middleware";
+import {
+  authProtected,
+  betterAuth,
+} from "@workspace/api/src/middlewares/auth-middleware";
 import { FollowingModel } from "@workspace/db/src/schema/followings";
 import { UserModel } from "@workspace/db/src/schema/users";
 import Elysia, { t } from "elysia";
 import mongoose from "mongoose";
 
 export const userController = new Elysia({ prefix: "/users" })
-  .use(authProtected)
+  .use(betterAuth)
   .get(
     "/:userId",
-    async ({ params, error }) => {
+    async ({ params, error, user }) => {
       const { userId } = params;
 
       let query: any = {};
@@ -19,24 +22,44 @@ export const userController = new Elysia({ prefix: "/users" })
         query = { _id: userId };
       }
 
-      const user = await UserModel.findOne(query);
-      if (!user) {
+      const queriedUser = await UserModel.findOne(query);
+      if (!queriedUser) {
         return error(404, "User not found.");
       }
 
-      return {
-        name: user.name,
-        username: user.username,
-        displayUsername: user.displayUsername,
+      let isFollowing = false;
 
-        image: user.image,
-        bio: user.bio,
+      console.log(user);
+      if (user) {
+        const following = await FollowingModel.exists({
+          follower: user.id,
+          following: queriedUser._id,
+        }).lean();
+
+        console.log(following);
+
+        isFollowing = !!following;
+      }
+
+      return {
+        id: queriedUser._id,
+
+        name: queriedUser.name,
+        username: queriedUser.username,
+        displayUsername: queriedUser.displayUsername,
+
+        image: queriedUser.image,
+        bio: queriedUser.bio,
+
+        isFollowing: isFollowing,
       };
     },
     {
       params: t.Object({
         userId: t.String(),
       }),
+
+      auth: true,
     }
   )
   .post(

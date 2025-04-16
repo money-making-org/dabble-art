@@ -217,6 +217,7 @@ export const publicController = new Elysia({ prefix: "/public" })
           ]);
           isLiked = !!likeCheck;
           isFollowing = !!followCheck;
+
         } catch (dbError) {
           console.error("Database error checking like/follow status:", dbError);
         }
