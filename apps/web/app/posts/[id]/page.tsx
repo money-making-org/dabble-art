@@ -60,7 +60,7 @@ export default function ArtPiecePage() {
 
   const postId = params.id as string;
 
-  const { data: postResult, isPending: isPostPejnding } = useQuery({
+  const { data: postResult, isPending: isPostPending } = useQuery({
     queryKey: ["post", postId],
     queryFn: () => api.public.posts({ id: postId }).get(),
   });
@@ -200,9 +200,7 @@ export default function ArtPiecePage() {
               likeCount={getLikesCount()}
               onLike={handleLike}
               isLikePending={isLikePending}
-              isFollowing={isFollowing()}
-              isFollowPending={true}
-              onFollowToggle={handleFollowToggle}
+
               currentUserId={currentUserId}
               onDelete={handleDelete}
               isDeletePending={isDeletePending}

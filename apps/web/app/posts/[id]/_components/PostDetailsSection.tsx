@@ -37,9 +37,6 @@ interface PostDetailsSectionProps {
   likeCount: number;
   onLike: () => void;
   isLikePending: boolean;
-  isFollowing: boolean;
-  isFollowPending: boolean;
-  onFollowToggle: () => void;
   currentUserId?: string; // Add current user ID prop
   onDelete: () => Promise<void>;
   isDeletePending?: boolean;
@@ -52,9 +49,6 @@ export function PostDetailsSection({
   likeCount,
   onLike,
   isLikePending,
-  isFollowing,
-  isFollowPending,
-  onFollowToggle,
   currentUserId,
   onDelete,
   isDeletePending = false,
@@ -76,7 +70,7 @@ export function PostDetailsSection({
     <div className="flex flex-col gap-6">
       {/* Title */}
       <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">
-        {post.title}
+        {post.name}
       </h1>
 
       {/* Author Info */}
@@ -87,7 +81,7 @@ export function PostDetailsSection({
         >
           <Avatar className="h-10 w-10 border">
             <AvatarImage
-              src={post.owner.avatarUrl ?? ""}
+              src={post.owner.image ?? ""}
               alt={post.owner.name}
             />
             <AvatarFallback>{post.owner.name[0] || "?"}</AvatarFallback>
@@ -108,12 +102,14 @@ export function PostDetailsSection({
         {/* Conditionally render Follow Button */}
         {!isOwnPost ? (
           <Button
-            variant={isFollowing ? "secondary" : "outline"}
-            size="sm"
-            onClick={onFollowToggle}
-            disabled={isFollowPending}
+          //   variant={isFollowing ? "secondary" : "outline"}
+          //   size="sm"
+          //   onClick={onFollowToggle}
+          //   disabled={isFollowPending}
+          // >
+          //   {isFollowPending ? "..." : isFollowing ? "Following" : "Follow"}
           >
-            {isFollowPending ? "..." : isFollowing ? "Following" : "Follow"}
+            Follow
           </Button>
         ) : (
           <DropdownMenu>
