@@ -4,6 +4,7 @@ import { FileModel } from "@workspace/db/src/schema/files";
 import { FollowingModel } from "@workspace/db/src/schema/followings";
 import { LikeModel } from "@workspace/db/src/schema/likes";
 import { ElysiaPost, PostModel } from "@workspace/db/src/schema/posts";
+import { UserModel } from "@workspace/db/src/schema/users";
 import Elysia, { t } from "elysia";
 import mongoose from "mongoose";
 
@@ -69,8 +70,20 @@ export const publicController = new Elysia({ prefix: "/public" })
         };
       }
 
+      let ownerId: string | null = null;
       if (owner) {
-        queryConditions.owner = owner;
+        if (mongoose.Types.ObjectId.isValid(owner)) {
+          ownerId = owner;
+        } else {
+          const ownerUser = await UserModel.findOne({ username: owner });
+          if (ownerUser) {
+            ownerId = ownerUser._id.toString();
+          }
+        }
+      }
+
+      if (ownerId) {
+        queryConditions.owner = ownerId;
       }
 
       // Determine sort order

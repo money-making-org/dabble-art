@@ -8,7 +8,7 @@ import { getPreviewURL } from "@/hooks/use-preview"; // Use absolute import
 // Simplified Post type for the card
 interface RelatedPost {
   _id: string;
-  title: string;
+  name: string;
   files: { _id: string; mimeType: string }[]; // Need at least one file ID and type
   owner: { name: string; id: string }; // Basic owner info
 }

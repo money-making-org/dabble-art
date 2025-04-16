@@ -1,6 +1,7 @@
 "use server";
 
 import { ProfileBanner } from "@/app/profile/[username]/_components/profile-banner";
+import ProfileGallery from "@/app/profile/[username]/_components/profile-gallery";
 import ProfileHeader from "@/app/profile/[username]/_components/profile-header";
 import { UserNotFound } from "@/app/profile/[username]/_components/user-not-found";
 import { api } from "@workspace/eden";
@@ -28,7 +29,8 @@ export default async function ProfilePage({
 
       <div className="container mx-auto px-4 -mt-16 pb-8 relative z-10">
         <div className="space-y-8">
-          <ProfileHeader user={user} />
+          <ProfileHeader user={user as any} />
+          <ProfileGallery />
         </div>
       </div>
     </div>

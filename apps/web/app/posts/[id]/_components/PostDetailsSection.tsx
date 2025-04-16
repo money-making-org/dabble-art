@@ -29,6 +29,7 @@ import {
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog";
 import React from "react";
+import { FollowButton } from "@/components/follow-button";
 
 // Define the props interface
 interface PostDetailsSectionProps {
@@ -76,14 +77,11 @@ export function PostDetailsSection({
       {/* Author Info */}
       <div className="flex items-center gap-3">
         <Link
-          href={`/profile/${post.owner.name}`}
+          href={`/profile/${post.owner.username}`}
           aria-label={`View profile of ${post.owner.name}`}
         >
           <Avatar className="h-10 w-10 border">
-            <AvatarImage
-              src={post.owner.image ?? ""}
-              alt={post.owner.name}
-            />
+            <AvatarImage src={post.owner.image ?? ""} alt={post.owner.name} />
             <AvatarFallback>{post.owner.name[0] || "?"}</AvatarFallback>
           </Avatar>
         </Link>
@@ -101,16 +99,13 @@ export function PostDetailsSection({
 
         {/* Conditionally render Follow Button */}
         {!isOwnPost ? (
-          <Button
-          //   variant={isFollowing ? "secondary" : "outline"}
-          //   size="sm"
-          //   onClick={onFollowToggle}
-          //   disabled={isFollowPending}
-          // >
-          //   {isFollowPending ? "..." : isFollowing ? "Following" : "Follow"}
-          >
-            Follow
-          </Button>
+          <FollowButton
+            userId={post.owner._id}
+            info={{
+              isFollowing: post.owner.isFollowing,
+              isFollowPending: false,
+            }}
+          />
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

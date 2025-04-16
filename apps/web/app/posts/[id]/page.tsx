@@ -200,7 +200,6 @@ export default function ArtPiecePage() {
               likeCount={getLikesCount()}
               onLike={handleLike}
               isLikePending={isLikePending}
-
               currentUserId={currentUserId}
               onDelete={handleDelete}
               isDeletePending={isDeletePending}
