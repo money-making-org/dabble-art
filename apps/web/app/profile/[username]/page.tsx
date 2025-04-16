@@ -15,7 +15,9 @@ export default async function ProfilePage({
   const { data: user, error } = await api
     .users({ userId: (await params).username })
     .get({
-      headers: await headers(),
+      headers: {
+        Cookie: (await headers()).get("Cookie") ?? "",
+      },
     });
 
   if (error || !user) {
