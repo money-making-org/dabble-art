@@ -13,6 +13,8 @@ import { Heart } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { authClient } from "@/lib/auth-client";
 import { FollowButton } from "@/components/follow-button";
+import { EditProfileModal } from "./edit-profile-modal";
+import { useState } from "react";
 
 export default function ProfileHeader({
   user,
@@ -22,7 +24,7 @@ export default function ProfileHeader({
   };
 }) {
   const { data: session, error } = authClient.useSession();
-
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   return (
     <div className="flex flex-col md:flex-row gap-6">
       <div className="flex-shrink-0">
@@ -56,12 +58,19 @@ export default function ProfileHeader({
                 }}
               />
             )}
+            {user?.id === session?.user?.id && (
+              <Button variant="outline" size="sm" onClick={() => setIsEditProfileModalOpen(true)}>
+                Edit Profile
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
           {user?.bio && <p className="text-muted-foreground">{user?.bio}</p>}
         </div>
       </div>
+      <EditProfileModal user={user as unknown as UserType} isOpen={isEditProfileModalOpen} onClose={() => setIsEditProfileModalOpen(false)} />
     </div>
+  
   );
 }

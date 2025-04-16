@@ -80,16 +80,16 @@ export function NavigationMenu() {
               className="cursor-pointer"
               additionalLinks={[
                 {
-                  href: "/dashboard",
-                  label: "Dashboard",
-                  signedIn: true,
-                  icon: <LayoutDashboard />,
-                },
-                {
                   href: `/profile/${session?.user?.username}`,
                   label: "Profile",
                   signedIn: true,
                   icon: <User />,
+                },
+                {
+                  href: "/dashboard",
+                  label: "Dashboard",
+                  signedIn: true,
+                  icon: <LayoutDashboard />,
                 },
               ]}
             />
