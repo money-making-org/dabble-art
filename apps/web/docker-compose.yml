@@ -13,8 +13,7 @@ services:
       - PORT=3000
       - HOSTNAME=0.0.0.0
 
-      # API URL (use service name 'api' for internal Docker communication by default)
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://api:3001}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://api.dabble.art}
 
     ports:
       - "3000:3000"
