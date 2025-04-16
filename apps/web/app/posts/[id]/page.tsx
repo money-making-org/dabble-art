@@ -60,7 +60,7 @@ export default function ArtPiecePage() {
 
   const postId = params.id as string;
 
-  const { data: postResult, isPending: isPostPending } = useQuery({
+  const { data: postResult, isPending: isPostPejnding } = useQuery({
     queryKey: ["post", postId],
     queryFn: () => api.public.posts({ id: postId }).get(),
   });
@@ -68,12 +68,8 @@ export default function ArtPiecePage() {
   const [isLocallyLiked, setIsLocallyLiked] = useState<boolean | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [activeThumbnailIndex, setActiveThumbnailIndex] = useState(0);
-  const [isLocallyFollowing, setIsLocallyFollowing] = useState<boolean | null>(
-    null
-  );
 
   const { likePost, isPending: isLikePending } = useLikePost();
-  const { toggleFollow, isPending: isFollowPending } = useFollowToggle();
 
   const postData = postResult?.data;
 
@@ -92,15 +88,6 @@ export default function ArtPiecePage() {
       toast.error(error.message || "Failed to delete post. Please try again.");
     },
   });
-
-  useEffect(() => {
-    if (
-      postData?.owner?.isFollowing !== undefined &&
-      isLocallyFollowing === null
-    ) {
-      setIsLocallyFollowing(postData.owner.isFollowing);
-    }
-  }, [postData, isLocallyFollowing]);
 
   function isLikedInDB() {
     return postData?.isLiked ?? false;
@@ -138,35 +125,6 @@ export default function ArtPiecePage() {
         }
       },
     });
-  };
-
-  function isFollowing() {
-    if (!currentUserId) return false;
-    if (isLocallyFollowing !== null) {
-      return isLocallyFollowing;
-    }
-    return postData?.owner?.isFollowing ?? false;
-  }
-
-  const handleFollowToggle = () => {
-    if (!session?.user) {
-      toast.error("Please log in to follow users.");
-      return;
-    }
-    if (isFollowPending || !postData?.owner?._id) return;
-
-    const currentlyFollowing = isFollowing();
-    setIsLocallyFollowing(!currentlyFollowing);
-
-    toggleFollow(
-      { userId: postData.owner._id, isCurrentlyFollowing: currentlyFollowing },
-      {
-        onError: () => {
-          setIsLocallyFollowing(currentlyFollowing);
-          toast.error("Failed to update follow status.");
-        },
-      }
-    );
   };
 
   const handleDelete = async () => {
@@ -243,7 +201,7 @@ export default function ArtPiecePage() {
               onLike={handleLike}
               isLikePending={isLikePending}
               isFollowing={isFollowing()}
-              isFollowPending={isFollowPending}
+              isFollowPending={true}
               onFollowToggle={handleFollowToggle}
               currentUserId={currentUserId}
               onDelete={handleDelete}

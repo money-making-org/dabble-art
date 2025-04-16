@@ -50,8 +50,10 @@ export default function ProfileHeader({
             {user?.id !== session?.user?.id && (error || session?.user?.id) && (
               <FollowButton
                 userId={user?.id}
-                isFollowing={user?.isFollowing}
-                isFollowPending={false}
+                info={{
+                  isFollowing: user?.isFollowing,
+                  isFollowPending: false,
+                }}
               />
             )}
           </div>
