@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cn } from "@workspace/ui/lib/utils";
 import { Button } from "@workspace/ui/components/button";
-import { Pencil } from "lucide-react";
+import { MoreHorizontal, Pencil } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -187,7 +187,7 @@ export function ArtworkGrid({
                         size="icon"
                         className="bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors duration-200"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
