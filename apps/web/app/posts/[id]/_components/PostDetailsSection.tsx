@@ -30,6 +30,8 @@ import {
 } from "@workspace/ui/components/alert-dialog";
 import React from "react";
 import { FollowButton } from "@/components/follow-button";
+import { Pencil } from "lucide-react";
+import { EditButton } from "@/components/edit-button";
 
 // Define the props interface
 interface PostDetailsSectionProps {
@@ -41,6 +43,7 @@ interface PostDetailsSectionProps {
   currentUserId?: string; // Add current user ID prop
   onDelete: () => Promise<void>;
   isDeletePending?: boolean;
+  onEdit?: (artwork: PostType) => void;
 }
 
 // Export the component function
@@ -53,6 +56,7 @@ export function PostDetailsSection({
   currentUserId,
   onDelete,
   isDeletePending = false,
+  onEdit,
 }: PostDetailsSectionProps) {
   const isOwnPost = currentUserId === post.owner._id;
   const [isAlertOpen, setIsAlertOpen] = React.useState(false);
@@ -97,7 +101,7 @@ export function PostDetailsSection({
           </span>
         </div>
 
-        {/* Conditionally render Follow Button */}
+        {/* Conditionally render Follow Button or Edit Button */}
         {!isOwnPost ? (
           <FollowButton
             userId={post.owner._id}
@@ -109,16 +113,36 @@ export function PostDetailsSection({
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="sm">
-                Edit
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit?.(post);
+                }}
+              >
+                Edit Post
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit?.(post);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
               <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem
-                    variant="destructive"
-                    onSelect={(e) => e.preventDefault()}
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className="text-destructive focus:text-destructive"
                   >
                     Delete
                   </DropdownMenuItem>
@@ -134,13 +158,22 @@ export function PostDetailsSection({
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel disabled={isDeletePending}>
+                    <AlertDialogCancel
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    >
                       Cancel
                     </AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={handleDeleteConfirm}
-                      disabled={isDeletePending}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteConfirm();
+                      }}
+                      disabled={isDeletePending}
                     >
                       {isDeletePending ? "Deleting..." : "Delete"}
                     </AlertDialogAction>

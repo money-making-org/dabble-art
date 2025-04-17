@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import { cn } from "@workspace/ui/lib/utils";
 import { Button } from "@workspace/ui/components/button";
@@ -63,8 +62,10 @@ interface ArtworkGridProps {
   posts: Post[];
   className?: string;
   currentUserId?: string;
+  onEdit?: (artwork: Post) => void;
   onDelete: (postId: string) => Promise<void>;
   isDeletePending?: boolean;
+  showActions?: boolean;
 }
 
 interface GalleryImage {
@@ -81,8 +82,10 @@ export function ArtworkGrid({
   posts,
   className,
   currentUserId,
+  onEdit,
   onDelete,
   isDeletePending = false,
+  showActions = false,
 }: ArtworkGridProps) {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
@@ -162,15 +165,14 @@ export function ArtworkGrid({
             return null;
           }
 
-          // const isOwnArtwork = currentUserId === post.owner._id;
-          const isOwnArtwork = false;
+          const isOwnArtwork = post.owner && currentUserId === post.owner._id;
 
           return (
             <Link
               href={`/posts/${post._id}`}
               className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"
             >
-              {isOwnArtwork && (
+              {showActions && isOwnArtwork && (
                 <div className="absolute top-2 right-2 z-10">
                   <DropdownMenu>
                     <DropdownMenuTrigger
@@ -183,12 +185,23 @@ export function ArtworkGrid({
                       <Button
                         variant="secondary"
                         size="icon"
-                        className="bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+                        className="bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors duration-200"
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      {onEdit && (
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onEdit(post);
+                          }}
+                        >
+                          Edit
+                        </DropdownMenuItem>
+                      )}
                       <AlertDialog
                         open={isAlertOpen}
                         onOpenChange={setIsAlertOpen}

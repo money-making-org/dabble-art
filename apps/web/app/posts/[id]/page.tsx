@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@workspace/eden";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 
 import { RelatedPostCard } from "@/app/posts/[id]/_components/RelatedPostCard";
@@ -16,6 +16,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { PostDetailsSection } from "./_components/PostDetailsSection";
 import { PostImageSection } from "./_components/PostImageSection";
+import { EditArtworkModal } from "@/app/(dashboard)/dashboard/_components/edit-artwork-modal";
 
 function PostSkeleton() {
   return (
@@ -57,6 +58,9 @@ export default function ArtPiecePage() {
   const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
   const currentUserId = session?.user?.id;
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedArtwork, setSelectedArtwork] = useState<Post | null>(null);
 
   const postId = params.id as string;
 
@@ -148,6 +152,11 @@ export default function ArtPiecePage() {
       postData.categories.length > 0,
   });
 
+  const handleEdit = useCallback((artwork: Post) => {
+    setSelectedArtwork(artwork);
+    setIsEditModalOpen(true);
+  }, []);
+
   if (isPostPending) {
     return (
       <div className="bg-background">
@@ -203,6 +212,7 @@ export default function ArtPiecePage() {
               currentUserId={currentUserId}
               onDelete={handleDelete}
               isDeletePending={isDeletePending}
+              onEdit={handleEdit}
             />
           </div>
 
@@ -218,6 +228,17 @@ export default function ArtPiecePage() {
           )}
         </div>
       </div>
+
+      {selectedArtwork && (
+        <EditArtworkModal
+          artwork={selectedArtwork}
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setSelectedArtwork(null);
+          }}
+        />
+      )}
     </Suspense>
   );
 }

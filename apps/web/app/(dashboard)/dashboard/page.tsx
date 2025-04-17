@@ -18,7 +18,6 @@ import {
 import { Plus, Eye, Download, Heart, Search, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { api } from "@workspace/eden";
-import { ArtworkGrid } from "../../components/artwork-grid";
 import { useQueryState } from "nuqs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@workspace/ui/components/skeleton";
@@ -27,6 +26,8 @@ import { unstable_noStore } from "next/cache";
 import { authClient } from "@/lib/auth-client";
 import type { Post } from "../../components/artwork-grid";
 import { useState, useCallback } from "react";
+import { EditArtworkModal } from "./_components/edit-artwork-modal";
+import DashboardGallery from "./_components/dashboard-gallery";
 
 function ArtworkGridSkeleton() {
   return (
@@ -43,6 +44,8 @@ export default function DashboardPage() {
   const { data: session } = authClient.useSession();
   const queryClient = useQueryClient();
   const [isDeletePending, setIsDeletePending] = useState(false);
+  const [selectedArtwork, setSelectedArtwork] = useState<Post | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue: "",
@@ -77,16 +80,18 @@ export default function DashboardPage() {
         },
       });
 
+      if (!userPosts.data) return { views: 0, likes: 0, downloads: 0 };
+
       const totalViews = userPosts.data.reduce(
-        (acc: number, post: Post) => acc + (post.analytics?.views || 0),
+        (acc: number, post: any) => acc + (post.analytics?.views || 0),
         0
       );
       const totalDownloads = userPosts.data.reduce(
-        (acc: number, post: Post) => acc + (post.analytics?.downloads || 0),
+        (acc: number, post: any) => acc + (post.analytics?.downloads || 0),
         0
       );
       const totalLikes = userPosts.data.reduce(
-        (acc: number, post: Post) => acc + (post.likeCount || 0),
+        (acc: number, post: any) => acc + (post.likeCount || 0),
         0
       );
 
@@ -121,6 +126,11 @@ export default function DashboardPage() {
     },
     [queryClient]
   );
+
+  const handleEdit = useCallback((artwork: Post) => {
+    setSelectedArtwork(artwork);
+    setIsEditModalOpen(true);
+  }, []);
 
   if (!session?.user?.id) {
     return (
@@ -200,52 +210,12 @@ export default function DashboardPage() {
           <div className="flex gap-8">
             {/* Main Content */}
             <div className="flex-1 min-w-0">
-              {/* Your Artworks */}
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Your Artworks</CardTitle>
-                    <div className="flex items-center gap-4">
-                      <div className="relative">
-                        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          placeholder="Search artworks..."
-                          className="pl-8 w-[200px]"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                      </div>
-                      <Select
-                        value={sortBy}
-                        onValueChange={(
-                          value: "relevance" | "latest" | "popular"
-                        ) => setSortBy(value)}
-                      >
-                        <SelectTrigger className="w-[140px]">
-                          <SelectValue placeholder="Sort by" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="relevance">Relevance</SelectItem>
-                          <SelectItem value="latest">Latest</SelectItem>
-                          <SelectItem value="popular">Most Popular</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {isPending ? (
-                    <ArtworkGridSkeleton />
-                  ) : (
-                    <ArtworkGrid
-                      posts={posts?.data}
-                      currentUserId={session?.user?.id}
-                      onDelete={handleDelete}
-                      isDeletePending={isDeletePending}
-                    />
-                  )}
-                </CardContent>
-              </Card>
+              <DashboardGallery 
+                user={session?.user} 
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                isDeletePending={isDeletePending}
+              />
             </div>
 
             {/* Stats Sidebar */}
@@ -257,12 +227,8 @@ export default function DashboardPage() {
                       <Eye className="h-6 w-6 text-blue-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">
-                        Total Views
-                      </p>
-                      <p className="text-2xl font-bold">
-                        {stats?.views || "Not available"}
-                      </p>
+                      <p className="text-sm text-muted-foreground">Total Views</p>
+                      <p className="text-2xl font-bold">{stats?.views ?? 0}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -276,9 +242,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Downloads</p>
-                      <p className="text-2xl font-bold">
-                        {stats?.downloads || "Not available"}
-                      </p>
+                      <p className="text-2xl font-bold">{stats?.downloads ?? 0}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -291,12 +255,8 @@ export default function DashboardPage() {
                       <Heart className="h-6 w-6 text-red-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">
-                        Total Likes
-                      </p>
-                      <p className="text-2xl font-bold">
-                        {stats?.likes || "Not available"}
-                      </p>
+                      <p className="text-sm text-muted-foreground">Total Likes</p>
+                      <p className="text-2xl font-bold">{stats?.likes ?? 0}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -305,6 +265,16 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+      {selectedArtwork && (
+        <EditArtworkModal
+          artwork={selectedArtwork}
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setSelectedArtwork(null);
+          }}
+        />
+      )}
     </Suspense>
   );
 }
