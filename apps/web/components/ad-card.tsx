@@ -16,14 +16,14 @@ interface AdCardProps {
   slotId: "3489516387";
 }
 
-export function AdCard({
-  className,
-  clientId,
-  slotId,
-}: AdCardProps) {
+export function AdCard({ className, clientId, slotId }: AdCardProps) {
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      ;(window.adsbygoogle = window.adsbygoogle || []).push({});
+    try {
+      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push(
+        {}
+      );
+    } catch (error: any) {
+      console.log(error.message);
     }
   }, []);
 
@@ -46,7 +46,6 @@ export function AdCard({
         <div className="flex h-[250px] w-full items-center justify-center">
           <ins
             className="adsbygoogle block"
-            style={{ display: "block" }}
             data-ad-client={clientId}
             data-ad-slot={slotId}
             data-ad-format="auto"

@@ -205,7 +205,7 @@ export default function DashboardPage() {
               <DashboardNav />
 
   
-              <AdCard/>
+              <AdCard clientId={"ca-pub-6714877547689628"} slotId={"3489516387"}  />
             </div>
           </div>
         </div>
