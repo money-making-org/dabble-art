@@ -18,7 +18,7 @@ import DashboardGallery from "./_components/dashboard-gallery";
 import { DashboardNav } from "./_components/dashboard-nav";
 import { AnalyticsTab } from "./_components/analytics-tab";
 import { useSearchParams } from "next/navigation";
-
+import { AdCard } from "@/components/ad-card";
 function ArtworkGridSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -178,7 +178,7 @@ export default function DashboardPage() {
     <Suspense fallback={<div>Loading...</div>}>
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
-          {/* Header */}
+
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent">
@@ -196,21 +196,16 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex gap-8">
-            {/* Main Content Area */}
+
             <div className="flex-1 min-w-0">
               {renderContent()}
             </div>
 
-            {/* Right Navigation */}
             <div className="w-80 space-y-6">
               <DashboardNav />
 
-              {/* Side Ad Placement */}
-              <Card className="bg-muted/50">
-                <CardContent className="p-4">
-                  <p className="text-sm text-muted-foreground text-center">Advertisement</p>
-                </CardContent>
-              </Card>
+  
+              <AdCard/>
             </div>
           </div>
         </div>
