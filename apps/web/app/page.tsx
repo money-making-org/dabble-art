@@ -193,7 +193,7 @@ export default function DiscoverPage() {
                   onClick={() => setSelectedCategory(category.value)}
                   className={`whitespace-nowrap flex-shrink-0 rounded-full ${
                     selectedCategory === category.value
-                      ? "bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 text-white"
+                      ? "bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 "
                       : ""
                   }`}
                 >
