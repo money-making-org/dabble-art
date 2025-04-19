@@ -17,7 +17,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 import { PostDetailsSection } from "./_components/PostDetailsSection";
 import { PostImageSection } from "./_components/PostImageSection";
 import { EditArtworkModal } from "@/app/(dashboard)/dashboard/_components/edit-artwork-modal";
-
+import { PostNotFound } from "./_components/post-not-found";
 function PostSkeleton() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12">
@@ -168,21 +168,7 @@ export default function ArtPiecePage() {
   }
 
   if (!postData) {
-    return (
-      <div className=" bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold">Post not found</h1>
-            <p className="text-muted-foreground mt-2">
-              The post you're looking for doesn't exist or has been removed.
-            </p>
-            <Link href="/">
-              <Button className="mt-4">Go Home</Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <PostNotFound />;
   }
 
   const imageURLs = postData.files.map((file: any) =>
