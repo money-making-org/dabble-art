@@ -268,6 +268,15 @@ export function ArtworkGrid({
                 </div>
               )}
               <h3 className="font-semibold truncate text-white">{post.name}</h3>
+              <Link
+                href={`/profile/${post.owner?.username}`}
+                className="group inline-block"
+              >
+                <p className="text-sm text-white/100 line-clamp-2 mt-1">
+                  <span>@</span>
+                  <span className="group-hover:underline">{post.owner?.username ?? "Unknown"}</span>
+                </p>
+              </Link>
               {post.description && (
                 <p className="text-sm text-white/90 line-clamp-2 mt-1">
                   {post.description}
