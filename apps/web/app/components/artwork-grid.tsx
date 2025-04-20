@@ -21,7 +21,6 @@ import {
 } from "@workspace/ui/components/alert-dialog";
 import { useState, useCallback } from "react";
 import { NextGallery } from "@/components/next-gallery/NextGallery";
-import { AdCard } from "@/components/ad-card";
 
 export interface Post {
   _id: string;
@@ -75,10 +74,8 @@ interface GalleryImage {
   alt: string;
   nextImageProps: {
     priority: boolean;
-    className?: string;
   };
-  metadata: Post | null;
-  isAd?: boolean;
+  metadata: Post;
 }
 
 export function ArtworkGrid({
@@ -151,28 +148,10 @@ export function ArtworkGrid({
     maxRatio * 2.5,
   ];
 
-  // Insert ad cards every 10 images
-  const itemsWithAds = images.reduce((acc, image, index) => {
-    acc.push(image);
-    if ((index + 1) % 10 === 0) {
-      acc.push({
-        src: "",
-        aspect_ratio: 1,
-        alt: "Advertisement",
-        nextImageProps: {
-          priority: false,
-        },
-        metadata: null,
-        isAd: true,
-      });
-    }
-    return acc;
-  }, [] as GalleryImage[]);
-
   return (
     <div className={cn("w-full", className)}>
       <NextGallery
-        images={itemsWithAds}
+        images={images}
         breakpoints={[400, 800, 1200, 1600]}
         ratios={ratios}
         gap="4px"
@@ -180,18 +159,6 @@ export function ArtworkGrid({
         preferGrowing={1.2}
         shrinkLimit={0.7}
         overlay={(img) => {
-          if (img.isAd) {
-            return (
-              <div className="absolute inset-0 flex items-center justify-center bg-card">
-                <AdCard 
-                  clientId="ca-pub-6714877547689628"
-                  slotId="3489516387"
-                  className="w-full h-full"
-                />
-              </div>
-            );
-          }
-
           const post = img.metadata;
           if (!post) {
             console.log("No post");
