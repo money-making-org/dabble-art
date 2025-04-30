@@ -1,13 +1,19 @@
-import { LayoutGrid, BarChart, Brush, Store, Trophy, Settings } from "lucide-react";
+import { LayoutGrid, BarChart, Brush, Store, Trophy, Settings, DollarSign } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardTitle } from "@workspace/ui/components/card";
 import { cn } from "@workspace/ui/lib/utils";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export const dashboardNavItems = [
+export const dashboardNavItems: Array<{
+  icon: any;
+  label: string;
+  href: string;
+  id: string;
+}> = [
   { icon: LayoutGrid, label: "Gallery", href: "/dashboard", id: "gallery" },
   { icon: BarChart, label: "Analytics", href: "/dashboard?tab=analytics", id: "analytics" },
-] as const;
+  { icon: DollarSign, label: "Revenue", href: "/dashboard?tab=revenue", id: "revenue" },
+];
 
 export function DashboardNav() {
   const pathname = usePathname();
@@ -32,18 +38,19 @@ export function DashboardNav() {
         <CardTitle className="mb-4 pl-1">Navigation</CardTitle>
         <nav className="space-y-2">
           {dashboardNavItems.map((item) => (
-            <Link 
-              key={item.href} 
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-colors",
-                "hover:bg-muted",
-                isActive(item.href) ? "bg-muted" : ""
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
+            <div key={item.href}>
+              <Link 
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-colors",
+                  "hover:bg-muted",
+                  isActive(item.href) ? "bg-muted" : ""
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            </div>
           ))}
         </nav>
       </CardContent>

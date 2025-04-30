@@ -1,8 +1,8 @@
 "use client";
 
-import { Card, CardContent } from "@workspace/ui/components/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Button } from "@workspace/ui/components/button";
-import { Plus } from "lucide-react";
+import { Plus, DollarSign, Clock, Info } from "lucide-react";
 import Link from "next/link";
 import { api } from "@workspace/eden";
 import { useQueryState } from "nuqs";
@@ -19,6 +19,8 @@ import { DashboardNav } from "./_components/dashboard-nav";
 import { AnalyticsTab } from "./_components/analytics-tab";
 import { useSearchParams } from "next/navigation";
 import { AdCard } from "@/components/ad-card";
+import { DashboardTabs } from "./_components/dashboard-tabs";
+
 function ArtworkGridSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -157,23 +159,6 @@ export default function DashboardPage() {
     );
   }
 
-  const renderContent = () => {
-    switch (currentTab) {
-      case "analytics":
-        return <AnalyticsTab stats={stats || { views: 0, downloads: 0, likes: 0 }} />;
-      case "gallery":
-      default:
-        return (
-          <DashboardGallery 
-            user={session?.user} 
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            isDeletePending={isDeletePending}
-          />
-        );
-    }
-  };
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="min-h-screen bg-background">
@@ -198,7 +183,14 @@ export default function DashboardPage() {
           <div className="flex gap-8">
 
             <div className="flex-1 min-w-0">
-              {renderContent()}
+              <DashboardTabs
+                currentTab={currentTab}
+                stats={stats || { views: 0, downloads: 0, likes: 0 }}
+                user={session?.user}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                isDeletePending={isDeletePending}
+              />
             </div>
 
             <div className="w-80 space-y-6">
