@@ -13,11 +13,13 @@ interface ArtGridProps {
 function MiniAdCard() {
   return (
     <div className="relative break-inside-avoid mb-2 rounded-lg overflow-hidden bg-card">
-      <AdCard
-        clientId="ca-pub-6714877547689628"
-        slotId="3489516387"
-        className="!rounded-none !border-0"
-      />
+      <div style={{ width: '150px', height: '100px' }} className="mx-auto">
+        <AdCard
+          clientId="ca-pub-6714877547689628"
+          slotId="3489516387"
+          className="!rounded-none !border-0 !h-full !w-full"
+        />
+      </div>
     </div>
   );
 }
