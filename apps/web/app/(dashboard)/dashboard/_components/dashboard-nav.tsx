@@ -19,14 +19,16 @@ export function DashboardNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const isActive = (href: string) => {
+  const isActive = (href: string, id: string) => {
+    if (id === "gallery") {
+      // Only active if path is /dashboard and there is NO tab param
+      return pathname === "/dashboard" && !searchParams.get("tab");
+    }
     if (href.includes("?")) {
       const [path, queryString] = href.split("?");
       if (!queryString) return false;
-      
       const [key, value] = queryString.split("=");
       if (!key || !value) return false;
-      
       return pathname === path && searchParams.get(key) === value;
     }
     return pathname === href;
@@ -44,7 +46,7 @@ export function DashboardNav() {
                 className={cn(
                   "flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-colors",
                   "hover:bg-muted",
-                  isActive(item.href) ? "bg-muted" : ""
+                  isActive(item.href, item.id) ? "bg-muted" : ""
                 )}
               >
                 <item.icon className="h-4 w-4" />
