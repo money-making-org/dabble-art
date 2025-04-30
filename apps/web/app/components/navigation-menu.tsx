@@ -46,7 +46,7 @@ export function NavigationMenu() {
             <Logo />
 
             <div className="hidden md:block pl-4">
-              <Nav>
+          <Nav>
                 <NavItems />
               </Nav>
             </div>
@@ -103,7 +103,7 @@ export function NavigationMenu() {
 export const NavItems = () => (
   <NavigationMenuList className="flex-col md:flex-row space-y-2 md:space-y-0">
     <NavigationMenuItem>
-      <Link href="/" legacyBehavior passHref>
+      <Link href="/explore" legacyBehavior passHref>
         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
           Explore
         </NavigationMenuLink>
