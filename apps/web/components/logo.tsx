@@ -12,7 +12,7 @@ export default function Logo() {
         className="object-contain"
         priority
       />
-      <span className="font-bold text-xl md:text-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent -ml-1">
+      <span className="font-bold text-xl md:text-2xl bg-gradient-to-r from-[#009FFF] via-[#007FFF] to-[#38bdf8] bg-clip-text text-transparent -ml-1">
         dabble
       </span>
     </Link>

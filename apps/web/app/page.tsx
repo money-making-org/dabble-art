@@ -150,7 +150,7 @@ export default function DiscoverPage() {
       {/* Hero Section */}
       <div className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-background">
         <div className="container relative z-20 px-4 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-[#007FFF] mb-4">
             Discover Amazing Art
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -169,7 +169,7 @@ export default function DiscoverPage() {
             <Link href="/upload" className="sm:flex-shrink-0 w-full sm:w-auto">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 w-full sm:w-auto h-12 text-lg hover:opacity-90 transition-opacity"
+                className="bg-[#007FFF] w-full sm:w-auto h-12 text-lg hover:opacity-90 transition-opacity"
               >
                 Share Your Art <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -193,7 +193,7 @@ export default function DiscoverPage() {
                   onClick={() => setSelectedCategory(category.value)}
                   className={`whitespace-nowrap flex-shrink-0 rounded-full ${
                     selectedCategory === category.value
-                      ? "bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 "
+                      ? "bg-[#007FFF]"
                       : ""
                   }`}
                 >

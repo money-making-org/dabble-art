@@ -11,7 +11,7 @@ export function Footer() {
           <div className="flex flex-col items-center md:items-start space-y-3">
             <Link href="/" className="flex items-center space-x-2">
               <Image src="/logotest2.png" alt="dabble.art" width={40} height={40} />
-              <span className="font-bold text-xl bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent -ml-2">
+              <span className="font-bold text-xl bg-gradient-to-r from-[#009FFF] via-[#007FFF] to-[#38bdf8] bg-clip-text text-transparent -ml-2">
                 dabble.art
               </span>
             </Link>

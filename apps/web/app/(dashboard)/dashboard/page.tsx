@@ -130,7 +130,7 @@ export default function DashboardPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold tracking-tight text-[#007FFF]">
                 Dashboard
               </h1>
             </div>
@@ -181,13 +181,13 @@ export default function DashboardPage() {
 
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold tracking-tight text-[#007FFF]">
                 Dashboard
               </h1>
             </div>
             <div className="flex items-center gap-4">
               <Link href="/upload">
-                <Button className="bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500">
+                <Button className="bg-[#007FFF]">
                   <Plus className="h-4 w-4 mr-2" />
                   Upload New Artwork
                 </Button>
