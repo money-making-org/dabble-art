@@ -16,7 +16,7 @@ function MiniAdCard() {
       <div style={{ width: '150px', height: '100px' }} className="mx-auto">
         <AdCard
           clientId="ca-pub-6714877547689628"
-          slotId="3489516387"
+          slotId="2284471262"
           className="!rounded-none !border-0 !h-full !w-full"
         />
       </div>
