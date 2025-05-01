@@ -1,13 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
-
 import "@workspace/ui/globals.css";
 import { Providers } from "@/components/providers";
 import ReactQueryProvider from "@/components/react-query-provider";
 import { Toaster } from "sonner";
-import { NavigationMenu } from "@/app/components/navigation-menu";
-import { Footer } from "@/app/components/footer";
 import Script from "next/script";
 import { AdSense } from "@/components/adsense";
+import { LayoutContent } from "@/app/components/layout-content";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -32,22 +30,14 @@ export default function RootLayout({
           src="https://umami.dabble.art/script.js"
           data-website-id="bf23d432-fe96-45aa-8fdd-09bcd25930e7"
         ></Script>
-
         <AdSense />
       </head>
-
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-screen flex flex-col`}
       >
         <ReactQueryProvider>
           <Providers>
-            <div className="flex flex-col min-h-screen">
-              <NavigationMenu />
-
-              <main className="flex-1">{children}</main>
-
-              <Footer />
-            </div>
+            <LayoutContent>{children}</LayoutContent>
           </Providers>
           <Toaster />
         </ReactQueryProvider>
