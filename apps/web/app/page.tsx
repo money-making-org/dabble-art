@@ -148,7 +148,7 @@ export default function DiscoverPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-background">
+      <div className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-background z-10">
         <div className="container relative z-20 px-4 text-center">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-[#007FFF] mb-4">
             Discover Amazing Art
@@ -179,7 +179,7 @@ export default function DiscoverPage() {
       </div>
 
       {/* Categories and Filters Bar */}
-      <div className="bg-background/80 backdrop-blur-md border-b border-border/50 py-2">
+      <div className="bg-background/80 backdrop-blur-md border-b border-border/50 py-2 z-0">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-4 justify-between">
             <div className="flex items-center gap-2 py-2">
