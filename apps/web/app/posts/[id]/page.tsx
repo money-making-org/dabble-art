@@ -267,27 +267,6 @@ export default function ArtPiecePage() {
             <div className="space-y-8 max-w-2xl mx-auto w-full">
               {/* Post Content */}
               <div className="bg-card rounded-lg border overflow-hidden">
-                <div className="p-6">
-                  <div className="flex items-center gap-4 mb-6">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={postData.owner?.image} />
-                      <AvatarFallback>{postData.owner?.name?.[0] || 'A'}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <Link href={`/profile/${postData.owner?.username}`} className="font-medium hover:underline">
-                        {postData.owner?.name}
-                      </Link>
-                      <p className="text-sm text-muted-foreground">
-                        @{postData.owner?.username}
-                      </p>
-                    </div>
-                  </div>
-
-                  <h1 className="text-2xl font-semibold mb-4">{postData.name}</h1>
-                  {postData.description && (
-                    <p className="text-muted-foreground mb-6 whitespace-pre-wrap">{postData.description}</p>
-                  )}
-                </div>
 
                 <PostImageSection
                   imageURLs={imageURLs}
