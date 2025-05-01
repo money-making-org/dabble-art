@@ -15,7 +15,11 @@ import {
   BookOpen,
   Share2,
   Heart,
-  Menu
+  Menu,
+  FileText,
+  Lock,
+  Star,
+  DollarSign
 } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -44,7 +48,6 @@ export const SidebarContext = createContext<SidebarContextType>({
 
 const mainNavItems = [
   { name: "Home", href: "/", icon: Home },
-  { name: "Popular", href: "/explore", icon: TrendingUp },
   { name: "Challenges", href: "/challenges", icon: Trophy, beta: true },
 ];
 
@@ -58,10 +61,9 @@ const recentCommunities = [
 
 const resources = [
   { name: "About Dabble", href: "/about", icon: BookOpen },
-  { name: "Blog", href: "/blog", icon: Newspaper },
   { name: "Help Center", href: "/help", icon: HelpCircle },
-  { name: "Advertise", href: "/advertise", icon: Share2 },
-  { name: "Support Us", href: "/support", icon: Heart },
+  { name: "Rewards", href: "/rewards", icon: DollarSign },
+  { name: "Premium", href: "/premium", icon: Star },
 ];
 
 interface SidebarSectionProps {
@@ -149,7 +151,7 @@ const DesktopSidebar: React.FC = () => {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="absolute -right-3 top-28 z-30 h-6 w-6 rounded-full border bg-background p-0 hover:bg-background"
+          className="absolute -right-3 top-20 z-30 h-6 w-6 rounded-full border bg-background p-0 hover:bg-background"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <ChevronRight className={cn("h-4 w-4 transition-transform", isExpanded && "rotate-180")} />
@@ -204,6 +206,38 @@ const DesktopSidebar: React.FC = () => {
             isExpanded={isExpanded}
             defaultOpen={true}
           />
+        </div>
+
+        {/* Footer */}
+        <div className={cn(
+          "mt-auto border-t p-4",
+          !isExpanded && "px-2"
+        )}>
+          <div className={cn(
+            !isExpanded && "items-center",
+            isExpanded ? "flex items-center justify-between" : "flex flex-col space-y-2"
+          )}>
+            <span className="text-sm text-muted-foreground">
+              {isExpanded ? "© 2025 Dabble.art" : "©"}
+            </span>
+            <div className={cn(
+              "flex gap-3 text-sm text-muted-foreground",
+              !isExpanded && "flex-col items-center gap-2"
+            )}>
+              <Link href="https://discord.com/invite/jG6gYzePmr" target="_blank" className="hover:text-foreground">
+                <MessageCircle className="h-4 w-4" />
+                {isExpanded && <span className="sr-only">Contact</span>}
+              </Link>
+              <Link href="/terms" className="hover:text-foreground">
+                <FileText className="h-4 w-4" />
+                {isExpanded && <span className="sr-only">Terms of Service</span>}
+              </Link>
+              <Link href="/privacy" className="hover:text-foreground">
+                <Lock className="h-4 w-4" />
+                {isExpanded && <span className="sr-only">Privacy Policy</span>}
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

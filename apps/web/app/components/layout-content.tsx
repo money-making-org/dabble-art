@@ -4,7 +4,6 @@ import { useContext } from "react";
 import { cn } from "@workspace/ui/lib/utils";
 import { MainNavigation } from "./main-navigation";
 import { MainSidebar, SidebarContext } from "./main-sidebar";
-import { Footer } from "./footer";
 
 export function LayoutContent({ children }: { children: React.ReactNode }) {
   const { isExpanded } = useContext(SidebarContext);
@@ -23,7 +22,6 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
           </main>
         </div>
       </div>
-      <Footer />
     </div>
   );
 } 
