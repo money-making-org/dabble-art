@@ -6,47 +6,115 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
+import { Hash } from "lucide-react";
 
 import { RelatedPostCard } from "@/app/posts/[id]/_components/RelatedPostCard";
 import useFollowToggle from "@/app/posts/[id]/_hooks/use-follow-toggle";
 import useLikePost from "@/app/posts/[id]/_hooks/use-like-post";
 import { getPreviewURL } from "@/hooks/use-preview";
 import { authClient } from "@/lib/auth-client";
+import { Avatar, AvatarImage, AvatarFallback } from "@workspace/ui/components/avatar";
 import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { PostDetailsSection } from "./_components/PostDetailsSection";
 import { PostImageSection } from "./_components/PostImageSection";
 import { EditArtworkModal } from "@/app/(dashboard)/dashboard/_components/edit-artwork-modal";
 import { PostNotFound } from "./_components/post-not-found";
+import { AdCard } from "@/components/ad-card";
+
 function PostSkeleton() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12">
-      <div className="flex flex-col gap-4">
-        <Skeleton className="w-full aspect-video rounded-lg" />
-        <div className="grid grid-cols-5 gap-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="w-full aspect-square rounded-md" />
-          ))}
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6">
+          {/* Main Feed */}
+          <div className="space-y-8 max-w-2xl mx-auto w-full">
+            {/* Post Content */}
+            <div className="bg-card rounded-lg border overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-center gap-4 mb-6">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                </div>
+                <Skeleton className="h-8 w-3/4 mb-4" />
+                <Skeleton className="h-20 w-full" />
+              </div>
+              <Skeleton className="w-full aspect-video" />
+              <div className="p-6 border-t">
+                <div className="flex items-center gap-4 mb-4">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Skeleton className="h-6 w-20 rounded-full" />
+                  <Skeleton className="h-6 w-24 rounded-full" />
+                  <Skeleton className="h-6 w-16 rounded-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* Related Posts */}
+            <div className="space-y-6">
+              <Skeleton className="h-8 w-48" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="bg-card rounded-lg border overflow-hidden">
+                    <Skeleton className="w-full aspect-square" />
+                    <div className="p-4">
+                      <Skeleton className="h-4 w-3/4 mb-2" />
+                      <Skeleton className="h-3 w-1/2" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Sidebar */}
+          <div className="hidden md:block w-80">
+            <div className="sticky top-20 space-y-6">
+              {/* Artist Info */}
+              <div className="bg-card p-4 rounded-lg border">
+                <Skeleton className="h-5 w-32 mb-4" />
+                <div className="flex items-center gap-3 mb-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                </div>
+                <Skeleton className="h-10 w-full" />
+              </div>
+
+              {/* More from Artist */}
+              <div className="bg-card p-4 rounded-lg border">
+                <Skeleton className="h-5 w-40 mb-4" />
+                <div className="grid grid-cols-2 gap-2">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <Skeleton key={i} className="aspect-square rounded-md" />
+                  ))}
+                </div>
+              </div>
+
+              {/* Tags */}
+              <div className="bg-card p-4 rounded-lg border">
+                <Skeleton className="h-5 w-20 mb-4" />
+                <div className="flex flex-wrap gap-2">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <Skeleton key={i} className="h-6 w-20 rounded-full" />
+                  ))}
+                </div>
+              </div>
+
+              {/* Ad Card */}
+              <Skeleton className="h-32 w-full rounded-lg" />
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col gap-6">
-        <Skeleton className="h-12 w-3/4" />
-        <div className="flex items-center gap-3">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <Skeleton className="h-6 w-1/4" />
-        </div>
-        <Skeleton className="h-20 w-full" />
-        <div className="flex flex-wrap gap-2">
-          <Skeleton className="h-6 w-20 rounded-full" />
-          <Skeleton className="h-6 w-24 rounded-full" />
-          <Skeleton className="h-6 w-16 rounded-full" />
-        </div>
-        <Skeleton className="h-10 w-full" />
-        <div className="flex gap-4">
-          <Skeleton className="h-10 w-24" />
-          <Skeleton className="h-10 w-24" />
-        </div>
-        <Skeleton className="h-32 w-full" />
       </div>
     </div>
   );
@@ -60,7 +128,10 @@ export default function ArtPiecePage() {
   const currentUserId = session?.user?.id;
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedArtwork, setSelectedArtwork] = useState<Post | null>(null);
+  const [selectedArtwork, setSelectedArtwork] = useState<any>(null);
+  const [isLocallyLiked, setIsLocallyLiked] = useState<boolean | null>(null);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [activeThumbnailIndex, setActiveThumbnailIndex] = useState(0);
 
   const postId = params.id as string;
 
@@ -68,10 +139,6 @@ export default function ArtPiecePage() {
     queryKey: ["post", postId],
     queryFn: () => api.public.posts({ id: postId }).get(),
   });
-
-  const [isLocallyLiked, setIsLocallyLiked] = useState<boolean | null>(null);
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [activeThumbnailIndex, setActiveThumbnailIndex] = useState(0);
 
   const { likePost, isPending: isLikePending } = useLikePost();
 
@@ -152,7 +219,21 @@ export default function ArtPiecePage() {
       postData.categories.length > 0,
   });
 
-  const handleEdit = useCallback((artwork: Post) => {
+  const { data: artistPostsResult } = useQuery({
+    queryKey: ["artist-posts", postData?.owner?._id],
+    queryFn: () =>
+      api.public.posts.get({
+        query: {
+          owner: postData?.owner?._id,
+          limit: 4,
+          page: 1,
+          excludeIds: [postId],
+        },
+      }),
+    enabled: !!postData?.owner?._id,
+  });
+
+  const handleEdit = useCallback((artwork: any) => {
     setSelectedArtwork(artwork);
     setIsEditModalOpen(true);
   }, []);
@@ -179,39 +260,140 @@ export default function ArtPiecePage() {
 
   return (
     <Suspense>
-      <div className="bg-background text-foreground">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12">
-            <PostImageSection
-              imageURLs={imageURLs}
-              postId={postData._id}
-              isBookmarked={isBookmarked}
-              onBookmark={() => setIsBookmarked(!isBookmarked)}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6">
+            {/* Main Feed */}
+            <div className="space-y-8 max-w-2xl mx-auto w-full">
+              {/* Post Content */}
+              <div className="bg-card rounded-lg border overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-center gap-4 mb-6">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={postData.owner?.image} />
+                      <AvatarFallback>{postData.owner?.name?.[0] || 'A'}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <Link href={`/profile/${postData.owner?.username}`} className="font-medium hover:underline">
+                        {postData.owner?.name}
+                      </Link>
+                      <p className="text-sm text-muted-foreground">
+                        @{postData.owner?.username}
+                      </p>
+                    </div>
+                  </div>
 
-            <PostDetailsSection
-              post={postData as any}
-              isLiked={isLiked()}
-              likeCount={getLikesCount()}
-              onLike={handleLike}
-              isLikePending={isLikePending}
-              currentUserId={currentUserId}
-              onDelete={handleDelete}
-              isDeletePending={isDeletePending}
-              onEdit={handleEdit}
-            />
-          </div>
+                  <h1 className="text-2xl font-semibold mb-4">{postData.name}</h1>
+                  {postData.description && (
+                    <p className="text-muted-foreground mb-6 whitespace-pre-wrap">{postData.description}</p>
+                  )}
+                </div>
 
-          {relatedPosts && relatedPosts.length > 0 && (
-            <div className="mt-16">
-              <h2 className="text-2xl font-semibold mb-6">Related Posts</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {relatedPosts.map((post: any) => (
-                  <RelatedPostCard key={post._id} post={post as any} />
-                ))}
+                <PostImageSection
+                  imageURLs={imageURLs}
+                  postId={postData._id}
+                  isBookmarked={isBookmarked}
+                  onBookmark={() => setIsBookmarked(!isBookmarked)}
+                />
+
+                <div className="p-6 border-t">
+                  <PostDetailsSection
+                    post={postData}
+                    isLiked={isLiked()}
+                    likeCount={getLikesCount()}
+                    onLike={handleLike}
+                    isLikePending={isLikePending}
+                    currentUserId={currentUserId}
+                    onDelete={handleDelete}
+                    isDeletePending={isDeletePending}
+                    onEdit={handleEdit}
+                  />
+                </div>
+              </div>
+
+              {/* Related Posts */}
+              {relatedPosts && relatedPosts.length > 0 && (
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-semibold">Related Posts</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {relatedPosts.map((post: any) => (
+                      <RelatedPostCard key={post._id} post={post} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Right Sidebar */}
+            <div className="hidden md:block w-80">
+              <div className="sticky top-20 space-y-6">
+                {/* Artist Info */}
+                <div className="bg-card p-4 rounded-lg border">
+                  <h3 className="font-medium mb-4">About the Artist</h3>
+                  <div className="flex items-center gap-3 mb-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={postData.owner?.image} />
+                      <AvatarFallback>{postData.owner?.name?.[0] || 'A'}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <Link href={`/profile/${postData.owner?.username}`} className="font-medium hover:underline">
+                        {postData.owner?.name}
+                      </Link>
+                      <p className="text-sm text-muted-foreground">
+                        @{postData.owner?.username}
+                      </p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link href={`/profile/${postData.owner?.username}`}>
+                      View Profile
+                    </Link>
+                  </Button>
+                </div>
+
+                {/* More from Artist */}
+                <div className="bg-card p-4 rounded-lg border">
+                  <h3 className="font-medium mb-4">More from {postData.owner?.name}</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {artistPostsResult?.data?.map((post: any) => (
+                      <Link key={post._id} href={`/posts/${post._id}`}>
+                        <div className="aspect-square rounded-md overflow-hidden bg-muted">
+                          <img
+                            src={getPreviewURL(post._id, post.files[0]._id)}
+                            alt={post.name}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform"
+                          />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="bg-card p-4 rounded-lg border">
+                  <h3 className="font-medium mb-4">Tags</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {postData.tags?.map((tag: string) => (
+                      <Link
+                        key={tag}
+                        href={`/?q=${tag}`}
+                        className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+                      >
+                        <Hash className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-sm font-medium">{tag}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Ad Card */}
+                <AdCard
+                  clientId="ca-pub-6714877547689628"
+                  slotId="3489516387"
+                />
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
 
