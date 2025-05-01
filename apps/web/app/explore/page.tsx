@@ -48,7 +48,7 @@ export default function ExplorePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-2 mt-[-60px]">
+      <div className="container mx-auto px-4 py-2 mt-[-20px]">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6">
           {/* Main Feed */}
           <div className="space-y-6 max-w-2xl mx-auto w-full">

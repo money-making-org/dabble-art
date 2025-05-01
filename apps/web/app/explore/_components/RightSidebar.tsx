@@ -8,7 +8,7 @@ import { trendingTags, suggestedUsers } from "./data";
 export function RightSidebar() {
   return (
     <div className="hidden md:block w-80">
-      <div className="sticky top-20 space-y-4">
+      <div className="sticky top-29.5 space-y-4">
         {/* Trending Tags */}
         <div className="bg-card p-4 rounded-lg border">
           <h3 className="font-medium mb-4">Trending Tags</h3>

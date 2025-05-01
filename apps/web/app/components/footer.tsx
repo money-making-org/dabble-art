@@ -4,7 +4,7 @@ import { Github, Twitter, MessageSquare, Mail } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t">
+    <footer className="border-t mt-[100px]">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:justify-between gap-8">
           {/* Brand section */}
