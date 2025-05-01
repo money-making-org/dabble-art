@@ -142,7 +142,7 @@ const DesktopSidebar: React.FC = () => {
   
   return (
     <div className={cn(
-      "hidden md:flex flex-col border-r transition-all duration-300 fixed top-16 left-0 h-[calc(100vh-64px)] z-50",
+      "hidden md:flex flex-col border-r transition-all duration-300 fixed top-16 left-0 h-[calc(100vh-64px)] z-50 bg-background bg-none border-t-0",
       isExpanded ? "w-64" : "w-11"
     )}>
       <div className="flex flex-col h-full">

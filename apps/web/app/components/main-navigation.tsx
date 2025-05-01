@@ -24,7 +24,7 @@ export function MainNavigation() {
   ];
 
   return (
-    <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+    <div className="sticky top-0 z-999 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
       <div className="w-full px-4">
         <div className="relative flex h-16 items-center justify-between">
           {/* Left Section - Logo and Search */}
