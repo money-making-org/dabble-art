@@ -308,7 +308,7 @@ export default function UploadPage() {
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={handleTagAdd}
               className="mt-1"
-              placeholder="Enter tags (press Enter to add)"
+              placeholder="At least one tag is required (Press enter to add)"
             />
             {errors.tags && (
               <p className="text-sm text-destructive mt-1">
