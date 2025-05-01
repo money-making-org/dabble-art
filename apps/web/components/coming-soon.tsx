@@ -1,10 +1,9 @@
-import { Search, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
-import { Input } from "@workspace/ui/components/input";
 import Link from "next/link";
 import { BackButton } from "@/components/back-button";
 
-interface NotFoundProps {
+interface ComingSoonProps {
   title?: string;
   description?: string;
 }
@@ -20,10 +19,10 @@ export function Illustration(props: React.ComponentPropsWithoutRef<"svg">) {
   );
 }
 
-export function NotFound({
-  title = "Page not found",
-  description = "Lost, this page is. In another system, it may be.",
-}: NotFoundProps) {
+export function ComingSoon({
+  title = "Coming Soon",
+  description = "We're working on something exciting! Stay tuned for updates.",
+}: ComingSoonProps) {
   return (
     <div className="relative flex flex-col w-full justify-center min-h-[60svh] bg-background p-6 md:p-10">
       <div className="relative max-w-5xl mx-auto w-full">
@@ -38,7 +37,7 @@ export function NotFound({
           <div className="mt-10 flex flex-col sm:flex-row sm:items-center sm:justify-center gap-y-3 gap-x-6">
             <BackButton />
             <Button className="-order-1 sm:order-none" asChild>
-              <Link href="/">Take me home</Link>
+              <Link href="/">Return Home</Link>
             </Button>
           </div>
         </div>

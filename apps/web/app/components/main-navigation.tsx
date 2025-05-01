@@ -20,7 +20,7 @@ export function MainNavigation() {
     { name: "Home", href: "/", icon: Home },
     { name: "For You", href: "/explore", icon: Star},
     { name: "Marketplace", href: "/marketplace", icon: Store },
-    { name: "Community", href: "/community", icon: Users },
+    { name: "Communities", href: "/communities", icon: Users },
   ];
 
   return (
