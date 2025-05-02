@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 interface ExploreAdCardProps {
   clientId: "ca-pub-6714877547689628";
-  slotId: "2421030611";
+  slotId: "6665503740";
 }
 
 function CreatorSupportMessage() {
@@ -70,13 +70,27 @@ function CreatorSupportMessage() {
   );
 }
 
+/*
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6714877547689628"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="fluid"
+     data-ad-layout-key="-6t+ed+2i-1n-4w"
+     data-ad-client="ca-pub-6714877547689628"
+     data-ad-slot="6665503740"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+*/
+
 export function ExploreAdCard({ clientId, slotId }: ExploreAdCardProps) {
   const [showAd, setShowAd] = useState(true);
 
   useEffect(() => {
     // Set up the interval to toggle between ad and message
     const interval = setInterval(() => {
-      setShowAd(prev => !prev);
+      setShowAd((prev) => !prev);
     }, 15000); // 15 seconds
 
     // Clean up interval on unmount
@@ -87,7 +101,9 @@ export function ExploreAdCard({ clientId, slotId }: ExploreAdCardProps) {
     // Only push to adsbygoogle when showing ad
     if (showAd) {
       try {
-        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push(
+          {}
+        );
       } catch (error: any) {
         console.log(error.message);
       }
@@ -122,12 +138,12 @@ export function ExploreAdCard({ clientId, slotId }: ExploreAdCardProps) {
             width: "100%",
             height: "100%",
             position: "absolute",
-            inset: 0
+            inset: 0,
           }}
           data-ad-client={clientId}
           data-ad-slot={slotId}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
+          data-ad-format="fluid"
+          data-ad-layout-key="-6t+ed+2i-1n-4w"
         />
         <Script
           id={`ad-script-${slotId}`}
@@ -144,19 +160,19 @@ export function ExploreAdCard({ clientId, slotId }: ExploreAdCardProps) {
       <div className="p-4 space-y-4">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" className="hover:text-primary">
-            <Heart className="h-6 w-6" />
+            <Heart className="size-6" />
           </Button>
           <Button variant="ghost" size="icon" className="hover:text-primary">
-            <MessageCircle className="h-6 w-6" />
+            <MessageCircle className="size-6" />
           </Button>
           <Button variant="ghost" size="icon" className="hover:text-primary">
-            <Repeat className="h-6 w-6" />
+            <Repeat className="size-6" />
           </Button>
           <Button variant="ghost" size="icon" className="hover:text-primary">
-            <Share2 className="h-6 w-6" />
+            <Share2 className="size-6" />
           </Button>
         </div>
       </div>
     </div>
   );
-} 
+}

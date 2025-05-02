@@ -15,30 +15,27 @@ export default function ExplorePage() {
   unstable_noStore();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const isIntersecting = useIntersectionObserver(loadMoreRef);
-  const [sortBy, setSortBy] = useState<"latest" | "popular" | "relevance">("latest");
+  const [sortBy, setSortBy] = useState<"latest" | "popular" | "relevance">(
+    "latest"
+  );
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery({
-    queryKey: ["explore", sortBy],
-    queryFn: ({ pageParam = 1 }) =>
-      api.public.posts.get({
-        query: {
-          sort: sortBy,
-          limit: 10,
-          page: pageParam,
-        },
-      }),
-    getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage?.data || lastPage.data.length < 10) return undefined;
-      return allPages.length + 1;
-    },
-    initialPageParam: 1,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["explore", sortBy],
+      queryFn: ({ pageParam = 1 }) =>
+        api.public.posts.get({
+          query: {
+            sort: sortBy,
+            limit: 10,
+            page: pageParam,
+          },
+        }),
+      getNextPageParam: (lastPage, allPages) => {
+        if (!lastPage?.data || lastPage.data.length < 10) return undefined;
+        return allPages.length + 1;
+      },
+      initialPageParam: 1,
+    });
 
   useEffect(() => {
     if (isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -72,7 +69,7 @@ export default function ExplorePage() {
                               <ExploreAdCard
                                 key={`ad-${totalIndex}`}
                                 clientId="ca-pub-6714877547689628"
-                                slotId="3489516387"
+                                slotId="6665503740"
                               />
                             )}
                           </>
@@ -93,4 +90,4 @@ export default function ExplorePage() {
       </div>
     </div>
   );
-} 
+}

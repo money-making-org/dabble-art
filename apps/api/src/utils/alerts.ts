@@ -29,7 +29,6 @@ export const sendNewArtAlert = async ({
       name: authorName,
       icon_url: `https://api.dabble.art/auth/avatar/${authorId}`,
     })
-    // 0.0015 per GB
     // .setDescription(`Total storage used: ${prettyBytes(totalStorageUsed)} - Estimated Cost: ${(totalStorageUsed / GB) * 0.015}`)
     .addField({
       name: "Total Storage Used",
