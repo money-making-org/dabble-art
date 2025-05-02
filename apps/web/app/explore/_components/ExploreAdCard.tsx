@@ -5,8 +5,9 @@ import { Button } from "@workspace/ui/components/button";
 import Script from "next/script";
 
 interface ExploreAdCardProps {
-  clientId: string;
-  slotId: string;
+  clientId: "ca-pub-6714877547689628";
+
+  slotId: "3489516387";
 }
 
 export function ExploreAdCard({ clientId, slotId }: ExploreAdCardProps) {
