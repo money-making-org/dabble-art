@@ -1,3 +1,4 @@
+import { GB } from "@/src/controllers/upload-controller";
 import { Embed, Webhook } from "@vermaysha/discord-webhook";
 import prettyBytes from "pretty-bytes";
 
@@ -28,7 +29,18 @@ export const sendNewArtAlert = async ({
       name: authorName,
       icon_url: `https://api.dabble.art/auth/avatar/${authorId}`,
     })
-    .setDescription(`Total storage used: ${prettyBytes(totalStorageUsed)}`)
+    // 0.0015 per GB
+    // .setDescription(`Total storage used: ${prettyBytes(totalStorageUsed)} - Estimated Cost: ${(totalStorageUsed / GB) * 0.015}`)
+    .addField({
+      name: "Total Storage Used",
+      value: prettyBytes(totalStorageUsed),
+      inline: true,
+    })
+    .addField({
+      name: "Estimated Cost",
+      value: `$${(totalStorageUsed / GB) * 0.015}`,
+      inline: true,
+    })
     .setColor("Green")
     .setThumbnail({
       url: `https://api.dabble.art/public/posts/${postId}/files/${primaryFileId}/preview`,
