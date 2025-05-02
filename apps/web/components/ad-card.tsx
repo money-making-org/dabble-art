@@ -21,8 +21,8 @@ interface AdCardProps {
 
 function CreatorSupportMessage() {
   return (
-    <div className="w-full rounded-lg border bg-card p-6 shadow-sm">
-      <div className="space-y-4">
+    <div className="w-full rounded-lg border bg-card p-6 shadow-sm min-h-[250px] flex items-center justify-center">
+      <div className="space-y-4 text-center">
         <h3 className="text-2xl font-semibold tracking-tight">
           75% of ad revenue goes to creators
         </h3>
