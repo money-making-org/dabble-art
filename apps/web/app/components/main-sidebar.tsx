@@ -60,8 +60,8 @@ const recentCommunities = [
 ];
 
 const resources = [
-  { name: "Rewards", href: "/rewards", icon: DollarSign },
   { name: "Premium", href: "/premium", icon: Star },
+  { name: "Rewards", href: "/rewards", icon: DollarSign },
   { name: "Help Center", href: "/help", icon: HelpCircle },
   { name: "About Dabble", href: "/about", icon: BookOpen },
 ];
