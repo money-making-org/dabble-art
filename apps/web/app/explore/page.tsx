@@ -15,9 +15,9 @@ export default function ExplorePage() {
   unstable_noStore();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const isIntersecting = useIntersectionObserver(loadMoreRef);
-  const [sortBy, setSortBy] = useState<"latest" | "popular" | "relevance">(
-    "latest"
-  );
+  const [sortBy, setSortBy] = useState<
+    "latest" | "popular" | "relevance" | "random"
+  >("random");
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({

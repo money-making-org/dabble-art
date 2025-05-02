@@ -114,9 +114,9 @@ export default function DiscoverPage() {
   const [selectedFilters, setSelectedFilters] = useState<
     Record<string, string[]>
   >({});
-  const [sortBy, setSortBy] = useState<"latest" | "popular" | "relevance">(
-    "relevance"
-  );
+  const [sortBy, setSortBy] = useState<
+    "latest" | "popular" | "relevance" | "random"
+  >("random");
 
   const { data: posts, isPending } = useQuery({
     queryKey: ["posts", searchQuery, selectedCategory, sortBy],
@@ -192,9 +192,7 @@ export default function DiscoverPage() {
                   size="sm"
                   onClick={() => setSelectedCategory(category.value)}
                   className={`whitespace-nowrap flex-shrink-0 rounded-full ${
-                    selectedCategory === category.value
-                      ? "bg-[#007FFF]"
-                      : ""
+                    selectedCategory === category.value ? "bg-[#007FFF]" : ""
                   }`}
                 >
                   {category.name}
