@@ -5,9 +5,9 @@ import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { api } from "@workspace/eden";
 import { unstable_noStore } from "next/cache";
-import { AdCard } from "@/components/ad-card";
 import { PostSkeleton } from "./_components/PostSkeleton";
 import { PostCard } from "./_components/PostCard";
+import { ExploreAdCard } from "./_components/ExploreAdCard";
 import { ExploreNavbar } from "./_components/ExploreNavbar";
 import { RightSidebar } from "./_components/RightSidebar";
 
@@ -60,18 +60,24 @@ export default function ExplorePage() {
                 ))
               ) : (
                 <>
-                  {data?.pages.map((page, i) => (
-                    <div key={i} className="space-y-6">
-                      {page?.data?.map((post: any) => (
-                        <PostCard key={post._id} post={post} />
-                      ))}
-                      {/* Insert ad after every 5 posts */}
-                      {i % 5 === 4 && (
-                        <AdCard
-                          clientId="ca-pub-6714877547689628"
-                          slotId="3489516387"
-                        />
-                      )}
+                  {data?.pages.map((page, pageIndex) => (
+                    <div key={pageIndex} className="space-y-6">
+                      {page?.data?.map((post: any, postIndex: number) => {
+                        const totalIndex = pageIndex * 10 + postIndex;
+                        return (
+                          <>
+                            <PostCard key={post._id} post={post} />
+                            {/* Insert ad after every 7 posts */}
+                            {totalIndex > 0 && totalIndex % 7 === 6 && (
+                              <ExploreAdCard
+                                key={`ad-${totalIndex}`}
+                                clientId="ca-pub-6714877547689628"
+                                slotId="3489516387"
+                              />
+                            )}
+                          </>
+                        );
+                      })}
                     </div>
                   ))}
                   {isFetchingNextPage && <PostSkeleton />}
