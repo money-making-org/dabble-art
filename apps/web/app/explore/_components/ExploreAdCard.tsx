@@ -26,13 +26,15 @@ export function ExploreAdCard({ clientId, slotId }: ExploreAdCardProps) {
       </div>
 
       {/* Ad Content */}
-      <div className="relative bg-muted">
+      <div className="relative aspect-[4/3] bg-muted overflow-hidden">
         <ins
           className="adsbygoogle"
           style={{
             display: "block",
             width: "100%",
             height: "100%",
+            position: "absolute",
+            inset: 0
           }}
           data-ad-client={clientId}
           data-ad-slot={slotId}
