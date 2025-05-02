@@ -60,10 +60,10 @@ const recentCommunities = [
 ];
 
 const resources = [
-  { name: "About Dabble", href: "/about", icon: BookOpen },
-  { name: "Help Center", href: "/help", icon: HelpCircle },
   { name: "Rewards", href: "/rewards", icon: DollarSign },
   { name: "Premium", href: "/premium", icon: Star },
+  { name: "Help Center", href: "/help", icon: HelpCircle },
+  { name: "About Dabble", href: "/about", icon: BookOpen },
 ];
 
 interface SidebarSectionProps {
