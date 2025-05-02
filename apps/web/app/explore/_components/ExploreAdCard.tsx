@@ -6,8 +6,7 @@ import Script from "next/script";
 
 interface ExploreAdCardProps {
   clientId: "ca-pub-6714877547689628";
-
-  slotId: "3489516387";
+  slotId: "2421030611";
 }
 
 export function ExploreAdCard({ clientId, slotId }: ExploreAdCardProps) {
@@ -27,7 +26,7 @@ export function ExploreAdCard({ clientId, slotId }: ExploreAdCardProps) {
       </div>
 
       {/* Ad Content */}
-      <div className="relative aspect-[4/3] bg-muted">
+      <div className="relative bg-muted">
         <ins
           className="adsbygoogle"
           style={{
