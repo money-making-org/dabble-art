@@ -18,7 +18,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { PostDetailsSection } from "./_components/PostDetailsSection";
 import { PostImageSection } from "./_components/PostImageSection";
-import { EditArtworkModal } from "@/app/(dashboard)/dashboard/_components/edit-artwork-modal";
+import { EditArtworkModal } from "@/app/posts/[id]/_components/edit-artwork-modal";
 import { PostNotFound } from "./_components/post-not-found";
 import { AdCard } from "@/components/ad-card";
 
