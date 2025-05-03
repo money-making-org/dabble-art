@@ -378,7 +378,7 @@ export default function ArtPiecePage() {
 
       {selectedArtwork && (
         <EditArtworkModal
-          artwork={selectedArtwork}
+          post={selectedArtwork}
           isOpen={isEditModalOpen}
           onClose={() => {
             setIsEditModalOpen(false);
