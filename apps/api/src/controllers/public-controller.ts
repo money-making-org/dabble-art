@@ -14,11 +14,11 @@ export const publicController = new Elysia({ prefix: "/public" })
     "/posts",
     async ({ query }) => {
       const {
-        limit = 25,
+        limit = 50,
         page = 1,
         search,
         categories,
-        sort = "latest",
+        sort,
         excludeIds,
         owner,
       } = query;
@@ -86,8 +86,9 @@ export const publicController = new Elysia({ prefix: "/public" })
         queryConditions.owner = ownerId;
       }
 
-      // Determine sort order
+      // Determine sort order and query method
       let sortOrder: any = { createdAt: -1 };
+      let useAggregation = false;
 
       switch (sort) {
         case "popular":
@@ -97,19 +98,61 @@ export const publicController = new Elysia({ prefix: "/public" })
         case "latest":
           sortOrder = { createdAt: -1 };
           break;
-        // For relevance, we'll keep the default createdAt sort since we can't
-        // combine text score with regex search
+        case "random":
+          useAggregation = true;
+          break;
+        // For relevance, we'll keep the default createdAt sort
         default:
           break;
       }
 
-      const posts = await PostModel.find(queryConditions)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .sort(sortOrder)
-        .populate("files")
-        .populate("owner")
-        .lean();
+      let posts;
+      if (useAggregation) {
+        // Use aggregation pipeline for random sorting with download weight
+        posts = await PostModel.aggregate([
+          { $match: queryConditions },
+          {
+            $addFields: {
+              // Add a weight field based on length of likes, default to 1 if no likes
+              weight: {
+                $add: [1, { $ifNull: ["$analytics.views", 0] }],
+              },
+            },
+          },
+          // Multiply by random number to get weighted random selection
+          {
+            $addFields: {
+              randomScore: {
+                $multiply: ["$weight", { $rand: {} }],
+              },
+            },
+          },
+          { $sort: { randomScore: -1 } },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+          // Remove the temporary fields we added
+          {
+            $project: {
+              weight: 0,
+              randomScore: 0,
+            },
+          },
+        ]).exec();
+
+        // Populate references after aggregation
+        posts = await PostModel.populate(posts, [
+          { path: "files" },
+          { path: "owner" },
+        ]);
+      } else {
+        posts = await PostModel.find(queryConditions)
+          .limit(limit)
+          .skip((page - 1) * limit)
+          .sort(sortOrder)
+          .populate("files")
+          .populate("owner")
+          .lean();
+      }
 
       return posts;
     },
@@ -122,6 +165,7 @@ export const publicController = new Elysia({ prefix: "/public" })
             t.Literal("latest"),
             t.Literal("popular"),
             t.Literal("relevance"),
+            t.Literal("random"),
           ])
         ),
         limit: t.Optional(
@@ -230,7 +274,6 @@ export const publicController = new Elysia({ prefix: "/public" })
           ]);
           isLiked = !!likeCheck;
           isFollowing = !!followCheck;
-
         } catch (dbError) {
           console.error("Database error checking like/follow status:", dbError);
         }
