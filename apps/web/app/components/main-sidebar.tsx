@@ -133,7 +133,6 @@ export function MainSidebar() {
   return (
     <SidebarContext.Provider value={{ isExpanded, setIsExpanded }}>
       <DesktopSidebar />
-      <MobileSidebar />
     </SidebarContext.Provider>
   );
 }
@@ -151,7 +150,7 @@ const DesktopSidebar: React.FC = () => {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="absolute -right-3 top-20 z-30 h-6 w-6 rounded-full border bg-background p-0 hover:bg-background"
+          className="absolute -right-3.5 top-20 z-30 h-7 w-7 rounded-full border bg-background p-0 hover:bg-background"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <ChevronRight className={cn("h-4 w-4 transition-transform", isExpanded && "rotate-180")} />
@@ -243,87 +242,3 @@ const DesktopSidebar: React.FC = () => {
     </div>
   );
 };
-
-// Mobile sidebar (Sheet/drawer)
-const MobileSidebar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { isExpanded } = useContext(SidebarContext);
-  
-  return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
-          <Menu className="h-5 w-5" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="w-[280px] p-0">
-        <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center border-b px-4">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl font-bold bg-gradient-to-r from-[#007FFF] to-[#00BFFF] bg-clip-text text-transparent">
-                dabble
-              </span>
-            </Link>
-          </div>
-
-          <div className="flex-1 p-4 space-y-6">
-            {/* Main Navigation */}
-            <div className="space-y-1">
-              {mainNavItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span className="flex-1">
-                    {item.name}
-                    {item.beta && (
-                      <span className="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
-                        BETA
-                      </span>
-                    )}
-                  </span>
-                </Link>
-              ))}
-            </div>
-
-            {/* Recent Communities */}
-            <div className="space-y-2">
-              <div className="px-2 text-sm font-medium text-muted-foreground">RECENT</div>
-              <div className="space-y-1">
-                {recentCommunities.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
-                  >
-                    <span className="text-base">{item.icon}</span>
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Resources */}
-            <div className="space-y-2">
-              <div className="px-2 text-sm font-medium text-muted-foreground">RESOURCES</div>
-              <div className="space-y-1">
-                {resources.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
-                  >
-                    <item.icon className="h-4 w-4" />
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
-}; 

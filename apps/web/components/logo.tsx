@@ -7,12 +7,12 @@ export default function Logo() {
       <Image
         src="/logotest2.png"
         alt="dabble.art logo"
-        width={48}
-        height={48}
+        width={64}
+        height={64}
         className="object-contain"
         priority
       />
-      <span className="font-bold text-xl md:text-2xl bg-gradient-to-r from-[#009FFF] via-[#007FFF] to-[#38bdf8] bg-clip-text text-transparent -ml-1">
+      <span className="font-bold text-xl md:text-2xl bg-gradient-to-r from-[#009FFF] via-[#007FFF] to-[#38bdf8] bg-clip-text text-transparent -ml-2">
         dabble
       </span>
     </Link>

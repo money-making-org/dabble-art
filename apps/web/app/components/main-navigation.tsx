@@ -11,6 +11,7 @@ import { UserButton } from "@daveyplate/better-auth-ui";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-toggle";
 import Logo from "@/components/logo";
+import HamburgerMenu from "./hamburger";
 
 export function MainNavigation() {
   const { data: session } = authClient.useSession();
@@ -25,10 +26,11 @@ export function MainNavigation() {
 
   return (
     <div className="sticky top-0 z-999 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-      <div className="w-full px-4">
+      <div className="w-full px-3">
         <div className="relative flex h-16 items-center justify-between">
           {/* Left Section - Logo and Search */}
           <div className="flex items-center gap-6">
+            <HamburgerMenu />
             <Logo />
             <div className="relative w-64 hidden md:block">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
