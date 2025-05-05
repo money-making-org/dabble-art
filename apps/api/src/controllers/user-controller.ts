@@ -31,45 +31,36 @@ export const userController = new Elysia({ prefix: "/users" })
 
       const queriedUserId = queriedUser._id
 
-      let isFollowing = false;
-
+      let isFollowing = false
       let followers = 0
       let following = 0
-
-      await FollowingModel.find({
+      const followingsPromise = FollowingModel.find({
           $or: [
               { follower: queriedUserId },
               { following: queriedUserId }
           ]
-      }).lean().then(docs => {
-          docs.forEach(doc => {
-              if (doc.following.equals(queriedUserId)) followers += 1
-              if (doc.follower.equals(queriedUserId)) following += 1
-          })
-      })
+      }).lean()
 
-      const posts = await PostModel.find({ owner: queriedUserId }).lean()
       let views = 0
-      let downloads= 0
+      let downloads = 0
+      const postsPromise = PostModel.find({ owner: queriedUserId }).lean()
+      const likesPromise = LikeModel.countDocuments({ user: queriedUserId })
 
-      posts.forEach(post => {
+      const [posts, likes, followings] = await Promise.all([postsPromise, likesPromise, followingsPromise])
+
+      posts.forEach(post => { // Can use Aggregate query instead?
           views += post.analytics.views ?? 0
           downloads += post.analytics.downloads ?? 0
       })
 
-      const likes = await LikeModel.countDocuments({ user: queriedUserId })
-
-      console.log(user);
-      if (user) {
-        const following = await FollowingModel.exists({
-          follower: user.id,
-          following: queriedUser._id,
-        }).lean();
-
-        console.log(following);
-
-        isFollowing = !!following;
-      }
+      const userAuthed = !!user
+      followings.forEach(doc => {
+          if (doc.follower.equals(queriedUserId)) following += 1
+          if (doc.following.equals(queriedUserId)) {
+              followers += 1
+              if (userAuthed && doc.follower.equals(user.id)) isFollowing = true
+          }
+      })
 
       const stats = { posts: posts.length, following, followers, downloads, views, likes }
 
