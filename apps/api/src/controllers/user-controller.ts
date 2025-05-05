@@ -6,6 +6,8 @@ import { FollowingModel } from "@workspace/db/src/schema/followings";
 import { UserModel } from "@workspace/db/src/schema/users";
 import Elysia, { t } from "elysia";
 import mongoose from "mongoose";
+import {PostModel} from "@workspace/db/src/schema/posts.ts";
+import {LikeModel} from "@workspace/db/src/schema/likes.ts";
 
 export const userController = new Elysia({ prefix: "/users" })
   .use(betterAuth)
@@ -46,6 +48,17 @@ export const userController = new Elysia({ prefix: "/users" })
           })
       })
 
+      const posts = await PostModel.find({ owner: queriedUserId }).lean()
+      let views = 0
+      let downloads= 0
+
+      posts.forEach(post => {
+          views += post.analytics.views ?? 0
+          downloads += post.analytics.downloads ?? 0
+      })
+
+      const likes = await LikeModel.countDocuments({ user: queriedUserId })
+
       console.log(user);
       if (user) {
         const following = await FollowingModel.exists({
@@ -58,7 +71,7 @@ export const userController = new Elysia({ prefix: "/users" })
         isFollowing = !!following;
       }
 
-      const stats = { following, followers }
+      const stats = { posts: posts.length, following, followers, downloads, views, likes }
 
       return {
         id: queriedUser._id,
