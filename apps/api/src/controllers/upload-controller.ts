@@ -178,6 +178,7 @@ export const uploadController = new Elysia({ prefix: "/upload" })
             name: body.name,
             postId: postID.toString(),
             primaryFileId: fileIds[0] ?? "",
+            postStorageUsed: newUploadSize,
             totalStorageUsed: projectedStorage,
           });
         }, 0);
