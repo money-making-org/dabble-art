@@ -27,7 +27,24 @@ export const userController = new Elysia({ prefix: "/users" })
         return error(404, "User not found.");
       }
 
+      const queriedUserId = queriedUser._id
+
       let isFollowing = false;
+
+      let followers = 0
+      let following = 0
+
+      await FollowingModel.find({
+          $or: [
+              { follower: queriedUserId },
+              { following: queriedUserId }
+          ]
+      }).lean().then(docs => {
+          docs.forEach(doc => {
+              if (doc.following.equals(queriedUserId)) followers += 1
+              if (doc.follower.equals(queriedUserId)) following += 1
+          })
+      })
 
       console.log(user);
       if (user) {
@@ -41,6 +58,8 @@ export const userController = new Elysia({ prefix: "/users" })
         isFollowing = !!following;
       }
 
+      const stats = { following, followers }
+
       return {
         id: queriedUser._id,
 
@@ -51,6 +70,7 @@ export const userController = new Elysia({ prefix: "/users" })
         image: queriedUser.image,
         bio: queriedUser.bio,
 
+        stats: stats,
         isFollowing: isFollowing,
       };
     },
