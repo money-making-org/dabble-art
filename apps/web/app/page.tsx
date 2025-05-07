@@ -182,7 +182,7 @@ export default function DiscoverPage() {
       <div className="bg-background/80 backdrop-blur-md border-b border-border/50 py-2 z-0">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-4 justify-between">
-            <div className="flex items-center gap-2 py-2 overflow-x-scroll">
+            <div className="flex items-center gap-2 py-2 overflow-x-scroll overflow-y-auto dabble-scrollbar">
               {categories.map((category) => (
                 <Button
                   key={category.value}
