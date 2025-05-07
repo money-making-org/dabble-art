@@ -19,7 +19,8 @@ import {
   FileText,
   Lock,
   Star,
-  DollarSign
+  DollarSign,
+  Store
 } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -48,7 +49,9 @@ export const SidebarContext = createContext<SidebarContextType>({
 
 const mainNavItems = [
   { name: "Home", href: "/", icon: Home },
-  { name: "Challenges", href: "/challenges", icon: Trophy, beta: true },
+  { name: "For You", href: "/explore", icon: Star },
+  { name: "Marketplace", href: "/marketplace", icon: Store },
+  { name: "Communities", href: "/communities", icon: Users },
 ];
 
 const recentCommunities = [
@@ -58,6 +61,11 @@ const recentCommunities = [
   { name: "Photography", href: "/c/photography", icon: "📸" },
   { name: "Animation", href: "/c/animation", icon: "🎬" },
 ];
+
+const moreItems = [
+  { name: "Challenges", href: "/challenges", icon: Trophy, beta: true },
+  
+]
 
 const resources = [
   { name: "Premium", href: "/premium", icon: Star },
@@ -158,42 +166,24 @@ const DesktopSidebar: React.FC = () => {
 
         <div className="flex-1 px-2 py-4 space-y-6 overflow-hidden">
           {/* Main Navigation */}
-          <div className="space-y-1">
-            {mainNavItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted relative group",
-                  !isExpanded && "justify-center"
-                )}
-              >
-                <item.icon className="h-4 w-4 flex-shrink-0" />
-                {isExpanded && (
-                  <span className="flex-1">
-                    {item.name}
-                    {item.beta && (
-                      <span className="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
-                        BETA
-                      </span>
-                    )}
-                  </span>
-                )}
-                {!isExpanded && (
-                  <div className="absolute left-full ml-2 hidden group-hover:block z-50">
-                    <div className="bg-popover px-2 py-1 rounded-md text-sm whitespace-nowrap shadow-md">
-                      {item.name}
-                    </div>
-                  </div>
-                )}
-              </Link>
-            ))}
-          </div>
+          <SidebarSection
+            title="NAVIGATION"
+            items={mainNavItems}
+            isExpanded={isExpanded}
+            defaultOpen={true}
+          />  
 
           {/* Recent Communities */}
           <SidebarSection 
             title="RECENT" 
             items={recentCommunities} 
+            isExpanded={isExpanded}
+            defaultOpen={true}
+          />
+
+<SidebarSection
+            title="MORE"
+            items={moreItems}
             isExpanded={isExpanded}
             defaultOpen={true}
           />
