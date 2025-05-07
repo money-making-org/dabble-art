@@ -111,6 +111,7 @@ export function ArtworkGrid({
   if (!posts?.length) return null;
 
   const images = posts
+    .filter(post => !!post.owner)
     .map((post) => {
       const file = post.files[0];
       if (!file) return null;
