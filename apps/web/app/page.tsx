@@ -182,7 +182,7 @@ export default function DiscoverPage() {
       <div className="bg-background/80 backdrop-blur-md border-b border-border/50 py-2 z-0">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-4 justify-between">
-            <div className="flex items-center gap-2 py-2">
+            <div className="flex items-center gap-2 py-2 overflow-x-scroll">
               {categories.map((category) => (
                 <Button
                   key={category.value}
@@ -198,23 +198,23 @@ export default function DiscoverPage() {
                   {category.name}
                 </Button>
               ))}
-            </div>
 
-            <Select
-              defaultValue="relevance"
-              onValueChange={(value: "latest" | "popular" | "relevance") =>
-                setSortBy(value)
-              }
-            >
-              <SelectTrigger className="w-[130px] h-9 rounded-full text-sm">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="relevance">Relevance</SelectItem>
-                <SelectItem value="latest">Latest</SelectItem>
-                <SelectItem value="popular">Most Popular</SelectItem>
-              </SelectContent>
-            </Select>
+              <Select
+                defaultValue="relevance"
+                onValueChange={(value: "latest" | "popular" | "relevance") =>
+                  setSortBy(value)
+                }
+              >
+                <SelectTrigger className="w-[130px] h-9 rounded-full text-sm">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="relevance">Relevance</SelectItem>
+                  <SelectItem value="latest">Latest</SelectItem>
+                  <SelectItem value="popular">Most Popular</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </div>

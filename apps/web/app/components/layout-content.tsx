@@ -17,7 +17,7 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
           "flex-1 transition-all duration-300",
           isExpanded ? "md:ml-64" : "md:ml-16"
         )}>
-          <main className="pt-16">
+          <main className="pt-16 max-w-screen">
             {children}
           </main>
         </div>

@@ -24,7 +24,15 @@ export function GalleryTab() {
   const handleDelete = async (postId: string) => {
     try {
       // TODO: Implement delete functionality
-      console.log("Delete post:", postId);
+      /* Delete: (See api/controllers/upload-controller)
+      This will be done via an endpoint in the api/controllers directory.
+        - Remove Files/Images from R2
+        - Remove post details && file details from Mongo
+        - Remove likes from mongo
+        - Send Discord Alert
+        - Assuming no errors by this point, Optimistically update gallery page display.
+       - Penguin */
+      console.log("Delete post:", postId, "(Not currently implemented)");
     } catch (error) {
       console.error("Failed to delete post:", error);
     }
