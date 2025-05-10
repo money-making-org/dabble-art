@@ -181,17 +181,17 @@ export default function DiscoverPage() {
                   alt={post.name}
                   className="w-full h-full object-cover brightness-105 contrast-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#007FFF]/5 to-transparent dark:from-[#007FFF]/20" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#007FFF]/3 to-transparent dark:from-[#007FFF]/10" />
                 <div className="absolute inset-0 backdrop-blur-[0.5px] dark:backdrop-blur-[2px]" />
                 {/* Subtle white overlay for light mode only */}
-                <div className="absolute inset-0 bg-white/30 dark:hidden" />
+                <div className="absolute inset-0 bg-white/20 dark:hidden" />
               </div>
             );
           })}
         </div>
         
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 hidden dark:block bg-gradient-to-b from-background/60 via-background/40 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background" />
         
         <div className="container relative z-20 px-4 text-center">
           {/* Soft radial background gradient for hero content */}
