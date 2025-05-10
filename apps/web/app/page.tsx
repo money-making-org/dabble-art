@@ -118,6 +118,19 @@ export default function DiscoverPage() {
     "latest" | "popular" | "relevance" | "random"
   >("random");
 
+  // Fetch featured posts for the hero background
+  const { data: featuredPosts } = useQuery({
+    queryKey: ["featured-posts"],
+    queryFn: () =>
+      api.public.posts.get({
+        query: {
+          sort: "popular",
+          limit: 24,
+          page: 1,
+        },
+      }),
+  });
+
   const { data: posts, isPending } = useQuery({
     queryKey: ["posts", searchQuery, selectedCategory, sortBy],
     queryFn: () =>
@@ -148,35 +161,63 @@ export default function DiscoverPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-background z-10">
+      <div className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-background z-10 -mt-16">
+        {/* Background Artwork Grid */}
+        <div className="absolute inset-0 grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1 opacity-40 dark:opacity-20 transition-opacity">
+          {featuredPosts?.data?.map((post, i) => {
+            const file = post.files[0];
+            if (!file) return null;
+            
+            return (
+              <div
+                key={post._id}
+                className="relative aspect-square bg-muted overflow-hidden group"
+                style={{
+                  animationDelay: `${i * 0.1}s`,
+                }}
+              >
+                <img
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/public/posts/${post._id}/files/${file._id}/download`}
+                  alt={post.name}
+                  className="w-full h-full object-cover brightness-105 contrast-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#007FFF]/5 to-transparent dark:from-[#007FFF]/20" />
+                <div className="absolute inset-0 backdrop-blur-[0.5px] dark:backdrop-blur-[2px]" />
+                {/* Subtle white overlay for light mode only */}
+                <div className="absolute inset-0 bg-white/30 dark:hidden" />
+              </div>
+            );
+          })}
+        </div>
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 hidden dark:block bg-gradient-to-b from-background/80 via-background/50 to-background" />
+        
         <div className="container relative z-20 px-4 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-[#007FFF] mb-4">
+          {/* Soft radial background gradient for hero content */}
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[60vh] z-10" aria-hidden="true">
+            <div className="w-full h-full rounded-full bg-gradient-radial from-background/20 via-background/10 to-transparent dark:from-background/80 dark:via-background/60 to-transparent" />
+          </div>
+          <h1 className="relative z-20 text-5xl md:text-7xl font-bold tracking-tight text-[#007FFF] mb-4 drop-shadow-[0_2px_16px_rgba(0,0,0,0.25)]">
             Discover Amazing Art
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="relative z-20 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_8px_rgba(0,0,0,0.18)]">
             Explore and connect with talented artists from around the world
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
-            <div className="relative flex-1 w-full">
+          <div className="max-w-2xl mx-auto relative z-20">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground z-10" />
               <Input
                 placeholder="Search artworks, artists, or tags..."
-                className="pl-10 h-12 text-lg w-full bg-background/50 backdrop-blur-sm border-border/50 hover:border-border focus:border-ring transition-colors"
+                className="pl-10 h-14 text-lg w-full bg-background/90 backdrop-blur-sm border-border/50 hover:border-border focus:border-ring transition-colors shadow"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Link href="/upload" className="sm:flex-shrink-0 w-full sm:w-auto">
-              <Button
-                size="lg"
-                className="bg-[#007FFF] w-full sm:w-auto h-12 text-lg hover:opacity-90 transition-opacity"
-              >
-                Share Your Art <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
           </div>
         </div>
       </div>
+
 
       {/* Categories and Filters Bar */}
       <div className="bg-background/80 backdrop-blur-md border-b border-border/50 py-2 z-0">
@@ -219,44 +260,14 @@ export default function DiscoverPage() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        {posts?.data?.length === 0 && !isPending ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="h-32 w-32 mb-6 text-muted-foreground">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                className="w-full h-full"
-              >
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <path d="M3 16l5-5c.928-.893 2.072-.893 3 0l5 5" />
-                <path d="M14 14l1-1c.928-.893 2.072-.893 3 0l3 3" />
-                <circle cx="8" cy="9" r="2" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-semibold mb-2">No artworks found</h3>
-            <p className="text-muted-foreground max-w-sm">
-              {searchQuery
-                ? "Try adjusting your search or filters to find what you're looking for"
-                : "Be the first to share your artwork with the community"}
-            </p>
-            {!searchQuery && (
-              <Link href="/upload" className="mt-3">
-                <Button className="bg-gradient-to-r from-pink-500 via-purple-500 to-teal-500">
-                  Share Artwork
-                </Button>
-              </Link>
-            )}
-          </div>
-        ) : isPending ? (
-          <ArtworkGridSkeleton />
-        ) : (
-          <ArtworkGrid posts={posts?.data} />
-        )}
+      <div className="py-12 bg-background">
+        <div className="container mx-auto px-4 mb-16 -mt-4">
+          {isPending ? (
+            <ArtworkGridSkeleton />
+          ) : (
+            <ArtworkGrid posts={posts?.data} />
+          )}
+        </div>
       </div>
     </div>
   );
