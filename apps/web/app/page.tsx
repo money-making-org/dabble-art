@@ -184,7 +184,7 @@ export default function DiscoverPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#007FFF]/3 to-transparent dark:from-[#007FFF]/10" />
                 <div className="absolute inset-0 backdrop-blur-[0.5px] dark:backdrop-blur-[2px]" />
                 {/* Subtle white overlay for light mode only */}
-                <div className="absolute inset-0 bg-white/20 dark:hidden" />
+                <div className="absolute inset-0 bg-white/10 dark:hidden" />
               </div>
             );
           })}
