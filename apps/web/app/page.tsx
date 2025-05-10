@@ -191,7 +191,7 @@ export default function DiscoverPage() {
         </div>
         
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 hidden dark:block bg-gradient-to-b from-background/80 via-background/50 to-background" />
+        <div className="absolute inset-0 hidden dark:block bg-gradient-to-b from-background/60 via-background/40 to-background" />
         
         <div className="container relative z-20 px-4 text-center">
           {/* Soft radial background gradient for hero content */}
