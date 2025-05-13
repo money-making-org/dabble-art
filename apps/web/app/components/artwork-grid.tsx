@@ -246,6 +246,8 @@ export function ArtworkGrid({
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
+                                // setSelectedPostId(null)
+                                setIsAlertOpen(false)
                               }}
                             >
                               Cancel

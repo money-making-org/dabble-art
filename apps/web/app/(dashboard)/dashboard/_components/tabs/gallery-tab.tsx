@@ -24,7 +24,7 @@ export function GalleryTab() {
 
   const handleDelete = async (postId: string) => {
     try {
-      // TODO: Implement delete functionality & update ui
+      // TODO: update ui
       await api.public.posts({ id: postId }).delete()
       console.log("Delete post:", postId);
     } catch (error) {
