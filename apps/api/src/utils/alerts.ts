@@ -50,10 +50,10 @@ export const sendNewArtAlert = async ({
     })
     .setColor("Green")
     .setThumbnail({
-      url: `https://api.dabble.art/public/posts/${postId}/files/${primaryFileId}/preview`,
+      url: `https://api.dabble.art/posts/${postId}/files/${primaryFileId}/preview`,
       // ex: https://api.dabble.art/public/posts/67e6bf380a68cc2792e76c17/files/67e6bf380a68cc2792e76c18/preview
     })
-    .setUrl(`https://dabble.art/public/posts/${postId}`)
+    .setUrl(`https://dabble.art/posts/${postId}`)
     .setTimestamp();
 
   await webhook.addEmbed(embed).send();
