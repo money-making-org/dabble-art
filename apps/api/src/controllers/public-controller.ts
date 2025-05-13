@@ -406,9 +406,10 @@ export const publicController = new Elysia({ prefix: "/public" })
 
       // 3. Deletion Logic
       try {
+        let fileDeletionPromises: Promise<any>[] = []
         // --- Delete associated files from R2 ---
         if (post.files && post.files.length > 0) {
-          const fileDeletionPromises = post.files.map(async (file: any) => {
+          fileDeletionPromises = post.files.map(async (file: any) => {
             // Assuming FileModel instances have getS3Key() or similar
             // And assuming the r2 client has a delete method
             const fileKey = file.getS3Key(); // Adapt if key retrieval is different
@@ -436,6 +437,11 @@ export const publicController = new Elysia({ prefix: "/public" })
 
         // Delete the post itself from DB
         await PostModel.deleteOne({ _id: postId });
+
+        // Make sure R2 has finished processing
+        await Promise.all(fileDeletionPromises)
+
+        // TODO: Discord alert?
 
         return {
           success: true,

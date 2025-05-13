@@ -1,10 +1,11 @@
 import { ArtworkGrid, Post } from "@/app/components/artwork-grid";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@workspace/eden";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 
 export function GalleryTab() {
+  const queryClient = useQueryClient()
   const { data: session } = authClient.useSession();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"relevance" | "latest" | "popular">("latest");
@@ -23,16 +24,9 @@ export function GalleryTab() {
 
   const handleDelete = async (postId: string) => {
     try {
-      // TODO: Implement delete functionality
-      /* Delete: (See api/controllers/upload-controller)
-      This will be done via an endpoint in the api/controllers directory.
-        - Remove Files/Images from R2
-        - Remove post details && file details from Mongo
-        - Remove likes from mongo
-        - Send Discord Alert
-        - Assuming no errors by this point, Optimistically update gallery page display.
-       - Penguin */
-      console.log("Delete post:", postId, "(Not currently implemented)");
+      // TODO: Implement delete functionality & update ui
+      await api.public.posts({ id: postId }).delete()
+      console.log("Delete post:", postId);
     } catch (error) {
       console.error("Failed to delete post:", error);
     }
