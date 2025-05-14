@@ -36,14 +36,14 @@ export default function DashboardPage() {
       <div className="container mx-auto px-4 py-2 mt-[-20px]">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6">
           {/* Main Content */}
-          <div className="space-y-6 max-w-2xl mx-auto w-full">
+          <div className="space-y-6 max-w-2xl mx-auto w-full order-last md:order-first">
             <DashboardHeader />
             <StatsOverview />
             <TabContent selectedTab={selectedTab} />
           </div>
 
           {/* Right Sidebar */}
-          <div className="hidden md:block w-80">
+          <div className="md:block w-full md:w-64">
             <div className="sticky top-29.5 space-y-4">
               <DashboardNavigation 
                 selectedTab={selectedTab}
