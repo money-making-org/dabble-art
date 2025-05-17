@@ -21,6 +21,20 @@ import { PostImageSection } from "./_components/PostImageSection";
 import { EditArtworkModal } from "@/app/posts/[id]/_components/edit-artwork-modal";
 import { PostNotFound } from "./_components/post-not-found";
 import { AdCard } from "@/components/ad-card";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@workspace/ui/components/alert-dialog";
+import { Input } from "@workspace/ui/components/input";
+import { Separator } from "@workspace/ui/components/separator";
+import { AuthCard } from "@daveyplate/better-auth-ui";
+import { SignInRedirectModal } from "@workspace/ui/components/SignInRedirectModal";
 
 function PostSkeleton() {
   return (
@@ -132,6 +146,9 @@ export default function ArtPiecePage() {
   const [isLocallyLiked, setIsLocallyLiked] = useState<boolean | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [activeThumbnailIndex, setActiveThumbnailIndex] = useState(0);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const postId = params.id as string;
 
@@ -176,6 +193,11 @@ export default function ArtPiecePage() {
   }
 
   const handleLike = () => {
+    if (!session?.user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     if (isLikePending || !postData?._id) return;
 
     const currentlyLiked = isLiked();
@@ -386,6 +408,11 @@ export default function ArtPiecePage() {
           }}
         />
       )}
+
+      <SignInRedirectModal
+        open={isAuthModalOpen}
+        onOpenChange={setIsAuthModalOpen}
+      />
     </Suspense>
   );
 }
