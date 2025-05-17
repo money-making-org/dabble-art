@@ -32,17 +32,17 @@ export function MainNavigation() {
           <div className="flex items-center gap-6">
             <HamburgerMenu />
             <Logo />
-            <div className="relative w-64 hidden md:block">
+            <div className="relative w-64 md:w-80 xl:w-48 hidden md:block md:absolute md:left-1/2 md:-translate-x-1/2 xl:static xl:translate-x-0">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search Dabble..."
-                className="w-50 pl-9 focus-visible:ring-[#007FFF]"
+                className="w-full pl-9 focus-visible:ring-[#007FFF]"
               />
             </div>
           </div>
 
           {/* Center Section - Navigation */}
-          <div className="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
+          <div className="hidden xl:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
             <div className="flex items-center gap-2">
               {tabs.map((tab) => (
                 <Button
