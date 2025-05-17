@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Bell, Mail, Home, Users, TrendingUp, Upload, User, LayoutDashboard, Star, Store } from "lucide-react";
+import { Search, Bell, Mail, Home, Users, TrendingUp, Upload, User, LayoutDashboard, Star, Store, X } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { cn } from "@workspace/ui/lib/utils";
@@ -16,6 +16,14 @@ import HamburgerMenu from "./hamburger";
 export function MainNavigation() {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Implement search functionality
+    console.log("Searching for:", searchQuery);
+  };
 
   const tabs = [
     { name: "Home", href: "/", icon: Home },
@@ -65,7 +73,12 @@ export function MainNavigation() {
 
           {/* Right Section - Actions */}
           <div className="flex items-center gap-2 ml-auto">
-            <Button variant="ghost" size="icon" className="md:hidden">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="md:hidden"
+              onClick={() => setIsSearchOpen(true)}
+            >
               <Search className="h-5 w-5" />
             </Button>
             <Link
@@ -95,6 +108,33 @@ export function MainNavigation() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Search Modal */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 z-[1000] bg-background/80 backdrop-blur-sm md:hidden">
+          <div className="fixed inset-x-0 top-0 z-[1001] bg-background border-b h-16 flex items-center px-4">
+            <form onSubmit={handleSearch} className="flex items-center gap-2 w-full">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search Dabble..."
+                  className="w-full pl-9 focus-visible:ring-[#007FFF]"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                />
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsSearchOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
