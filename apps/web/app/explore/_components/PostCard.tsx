@@ -42,8 +42,8 @@ export function PostCard({ post }: { post: any }) {
       <div className="p-4">
         <div className="flex items-center gap-3">
           <Link href={`/profile/${username}`}>
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={avatarUrl} />
+            <Avatar className="h-10 w-10 border">
+              <AvatarImage src={post.owner.image} alt={name} />
               <AvatarFallback>{name[0]}</AvatarFallback>
             </Avatar>
           </Link>
