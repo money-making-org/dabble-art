@@ -1,6 +1,6 @@
 import React from "react";
-import { AlertDialog, AlertDialogContent } from "./alert-dialog.js";
-import { Button } from "./button.js";
+import { AlertDialog, AlertDialogContent } from "./alert-dialog";
+import { Button } from "./button";
 import { Lock, X } from "lucide-react";
 
 interface SignInRedirectModalProps {
